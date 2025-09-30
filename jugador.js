@@ -1,11 +1,17 @@
 class Jugador extends Personaje {
     keys = {};
+    aliados;
+    enemigos;
 
     constructor(pixiApp, x, y) {
         super(pixiApp, x, y, 30, 50, 0x0000ff, 5);
 
         window.addEventListener("keydown", this.keysDown.bind(this));
         window.addEventListener("keyup", this.keysUp.bind(this));
+
+        //cantidad de aliados/enemigos
+        this.aliados = 0;
+        this.enemigos = 0;
 
         this.pixiApp.ticker.add(() => (this.gameLoop()));
     }
@@ -17,7 +23,7 @@ class Jugador extends Personaje {
         this.keys[letra.key.toLowerCase()] = true;
 
         this.dispararCon(letra);
-        this.llamarAliado(letra);
+        this.llamarPersonajes(letra);
     }
 
     keysUp(letra){
@@ -37,28 +43,64 @@ class Jugador extends Personaje {
         }
     }
 
+    //funcion general para llamar aliados/enemigos
+    llamarPersonajes(letra){
+        if(this.aliados < 16) {
+            this.llamarAliado(letra);
+        }
+        if(this.enemigos < 16) {
+            this.llamarEnemigo(letra);
+        }
+    }
+
     //Aliados
     llamarAliado(letra){
         if (letra.key.toLowerCase() === "q") {
             this.crearAliado()
+            this.aliados ++;
         }
     }
     crearAliado(){
         //numero random entero ( el Math.floor() es para tener
         //numeros enteros) con Math.random().
-        const numRandom = Math.floor(Math.random() * 500 - 250)
+        const numRandom = Math.floor(Math.random() * 500) + 75
+
+        //creacion de posicion para corroborar donde esta
+        const aX = this.sprite.x - 300;
+        const aY = 540 + numRandom;
+
         new Aliado(
             this.pixiApp,
-            this.sprite.x - 10,
-            this.sprite.y + numRandom,
+            this.sprite.x - 300,
+            numRandom,
             30, 50, 
             0x3ADE3A, 1
+        );
+        console.log("se creo en ", aX, aY)
+    }
+
+    //Enemigos
+    llamarEnemigo(letra){
+        if (letra.key.toLowerCase() === "e") {
+            this.crearEnemigo()
+            this.enemigos ++;
+        }
+    }
+    crearEnemigo(){
+        //numero random entero ( el Math.floor() es para tener
+        //numeros enteros) con Math.random().
+        const numRandom = Math.floor(Math.random() * 500) + 75
+        new Enemigo(
+            this.pixiApp,
+            this.sprite.x + 600,
+            numRandom,
+            30, 50, 
+            0xC71818, 1
         );
     }
 
 
     gameLoop() {
-        /*movimiento_jugador
         let dx = 0;
         let dy = 0;
 
@@ -76,7 +118,7 @@ class Jugador extends Personaje {
 
             // usar la función del padre
             this.mover(dx, dy);
-        }*/
+        }
         
     }
 }
