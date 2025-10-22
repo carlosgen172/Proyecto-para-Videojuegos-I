@@ -41,7 +41,7 @@ class Mouse extends GameObject {
         //condicionBomba = 
         //if ()
     }
-   
+    
     render() {
         //if (this.juego.containerPrincipal.x == undefined) return console.warn("error inutil");
         //else if (this.juego.containerPrincipal.y == undefined) return;
@@ -70,6 +70,6 @@ class Mouse extends GameObject {
     }
 
     tick() {
-       this.render() 
+        this.render() 
     }
 }

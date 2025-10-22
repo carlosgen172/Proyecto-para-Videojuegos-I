@@ -13,6 +13,7 @@ class Juego {
         this.height = 350;
         
         this.mouse = {posicion: {x: 0, y: 0}};
+        this.zoom = 1;
         this.initPIXI();
     }
 
@@ -59,27 +60,37 @@ class Juego {
     agregarInteractividadDelMouse() {
      // Escuchar el evento mousemove
     this.pixiApp.canvas.onmousemove = (event) => {
-      this.mouse.posicion = this.convertirCoordenadaDelMouse(event.x, event.y);
+        this.mouse.posicion = this.convertirCoordenadaDelMouse(event.clientX, event.clientY);
     };
 
     this.pixiApp.canvas.onmousedown = (event) => {
-      this.mouse.down = this.convertirCoordenadaDelMouse(event.x, event.y);
-      this.mouse.apretado = true;
+        this.mouse.down = this.convertirCoordenadaDelMouse(event.clientX, event.clientY);
+        this.mouse.apretado = true;
     };
     this.pixiApp.canvas.onmouseup = (event) => {
-      this.mouse.up = this.convertirCoordenadaDelMouse(event.x, event.y);
-      this.mouse.apretado = false;
+        this.mouse.up = this.convertirCoordenadaDelMouse(event.clientX, event.clientY);
+        this.mouse.apretado = false;
     }
     }
 
     convertirCoordenadaDelMouse(mouseX, mouseY) {
     // Convertir coordenadas del mouse del viewport a coordenadas del mundo
     // teniendo en cuenta la posición y escala del containerPrincipal
+        const rect = this.pixiApp.canvas.getBoundingClientRect();
+
+        const canvasX = (mouseX - rect.left) * (this.pixiApp.renderer.width / rect.width);
+        const canvasY = (mouseY - rect.top) * (this.pixiApp.renderer.height / rect.height);
+
+        const container = this.containerPrincipal || { x: 0, y: 0 };
+        const zoom = this.zoom ?? 1;
+
         return {
             //x: (mouseX - this.juego.canvas.data.global.x) / this.zoom,
             //y: (mouseY - this.juego.canvas.data.global.y) / this.zoom,
-            x: (mouseX - this.juego.containerPrincipal.x) / this.zoom,
-            y: (mouseY - this.juego.containerPrincipal.y) / this.zoom,
+            //x: (mouseX - this.juego.containerPrincipal.x) / this.zoom,
+            //y: (mouseY - this.juego.containerPrincipal.y) / this.zoom
+            x: (canvasX - container.x) / zoom,
+            y: (canvasY - container.y) / zoom
         };
     }
     /*
