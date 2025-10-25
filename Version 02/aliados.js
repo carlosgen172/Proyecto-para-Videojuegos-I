@@ -1,5 +1,7 @@
 class Aliado extends ObjetoDinamico {
     sprite;
+    enemigo;
+    distanciaParaLlegar = 300;
     constructor(x, y, juego, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
         super(x, y, juego, width, height);
         this.radioColision = radioColision;
@@ -37,6 +39,33 @@ class Aliado extends ObjetoDinamico {
     actualizarPosDelSpriteSegunPosDelObjeto(){
         this.sprite.x = this.posicion.x;
         this.sprite.y = this.posicion.y;
+    }
+
+    asignarTargetA(alguien) {
+        this.enemigo = alguien
+    }
+
+    detenerAlEncontrarEnemigo() {
+        if (!this.enemigo) return ;
+        if (!this.enemigo in this.juego.enemigos) return ;
+        const distanciaDeEnemigo = calcularDistancia(this, this.enemigo)
+        if(distanciaDeEnemigo > this.radioVision) return ;
+
+        // Decaimiento exponencial: va de 1 a 0 a medida que se acerca
+        let factor = Math.pow(dist / this.distanciaParaLlegar, 3);
+
+        const difX = this.target.posicion.x - this.posicion.x;
+        const difY = this.target.posicion.y - this.posicion.y;
+
+        let vectorTemporal = {
+            x: -difX,
+            y: -difY,
+        };
+        vectorTemporal = limitarVector(vectorTemporal, 1);
+
+        this.aceleracion.x += -vectorTemporal.x * factor;
+
+        this.aplicarFriccion()
     }
 
     render() {

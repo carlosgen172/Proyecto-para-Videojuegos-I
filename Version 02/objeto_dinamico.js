@@ -29,7 +29,7 @@ class ObjetoDinamico extends GameObject {
         this.limitarAceleracion();
         // Integración de Euler: v = v₀ + a×Δt (para predecir el siguiete punto por el cual el bot se va a mover, prediciendo la velocidad siguiente según la aceleración)
         this.velocidad.x += this.aceleracion.x * deltaTime;
-        this.velocidad.y += this.aceleracion.y * deltaTime;
+        //this.velocidad.y += this.aceleracion.y * deltaTime;
         
         // Se resetea la aceleración para el proximo frame:
         this.aceleracion.x = 0;
@@ -41,7 +41,7 @@ class ObjetoDinamico extends GameObject {
 
         // PASO 3: Integrar posición: x = x₀ + v×Δt (se calcula la siguiete posición según la velocidad del objeto)
         this.posicion.x += this.velocidad.x * deltaTime;
-        this.posicion.y += this.velocidad.y * deltaTime;
+        //this.posicion.y += this.velocidad.y * deltaTime;
 
          // PASO 4: Calcular ángulo de movimiento usando arctangente
         // atan2(y,x) nos da el ángulo en radianes del vector velocidad
