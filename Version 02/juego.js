@@ -7,6 +7,7 @@ class Juego {
     jugador;
     aliados = [];
     enemigos = [];
+    keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     
     constructor(){
         this.width = 500;
@@ -32,6 +33,9 @@ class Juego {
         document.body.appendChild(this.pixiApp.canvas);
         
         this.pixiApp.stage.interactive = true;
+        window.addEventListener("keydown", this.keysDown.bind(this));
+        window.addEventListener("keyup", this.keysUp.bind(this));
+
         await this.cargarBackground();
         await this.generarMouse();
         this.generarTropas();
@@ -116,6 +120,7 @@ class Juego {
                 posXRandom, //posición x
                 posYRandom, //posición y
                 this.pixiApp, //juego
+                this,
                 32, //ancho
                 32, //alto
                 texture, //textura
@@ -209,15 +214,70 @@ class Juego {
         this.pixiApp.stage.addChild(this.hud);
     }
 
+    keysDown(letra){
+        this.keys[letra.key.toLowerCase()] = true;
+    }
+
+    keysUp(letra){
+        this.keys[letra.key.toLowerCase()] = false;
+        this.generarTropasEnemigasCon(letra)
+        this.generarTropasAliadasCon(letra)
+    }
+
+    async generarTropasEnemigas() {
+        const texture = await PIXI.Assets.load("imagenes/enemigos_eliminados.png");
+        //console.log(texture)
+        for(let i = 0; i < 20; i++){
+            const posXRandom = Math.floor(Math.random() * this.width)
+            const posYRandom = Math.floor(Math.random() * this.height) 
+            const enemigoNuevo = new Enemigo(
+                posXRandom, //posición x
+                posYRandom, //posición y
+                this.pixiApp, //juego
+                this, //juego Principal
+                32, //ancho
+                32, //alto
+                texture, //textura
+                15, //radio de colisión
+                20, //radio de visión
+                5, //velocidad
+                10, //velocidad máxima
+                3, //aceleración
+                5, //aceleración máxima
+                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+            )
+            this.enemigos.push(enemigoNuevo)
+        }
+    }
+    
+    generarTropasAliadasCon(unaTecla) {
+        if(unaTecla.key.toLowerCase() === "1") {
+            this.generarTropas()
+        }
+    }
+
+    generarTropasEnemigasCon(unaTecla) {
+        if(unaTecla.key.toLowerCase() === "3") {
+            this.generarTropasEnemigas()
+        }
+    }
+
     realizarTickPorCadaAliado() {
         for (let unAliado of this.aliados) {
             unAliado.tick()
         }
     }
 
+    realizarTickPorCadaEnemigo() {
+        for (let unEnemigo of this.enemigos) {
+            unEnemigo.tick()
+        }
+    }
+
     gameLoop(time) {
         this.mouse.tick();
         this.realizarTickPorCadaAliado()
+        this.realizarTickPorCadaEnemigo()
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
