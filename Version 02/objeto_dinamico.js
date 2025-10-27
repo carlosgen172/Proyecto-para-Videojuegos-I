@@ -16,7 +16,7 @@ class ObjetoDinamico extends GameObject {
     }
     */
     aplicarFisica() {
-          /**
+            /**
             * SISTEMA DE FÍSICA ESTABLE CON DELTATIME
             
             * Limitamos deltaTime para evitar inestabilidad cuando los FPS bajan:

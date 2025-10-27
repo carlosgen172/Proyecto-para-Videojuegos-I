@@ -44,7 +44,7 @@ class Juego {
         this.containerPrincipal = new PIXI.Container();
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
-        
+        this.jugador = this.generarJugador();
     }
 
     async generarMouse() {
@@ -109,6 +109,27 @@ class Juego {
         this.pixiApp.stage.addChild(this.fondo);
     }
     */
+
+    async generarJugador() {
+        const texture = await PIXI.Assets.load("imagenes/Jugador/Idle/idle_1.png");
+        const jugadorNuevo = new Jugador(
+            300, //posición x
+            400, //posición y
+            this.pixiApp, //juego
+            this,
+            32, //ancho
+            32, //alto
+            texture, //textura
+            15, //radio de colisión
+            20, //radio de visión
+            5, //velocidad
+            10, //velocidad máxima
+            3, //aceleración
+            5, //aceleración máxima
+            1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+            )
+        return jugadorNuevo;
+    }
 
     async generarTropas() {
         const texture = await PIXI.Assets.load("imagenes/posible_puntero_2.png");
