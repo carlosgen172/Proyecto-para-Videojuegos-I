@@ -4,9 +4,8 @@ class ObjetoDinamico extends GameObject {
     velocidadMaxima;
     aceleracionMaxima;
 
-    constructor(x, y, juego, juegoPrincipal, width, height) {
+    constructor(x, y, juego, width, height) {
         super(x, y, juego);
-        this.juegoPrincipal = juegoPrincipal
         this.width = width;
         this.height = height;
     }
@@ -24,7 +23,7 @@ class ObjetoDinamico extends GameObject {
             * - FPS bajos (15): deltaTime ≈ 4 → limitado a 3
             * - Esto previene saltos extremos en la simulación física
         */
-        const deltaTime = Math.min(this.juego.ticker.deltaTime, 3);
+        const deltaTime = Math.min(this.juego.pixiApp.ticker.deltaTime, 3);
 
         //Aplicamos y limitamos las fuerzas acumuladas:
         this.limitarAceleracion();

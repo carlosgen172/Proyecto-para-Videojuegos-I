@@ -2,8 +2,8 @@ class Enemigo extends ObjetoDinamico {
     sprite;
     enemigoDeBandoContrario;
     distanciaParaLlegar = 300;
-    constructor(x, y, juego, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
-        super(x, y, juego, juegoPrincipal, width, height);
+    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
+        super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
         this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
@@ -33,7 +33,7 @@ class Enemigo extends ObjetoDinamico {
         this.sprite.scale.x = this.scaleX;
 
         //Añadir el sprite dentro del stage:
-        this.juego.stage.addChild(this.sprite);
+        this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
     actualizarPosDelSpriteSegunPosDelObjeto(){
@@ -42,7 +42,7 @@ class Enemigo extends ObjetoDinamico {
     }
 
     aplicarFisicaNueva() {
-          /**
+        /**
             * SISTEMA DE FÍSICA ESTABLE CON DELTATIME
             
             * Limitamos deltaTime para evitar inestabilidad cuando los FPS bajan:
@@ -50,7 +50,7 @@ class Enemigo extends ObjetoDinamico {
             * - FPS bajos (15): deltaTime ≈ 4 → limitado a 3
             * - Esto previene saltos extremos en la simulación física
         */
-        const deltaTime = Math.min(this.juego.ticker.deltaTime, 3);
+        const deltaTime = Math.min(this.juego.pixiApp.ticker.deltaTime, 3);
 
         //Aplicamos y limitamos las fuerzas acumuladas:
         this.limitarAceleracion();

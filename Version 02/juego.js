@@ -80,17 +80,17 @@ class Juego {
     agregarInteractividadDelMouse() {
      // Escuchar el evento mousemove
     this.pixiApp.canvas.onmousemove = (event) => {
-      this.mouse.posicion = this.convertirCoordenadaDelMouse(event.x, event.y);
+    this.mouse.posicion = this.convertirCoordenadaDelMouse(event.x, event.y);
     };
 
     this.pixiApp.canvas.onmousedown = (event) => {
-      this.mouse.down = this.convertirCoordenadaDelMouse(event.x, event.y);
-      this.mouse.apretado = true;
+    this.mouse.down = this.convertirCoordenadaDelMouse(event.x, event.y);
+    this.mouse.apretado = true;
     };
     this.pixiApp.canvas.onmouseup = (event) => {
-      this.mouse.up = this.convertirCoordenadaDelMouse(event.x, event.y);
-      this.mouse.apretado = false;
-      this.menu.realizarPresentacion()
+    this.mouse.up = this.convertirCoordenadaDelMouse(event.x, event.y);
+    this.mouse.apretado = false;
+    this.menu.realizarPresentacion()
     }
     }
 
@@ -116,8 +116,7 @@ class Juego {
                 //posXRandom, //posición x
                 posX, //posición x
                 posYRandom, //posición y
-                this.pixiApp, //juego
-                this, //juego Principal
+                this, //juego 
                 32, //ancho
                 32, //alto
                 texture, //textura
@@ -253,7 +252,6 @@ class Juego {
                 //posXRandom, //posición x
                 posX, //posición x
                 posYRandom, //posición y
-                this.pixiApp, //juego
                 this, //juego Principal
                 32, //ancho
                 32, //alto

@@ -2,8 +2,8 @@ class Aliado extends ObjetoDinamico {
     sprite;
     enemigo;
     distanciaParaLlegar = 300;
-    constructor(x, y, juego, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
-        super(x, y, juego, juegoPrincipal, width, height);
+    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
+        super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
         this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
@@ -33,7 +33,7 @@ class Aliado extends ObjetoDinamico {
         this.sprite.scale.x = this.scaleX;
 
         //Añadir el sprite dentro del stage:
-        this.juego.stage.addChild(this.sprite);
+        this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
     actualizarPosDelSpriteSegunPosDelObjeto(){
@@ -74,6 +74,11 @@ class Aliado extends ObjetoDinamico {
     }
 
     tick() {
+        let tengoAlgunEnemigoAdelante = false;
+        for (const enemigo in this.juego.enemigos) {
+            //const distanciaDeEnemigo = calcularDistancia(this.posicion, enemigo.posicion)
+            console.log(enemigo);
+        }
         this.render();
     }
 }
