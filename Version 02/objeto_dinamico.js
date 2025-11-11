@@ -1,3 +1,4 @@
+//todos los objetos dinamicos tienen que tener vida
 class ObjetoDinamico extends GameObject {
     radioColision;
     radioVision;
@@ -8,6 +9,7 @@ class ObjetoDinamico extends GameObject {
         super(x, y, juego);
         this.width = width;
         this.height = height;
+        this.vida = 100;
     }
     /*
     generarSpriteDe(unSprite) {
@@ -47,6 +49,17 @@ class ObjetoDinamico extends GameObject {
         // atan2(y,x) nos da el ángulo en radianes del vector velocidad
         this.calcularAnguloDeMovimiento();
     }
+
+    pegar(unEnemigo) {
+        unEnemigo.vida -= this.verCuantaFuerzaTengo();
+        console.log("le pegue a", unEnemigo, "y le saque", this.verCuantaFuerzaTengo(), "de vida");
+    }
+
+    verCuantaFuerzaTengo() {
+        return 10;
+    }
+
+
 
     calcularAnguloDeMovimiento() {
         this.angulo = radianesAGrados(

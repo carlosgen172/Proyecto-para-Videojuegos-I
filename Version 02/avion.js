@@ -1,6 +1,6 @@
 class Avion extends ObjetoDinamico {
-    constructor (x, y, juego, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
-        super(x, y, juego, juegoPrincipal, width, height);
+    constructor (x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
+        super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
         this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame

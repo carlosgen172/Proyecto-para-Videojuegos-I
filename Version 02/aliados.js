@@ -74,16 +74,22 @@ class Aliado extends ObjetoDinamico {
 
     tick() {
         let tengoAlgunEnemigoAdelante = false;
+        let enemigoMasCerca = null;
         for (const enemigo of this.juego.enemigos) {
             const distanciaDeEnemigo = calcularDistancia(this.posicion, enemigo.posicion)
             if (distanciaDeEnemigo < 50) {
                 tengoAlgunEnemigoAdelante = true;
+                enemigoMasCerca = enemigo;
                 break;
             }
         }
         if (!tengoAlgunEnemigoAdelante) {
             this.aceleracion.x = 1;
         }
+        else {
+            this.pegar(enemigoMasCerca);
+        }
+    
         this.aplicarFisica();
         this.render();
     }
