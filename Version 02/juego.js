@@ -246,7 +246,7 @@ class Juego {
         //console.log(texture)
         for(let i = 0; i < 5; i++){
             //const posXRandom = Math.floor(Math.random() * this.width)
-            const posX = this.width + 10
+            const posX = this.width - 10
             const posYRandom = Math.floor(Math.random() * this.height) 
             const enemigoNuevo = new Enemigo(
                 //posXRandom, //posición x

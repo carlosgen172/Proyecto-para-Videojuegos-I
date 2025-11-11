@@ -5,8 +5,8 @@ class ObjetoDinamico extends GameObject {
     velocidadMaxima;
     aceleracionMaxima;
 
-    constructor(x, y, juego, width, height) {
-        super(x, y, juego);
+    constructor(x, y, juegoPrincipal, width, height) {
+        super(x, y, juegoPrincipal);
         this.width = width;
         this.height = height;
         this.vida = 100;

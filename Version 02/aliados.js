@@ -77,7 +77,7 @@ class Aliado extends ObjetoDinamico {
         let enemigoMasCerca = null;
         for (const enemigo of this.juego.enemigos) {
             const distanciaDeEnemigo = calcularDistancia(this.posicion, enemigo.posicion)
-            if (distanciaDeEnemigo < 50) {
+            if (distanciaDeEnemigo < Math.random() * 300) {
                 tengoAlgunEnemigoAdelante = true;
                 enemigoMasCerca = enemigo;
                 break;
