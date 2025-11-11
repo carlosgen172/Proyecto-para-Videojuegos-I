@@ -59,6 +59,24 @@ class ObjetoDinamico extends GameObject {
         return 10;
     }
 
+    recibirDañoDe(unEnemigo) {
+        // if (!this.verificarSiEstoyMuerto()) {
+        if (!this.estoyMuerto()) {
+            this.vida -= unEnemigo.verCuantaFuerzaTengo()
+        }
+    }
+
+    // verificarSiEstoyMuerto() {
+    estoyMuerto() {
+        return (this.vida <= 0) 
+    }
+
+    morir() {
+        //aca se debería ver, pq cuando se elimine el objeto de la lista de aliados/enemigos/aviones/objetosEstáticos, 
+        // ¿cómo verificamos que este NO siga preguntando si está vivo o muerto?
+        //quizás habría que verificar que el objeto realmente existe en la lista?
+        //sea como sea, aún no se aclara aquí.
+    }
 
 
     calcularAnguloDeMovimiento() {

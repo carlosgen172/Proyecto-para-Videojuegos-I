@@ -15,7 +15,9 @@ class Aliado extends ObjetoDinamico {
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
 
+        this.generarNombreAleatorio();
         this.generarSpriteDe(sprite);
+        console.log(this.nombreCompleto, "se ha generado.")
     }
 
     generarSpriteDe(unSprite) {
@@ -43,6 +45,17 @@ class Aliado extends ObjetoDinamico {
 
     asignarTargetA(alguien) {
         this.enemigo = alguien
+    }
+
+    generarNombreAleatorio() {
+        const nombreAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.nombres)
+        const apellidoAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.apellidos)
+        this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
+    }
+
+    morir() {
+        this.juegoPrincipal.eliminarElElemento_DeLaLista_(this, this.juegoPrincipal.aliados)
+        console.log("yo", this ,"he morido :C")
     }
 
     // detenerAlEncontrarEnemigo() {
@@ -73,6 +86,11 @@ class Aliado extends ObjetoDinamico {
     }
 
     tick() {
+
+        // if (this.estoyMuerto()) { (incompleto)
+        //     this.morir()
+        // }
+        //while (!this.estoyMuerto() ){ (No funciona bien, cuelga la página)
         let tengoAlgunEnemigoAdelante = false;
         let enemigoMasCerca = null;
         for (const enemigo of this.juego.enemigos) {
@@ -92,5 +110,6 @@ class Aliado extends ObjetoDinamico {
     
         this.aplicarFisica();
         this.render();
+    //}
     }
 }

@@ -30,7 +30,7 @@ class Avion extends ObjetoDinamico {
         this.sprite.scale.x = this.scaleX;
 
         //Añadir el sprite dentro del stage:
-        this.juego.stage.addChild(this.sprite);
+        this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
     actualizarPosDelSpriteSegunPosDelObjeto(){
@@ -42,7 +42,7 @@ class Avion extends ObjetoDinamico {
         //if(this.posicion.x >= this.screen.width) {
             
         //}
-        return(this.posicion >= (this.juego.screen.width + 50))
+        return(this.posicion >= (this.juego.width + 50))
     }
 
     encontrarEnemigoMásActual() {
@@ -61,12 +61,14 @@ class Avion extends ObjetoDinamico {
 
     render() {
         this.actualizarPosDelSpriteSegunPosDelObjeto();
-        this.aplicarFisica();
-        this.terminoViaje();
         this.actualizarZindex();
     }
 
     tick() {
+        if (this.estoyMuerto()) return;
+        this.aceleracion.x = 1;
+        this.terminoViaje();
+        this.aplicarFisica();
         this.render();
     }
 }

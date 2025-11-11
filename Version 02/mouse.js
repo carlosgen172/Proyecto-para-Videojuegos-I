@@ -33,7 +33,7 @@ class Mouse extends GameObject {
         this.sprite.width = this.width;
         this.sprite.height = this.height;
 
-        this.juego.stage.addChild(this.sprite);
+        this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
     cambiarSpriteSegunAccion() {
@@ -46,7 +46,7 @@ class Mouse extends GameObject {
         //if (this.juego.containerPrincipal.x == undefined) return console.warn("error inutil");
         //else if (this.juego.containerPrincipal.y == undefined) return;
         
-        this.juego.stage.on('pointermove', (event) => {
+        this.juego.pixiApp.stage.on('pointermove', (event) => {
             this.sprite.position.x = event.data.global.x;
             this.sprite.position.y = event.data.global.y;
             this.posicion.x = this.sprite.position.x;

@@ -1,3 +1,4 @@
+//import {baseNombres, baseApellidos} from 'baseNombresYApellidos.js'; (No funciona)
 class Juego {
     pixiApp;
     width;
@@ -11,12 +12,17 @@ class Juego {
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
     //poderActual = poderes[0]
-    
+    nombres = ["Arturo", "Ariel", "Carlos", "Juan", "Jose", "Joseías", "Marcos", "Lionel"]
+    apellidos = ["Aguiar", "Arnez", "Genisetto", "Jose", "Potter", "Rodriguez", "Villalva"]
+
     constructor(){
         this.width = 500;
         this.height = 350;
         
         this.mouse = {posicion: {x: 0, y: 0}};
+        
+        // this.nombres = baseNombres
+        // this.apellidos = baseApellidos
         this.initPIXI();
     }
 
@@ -71,7 +77,7 @@ class Juego {
             32,
             this.mouse.posicion.x,
             this.mouse.posicion.y,
-            this.pixiApp,
+            //this.pixiApp,
             this,
             texture
         )
@@ -311,7 +317,6 @@ class Juego {
                 //posXRandom, //posición x
                 posX, //posición x
                 posYRandom, //posición y
-                this.pixiApp, //juego
                 this, //juego Principal
                 64, //ancho
                 64, //alto
@@ -395,6 +400,27 @@ class Juego {
         for (let unEnemigo of this.enemigos) {
             unEnemigo.tick()
         }
+    }
+
+    existeElElemento_EnLaLista_(unElemento, unaLista){
+        return(unaLista.includes(unElemento))
+    }
+
+    indiceDeElemento_EnLaLista_(unElemento, unaLista) {
+        if(this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
+            return (unaLista.indexOf(unElemento))
+        }
+    }
+
+    eliminarElElemento_DeLaLista_(unElemento, unaLista) {
+        if(this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
+            unaLista.splice(this.indiceDeElemento_EnLaLista_(unElemento, unaLista), 1)
+        }
+    }
+
+    seleccionarElementoAleatorioDe_(unaLista) {
+        const indiceAleatorio = Math.floor(Math.random() * unaLista.length);
+        return unaLista[indiceAleatorio];
     }
 
     gameLoop(time) {

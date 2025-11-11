@@ -15,7 +15,9 @@ class Enemigo extends ObjetoDinamico {
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
 
+        this.generarNombreAleatorio();
         this.generarSpriteDe(sprite);
+        console.log(this.nombreCompleto, "se ha generado.")
     }
 
     generarSpriteDe(unSprite) {
@@ -39,6 +41,12 @@ class Enemigo extends ObjetoDinamico {
     actualizarPosDelSpriteSegunPosDelObjeto(){
         this.sprite.x = this.posicion.x;
         this.sprite.y = this.posicion.y;
+    }
+
+    generarNombreAleatorio() {
+        const nombreAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.nombres)
+        const apellidoAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.apellidos)
+        this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
     }
 
     // aplicarFisicaNueva() {
