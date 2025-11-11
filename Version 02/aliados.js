@@ -45,40 +45,46 @@ class Aliado extends ObjetoDinamico {
         this.enemigo = alguien
     }
 
-    detenerAlEncontrarEnemigo() {
-        if (!this.enemigo) return ;
-        if (!this.enemigo in this.juego.enemigos) return ;
-        const distanciaDeEnemigo = calcularDistancia(this, this.enemigo)
-        if(distanciaDeEnemigo > this.radioVision) return ;
+    // detenerAlEncontrarEnemigo() {
+    //     if (!this.enemigo) return ;
+    //     if (!this.enemigo in this.juego.enemigos) return ;
+    //     const distanciaDeEnemigo = calcularDistancia(this, this.enemigo)
+    //     if(distanciaDeEnemigo > this.radioVision) return ;
 
-        // Decaimiento exponencial: va de 1 a 0 a medida que se acerca
-        let factor = Math.pow(dist / this.distanciaParaLlegar, 3);
+    //     // Decaimiento exponencial: va de 1 a 0 a medida que se acerca
+    //     let factor = Math.pow(dist / this.distanciaParaLlegar, 3);
 
-        const difX = this.target.posicion.x - this.posicion.x;
-        const difY = this.target.posicion.y - this.posicion.y;
+    //     const difX = this.target.posicion.x - this.posicion.x;
+    //     const difY = this.target.posicion.y - this.posicion.y;
 
-        let vectorTemporal = {
-            x: -difX,
-            y: -difY,
-        };
-        vectorTemporal = limitarVector(vectorTemporal, 1);
+    //     let vectorTemporal = {
+    //         x: -difX,
+    //         y: -difY,
+    //     };
+    //     vectorTemporal = limitarVector(vectorTemporal, 1);
 
-        this.aceleracion.x += -vectorTemporal.x * factor;
+    //     this.aceleracion.x += -vectorTemporal.x * factor;
 
-        this.aplicarFriccion()
-    }
+    //     this.aplicarFriccion()
+    // } no funka
 
     render() {
         this.actualizarPosDelSpriteSegunPosDelObjeto()
-        this.aplicarFisica();
     }
 
     tick() {
         let tengoAlgunEnemigoAdelante = false;
-        for (const enemigo in this.juego.enemigos) {
-            //const distanciaDeEnemigo = calcularDistancia(this.posicion, enemigo.posicion)
-            console.log(enemigo);
+        for (const enemigo of this.juego.enemigos) {
+            const distanciaDeEnemigo = calcularDistancia(this.posicion, enemigo.posicion)
+            if (distanciaDeEnemigo < 50) {
+                tengoAlgunEnemigoAdelante = true;
+                break;
+            }
         }
+        if (!tengoAlgunEnemigoAdelante) {
+            this.aceleracion.x = 1;
+        }
+        this.aplicarFisica();
         this.render();
     }
 }
