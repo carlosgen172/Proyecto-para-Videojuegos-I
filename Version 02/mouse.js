@@ -28,10 +28,12 @@ class Mouse extends GameObject {
         //this.sprite.y = this.juego.mouse.posicion.y;
         this.sprite.x = this.x;
         this.sprite.y = this.y;
+        this.sprite.zIndex = 3000;
 
         //Ajuste de tamaño
         this.sprite.width = this.width;
         this.sprite.height = this.height;
+
 
         this.juego.pixiApp.stage.addChild(this.sprite);
     }

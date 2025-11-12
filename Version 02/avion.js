@@ -65,7 +65,8 @@ class Avion extends ObjetoDinamico {
     }
 
     tick() {
-        if (this.estoyMuerto()) return;
+        //if (this.estoyMuerto()) return;
+        if (this.estoyMuerto) return;
         this.aceleracion.x = 1;
         this.terminoViaje();
         this.aplicarFisica();

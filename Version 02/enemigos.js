@@ -14,10 +14,12 @@ class Enemigo extends ObjetoDinamico {
 
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
+        this.fuerza = 5;
 
         this.generarNombreAleatorio();
         this.generarSpriteDe(sprite);
-        console.log(this.nombreCompleto, "se ha generado.")
+        // console.log(this.nombreCompleto, "se ha generado.")
+        console.log(this.nombreCompleto, "se ha generado, siendo un " , this.constructor.name ," con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
     generarSpriteDe(unSprite) {
@@ -110,11 +112,21 @@ class Enemigo extends ObjetoDinamico {
     //     this.aplicarFriccion()
     // }
 
+    morir() {
+        if (this.estoyMuerto) return;
+        console.log("yo,", this.nombreCompleto ,", he morido como un malo maloso >:C")
+        this.juego.enemigos = this.juego.enemigos.filter((p) => p !== this);
+        this.estoyMuerto = true
+    }
+
     render() {
         this.actualizarPosDelSpriteSegunPosDelObjeto()
     }
 
     tick() {
+        if (this.estoyMuerto) return;
+            this.verificarSiMori();
+        
         let tengoAlgunEnemigoAdelante = false;
         let enemigoMasCerca = null;
         for (const aliado of this.juego.aliados) {
@@ -128,6 +140,7 @@ class Enemigo extends ObjetoDinamico {
         if (!tengoAlgunEnemigoAdelante) {
             this.aceleracion.x = -1;
         }
+        // else if (this.puedeGolpear()) {
         else {
             this.pegar(enemigoMasCerca);
         }

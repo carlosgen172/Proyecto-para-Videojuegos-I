@@ -1,4 +1,3 @@
-//todos los objetos dinamicos tienen que tener vida
 class ObjetoDinamico extends GameObject {
     radioColision;
     radioVision;
@@ -7,18 +6,78 @@ class ObjetoDinamico extends GameObject {
     vida;
     fuerza;
 
+    //CONSTRUCTOR/INICIADOR:
+
     constructor(x, y, juegoPrincipal, width, height) {
         super(x, y, juegoPrincipal);
         this.width = width;
         this.height = height;
         this.vida = 100;
-        this.fuerza = 10;
+        //this.fuerza = 10;
+        this.delayAtaque = 500;
+        this.nivelesDeIra = [1, 2, 3, 4, 5]
+        this.nivelDeIraReal = this.juego.seleccionarElementoAleatorioDe_(this.nivelesDeIra)
+        this.estoyMuerto = false;
     }
     /*
     generarSpriteDe(unSprite) {
         //Aún no se genera un sprite
     }
     */
+
+    //SISTEMA DE PELEA:
+
+    puedeGolpear() {
+        return(performance.now > this.delayAtaque + this.ultimoGolpe)
+    }
+
+    pegar(unEnemigo) {
+        //unEnemigo.vida -= this.verCuantaFuerzaTengo();
+        unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
+        console.log("Le di una piña a", unEnemigo.nombreCompleto, ", sacándole", this.verCuantaFuerzaTengo(), "de vida, y dejándolo a", unEnemigo.vida, "de vida.");
+        // console.log("y quedó con", unEnemigo.vida, "de vida.");
+        if (unEnemigo.vida == 0) {
+            console.log("Yo,", this.nombreCompleto, "di de baja exitósamente a", unEnemigo.nombreCompleto, ".")
+        }
+        this.ultimoGolpe = performance.now();
+    }
+
+    verCuantaFuerzaTengo() {
+        //return 10;
+        return this.fuerza * this.nivelDeIraReal
+    }
+
+    recibirDañoDe(unEnemigo) {
+        // if (!this.verificarSiEstoyMuerto()) {
+        //if (!this.estoyMuerto()) {
+        if (this.estoyMuerto) return;
+        // this.vida -= unEnemigo.verCuantaFuerzaTengo()
+        //this.vida = (this.vida - unEnemigo.verCuantaFuerzaTengo()).max(0)
+        this.vida = Math.max(this.vida - unEnemigo.verCuantaFuerzaTengo(), 0)
+        //}
+    }
+
+
+    //SISTEMA DE VERIFICACIÓN DE MUERTE:
+
+    // verificarSiEstoyMuerto() {
+    // estoyMuerto() {
+    //     return (this.vida <= 0) 
+    // }    
+
+    verificarSiMori(){
+        if (this.vida <= 0) {
+            this.morir();
+            return ;
+        }
+    }
+
+    morir() {
+        //aún no se plantea dentro del objeto dinámico (funciona distinto según aliado o enemigo)
+    }
+
+    //SISTEMA DE FÍSICA:
+
     aplicarFisica() {
             /**
             * SISTEMA DE FÍSICA ESTABLE CON DELTATIME
@@ -52,35 +111,6 @@ class ObjetoDinamico extends GameObject {
         // atan2(y,x) nos da el ángulo en radianes del vector velocidad
         this.calcularAnguloDeMovimiento();
     }
-
-    pegar(unEnemigo) {
-        unEnemigo.vida -= this.verCuantaFuerzaTengo();
-        console.log("le pegue a", unEnemigo, "y le saque", this.verCuantaFuerzaTengo(), "de vida");
-    }
-
-    verCuantaFuerzaTengo() {
-        return 10;
-    }
-
-    recibirDañoDe(unEnemigo) {
-        // if (!this.verificarSiEstoyMuerto()) {
-        if (!this.estoyMuerto()) {
-            this.vida -= unEnemigo.verCuantaFuerzaTengo()
-        }
-    }
-
-    // verificarSiEstoyMuerto() {
-    estoyMuerto() {
-        return (this.vida <= 0) 
-    }
-
-    morir() {
-        //aca se debería ver, pq cuando se elimine el objeto de la lista de aliados/enemigos/aviones/objetosEstáticos, 
-        // ¿cómo verificamos que este NO siga preguntando si está vivo o muerto?
-        //quizás habría que verificar que el objeto realmente existe en la lista?
-        //sea como sea, aún no se aclara aquí.
-    }
-
 
     calcularAnguloDeMovimiento() {
         this.angulo = radianesAGrados(
@@ -131,10 +161,13 @@ class ObjetoDinamico extends GameObject {
         this.velocidad.y *= friccionAplicada;
     }
 
+    //SISTEMA DE RENDERIZADO:
+
     render() {
         //aún no se hace nada
     }
 
+    //SISTEMA DE ACTUALIZACIÓN DE PROPIEDADES Y ACCIONARES DE LA INSTANCIA.
     tick() {
         this.render();
     }

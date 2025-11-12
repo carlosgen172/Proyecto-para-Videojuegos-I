@@ -39,7 +39,7 @@ class Menu extends GameObject {
         this.generarTexto();
         //this.textoActual.interactive = true
         console.log("texto a mostrar:", this.textoActual)
-        this.textoActual.zIndex = 300000
+        this.textoActual.zIndex = 2900
 
         //console.log("indice actual",indiceActual)
     }

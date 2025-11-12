@@ -11,13 +11,16 @@ class Aliado extends ObjetoDinamico {
         this.aceleracion = { x: aceleracion, y: aceleracion}; // Aceleración en píxeles/frame²
         this.acelMaxima = acelMaxima;
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
+        this.fuerza = 10;
 
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
 
+        //this.estoyMuerto = false
+
         this.generarNombreAleatorio();
         this.generarSpriteDe(sprite);
-        console.log(this.nombreCompleto, "se ha generado.")
+        console.log(this.nombreCompleto, "se ha generado, siendo un " , this.constructor.name ," con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
     generarSpriteDe(unSprite) {
@@ -53,10 +56,25 @@ class Aliado extends ObjetoDinamico {
         this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
     }
 
+    // morir() {
+    //     this.juegoPrincipal.eliminarElElemento_DeLaLista_(this, this.juegoPrincipal.aliados)
+    //     console.log("yo", this ,"he morido :C")
+    // }
+
+    // verificarSiMori(){
+    //     if (this.vida <= 0) {
+    //         this.morir();
+    //         return ;
+    //     }
+    // }
+
     morir() {
-        this.juegoPrincipal.eliminarElElemento_DeLaLista_(this, this.juegoPrincipal.aliados)
-        console.log("yo", this ,"he morido :C")
+        if (this.estoyMuerto) return;
+        console.log("yo,", this.nombreCompleto ,", he morido como un héroe :C")
+        this.juego.aliados = this.juego.aliados.filter((p) => p !== this);
+        this.estoyMuerto = true
     }
+
 
     // detenerAlEncontrarEnemigo() {
     //     if (!this.enemigo) return ;
@@ -81,7 +99,6 @@ class Aliado extends ObjetoDinamico {
     //     this.aplicarFriccion()
     // } no funka
 
-
     
 
     render() {
@@ -90,6 +107,8 @@ class Aliado extends ObjetoDinamico {
 
     tick() {
 
+        if (this.estoyMuerto) return;
+            this.verificarSiMori();
         // if (this.estoyMuerto()) { (incompleto)
         //     this.morir()
         // }
@@ -107,6 +126,7 @@ class Aliado extends ObjetoDinamico {
         if (!tengoAlgunEnemigoAdelante) {
             this.aceleracion.x = 1;
         }
+        //else if (this.puedeGolpear()) {
         else {
             this.pegar(enemigoMasCerca);
         }

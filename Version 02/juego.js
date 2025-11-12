@@ -12,8 +12,8 @@ class Juego {
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
     //poderActual = poderes[0]
-    nombres = ["Arturo", "Ariel", "Carlos", "Juan", "Jose", "Joseías", "Marcos", "Lionel"]
-    apellidos = ["Aguiar", "Arnez", "Genisetto", "Jose", "Potter", "Rodriguez", "Villalva"]
+    nombres = ["Angel", "Arturo", "Ariel", "Elian", "Federico", "Juan", "Jose", "Joseías", "Marcos", "Mauricio", "Lionel", "Omar"]
+    apellidos = ["Aguiar", "Bautista", "Jose", "Potter", "Rodriguez", "Villalva", "Zapata"]
 
     constructor(){
         this.width = 700;
@@ -393,6 +393,8 @@ class Juego {
     }
     */
 
+    //SISTEMA DE TICK PARA LISTAS DE OBJETOS:
+
     realizarTickPorCadaAvion() {
         for (let unAvion of this.aviones) {
             unAvion.tick();
@@ -411,6 +413,7 @@ class Juego {
         }
     }
 
+    //FUNCIONES DE BÚSQUEDA Y ELIMINACIÓN DE ELEMENTOS (NO funciona correctamente):
     existeElElemento_EnLaLista_(unElemento, unaLista){
         return(unaLista.includes(unElemento))
     }
@@ -434,6 +437,7 @@ class Juego {
         return unaLista[indiceAleatorio];
     }
 
+    //No funciona, reemplazado por otro código:
     verificacionDeVidaAliados() {
         for (let aliado of this.aliados) {
             if (aliado.estoyMuerto()) {
@@ -457,8 +461,8 @@ class Juego {
         this.realizarTickPorCadaAliado()
         this.realizarTickPorCadaEnemigo()
         this.realizarTickPorCadaAvion()
-        this.verificacionDeVidaAliados()
-        this.verificacionDeVidaEnemigos()
+        //this.verificacionDeVidaAliados()
+        //this.verificacionDeVidaEnemigos()
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
