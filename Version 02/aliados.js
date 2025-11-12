@@ -81,6 +81,9 @@ class Aliado extends ObjetoDinamico {
     //     this.aplicarFriccion()
     // } no funka
 
+
+    
+
     render() {
         this.actualizarPosDelSpriteSegunPosDelObjeto()
     }

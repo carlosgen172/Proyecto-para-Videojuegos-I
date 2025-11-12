@@ -4,12 +4,15 @@ class ObjetoDinamico extends GameObject {
     radioVision;
     velocidadMaxima;
     aceleracionMaxima;
+    vida;
+    fuerza;
 
     constructor(x, y, juegoPrincipal, width, height) {
         super(x, y, juegoPrincipal);
         this.width = width;
         this.height = height;
         this.vida = 100;
+        this.fuerza = 10;
     }
     /*
     generarSpriteDe(unSprite) {

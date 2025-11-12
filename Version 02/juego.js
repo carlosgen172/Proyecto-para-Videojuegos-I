@@ -16,8 +16,8 @@ class Juego {
     apellidos = ["Aguiar", "Arnez", "Genisetto", "Jose", "Potter", "Rodriguez", "Villalva"]
 
     constructor(){
-        this.width = 500;
-        this.height = 350;
+        this.width = 700;
+        this.height = 500;
         
         this.mouse = {posicion: {x: 0, y: 0}};
         
@@ -30,11 +30,20 @@ class Juego {
         const preconfiguraciones = {
             background: "#043100ff",
             width: this.width,
-            height: this.height
+            height: this.height,
+            resolution: window.devicePixelRatio || 1,
+            autoDensity: true,
+            antialias: true,
         }
 
         this.pixiApp = new PIXI.Application(preconfiguraciones);
         await this.pixiApp.init(preconfiguraciones);
+
+        document.body.style.display = "flex";
+        document.body.style.justifyContent = "center";
+        document.body.style.alignItems = "center";
+        document.body.style.height = "100vh";
+        document.body.style.margin = "0";
 
         this.pixiApp.renderer.canvas.style.position = "absolute";
 
@@ -151,7 +160,7 @@ class Juego {
         this.botonDer = new BotonHevilla(
             50, //ancho (es NaN, hace falta revisar porque :o )
             50, //alto
-            291, //x
+            (this.width / 2) + 45, //x
             25, //y
             texturaDer, //sprite
             texturaDerPres, //textura
@@ -161,7 +170,7 @@ class Juego {
         this.botonIzq = new BotonHevilla(
             50, //ancho
             50, //alto
-            209, //x
+            (this.width / 2) - 45, //x
             25, //y
             texturaIzq, //sprite
             texturaIzqPres, //textura
@@ -223,11 +232,11 @@ class Juego {
 
 
         //Ajuste de ubicacion
-        this.hud.x = 250
+        this.hud.x = this.width / 2
         this.hud.y = 25
 
         //Ajuste de tamaño
-        this.hud.width = this.width;
+        this.hud.width = 500;
         this.hud.height = 50;
 
         this.hud.zIndex = 1000;
@@ -407,9 +416,11 @@ class Juego {
     }
 
     indiceDeElemento_EnLaLista_(unElemento, unaLista) {
+        let indice = null;
         if(this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
-            return (unaLista.indexOf(unElemento))
+            indice = unaLista.indexOf(unElemento);
         }
+        return indice;
     }
 
     eliminarElElemento_DeLaLista_(unElemento, unaLista) {
@@ -423,6 +434,22 @@ class Juego {
         return unaLista[indiceAleatorio];
     }
 
+    verificacionDeVidaAliados() {
+        for (let aliado of this.aliados) {
+            if (aliado.estoyMuerto()) {
+                aliado.morir();
+            }
+        }
+    }
+
+    verificacionDeVidaEnemigos() {
+        for (let enemigo of this.enemigos) {
+            if (enemigo.estoyMuerto()) {
+                enemigo.morir();
+            }
+        }
+    }
+
     gameLoop(time) {
         this.mouse.tick()
         //console.log(this.menu)
@@ -430,6 +457,8 @@ class Juego {
         this.realizarTickPorCadaAliado()
         this.realizarTickPorCadaEnemigo()
         this.realizarTickPorCadaAvion()
+        this.verificacionDeVidaAliados()
+        this.verificacionDeVidaEnemigos()
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
