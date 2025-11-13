@@ -9,6 +9,8 @@ class Juego {
     aliados = [];
     enemigos = [];
     aviones = [];
+    poderes = [];
+    //poderActual = null;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
     //poderActual = poderes[0]
@@ -58,15 +60,24 @@ class Juego {
         await this.generarMouse();
         await this.generarMenu();
         this.generarTropas();
+        //this.poderes = [];
         //await this.generarAvion();
         await this.cargarFondoHUD();
+        await this.generarPoderAliados();
+        await this.generarPoderBombas();
+        await this.generarPoderEnemigos();
         await this.generarBotonesDelHUD();
+        await this.generarBarraSalud();
+        this.poderActual = this.poderes[0];
+        console.log("poder actual dentro de la clase juego:", this.poderActual)
         this.containerPrincipal = new PIXI.Container();
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
         
     }
 
+
+    //GENERADOR (AÚN EXPERIMENTAL):
     async crearGenerador() {
         this.generadorPrincipal = new Generador(
             0,
@@ -75,6 +86,8 @@ class Juego {
             this
         )
     }
+
+    //FUNCIONES DEL MOUSE:
 
     async generarMouse() {
         //aquí se genera el mouse.
@@ -120,67 +133,8 @@ class Juego {
         };
     }
 
-    async generarTropas() {
-        const texture = await PIXI.Assets.load("imagenes/posible_puntero_2.png");
-        //console.log(texture)
-        for(let i = 0; i < 5; i++){
-            //const posXRandom = Math.floor(Math.random() * this.width)
-            const posX = -10
-            const posYRandom = Math.floor(Math.random() * this.height) 
-            const aliadoNuevo = new Aliado(
-                //posXRandom, //posición x
-                posX, //posición x
-                posYRandom, //posición y
-                this, //juego 
-                32, //ancho
-                32, //alto
-                texture, //textura
-                15, //radio de colisión
-                20, //radio de visión
-                5, //velocidad
-                10, //velocidad máxima
-                3, //aceleración
-                5, //aceleración máxima
-                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
-            )
-            this.aliados.push(aliadoNuevo)
-        }
-    }
-
-    async generarBotonesDelHUD() {
-        const texturaDer = await PIXI.Assets.load("imagenes/hevilla_der_final_real.png");
-        const texturaDerPres = await PIXI.Assets.load("imagenes/hevilla_der_pres_final_real.png");
-        const texturaIzq = await PIXI.Assets.load("imagenes/hevilla_izq_final_real.png");
-        const texturaIzqPres = await PIXI.Assets.load("imagenes/hevilla_izq_pres_final_real.png");
-        let configBotones = { //hace falta configurar
-            //"width": 50, 
-            //"height": 50,
-            
-        }
-        this.botonDer = new BotonHevilla(
-            50, //ancho (es NaN, hace falta revisar porque :o )
-            50, //alto
-            (this.width / 2) + 45, //x
-            25, //y
-            texturaDer, //sprite
-            texturaDerPres, //textura
-            "der", //direccion
-            this.pixiApp //juego
-        )
-        this.botonIzq = new BotonHevilla(
-            50, //ancho
-            50, //alto
-            (this.width / 2) - 45, //x
-            25, //y
-            texturaIzq, //sprite
-            texturaIzqPres, //textura
-            "izq", //direccion
-            this.pixiApp //juego
-        )
-        //this.pixiApp.stage.addChild(this.botonDer);
-        //this.pixiApp.stage.addChild(this.botonIzq);
-    }
-
+    //FUNCIONES GENERADORAS DE LA INTERFAZ DE USUARIO:
+    
     async cargarBackground() {
         // Carga la imagen usando Assets.load()
         // Esto devuelve una Promise que resuelve la Textura de la imagen
@@ -219,70 +173,6 @@ class Juego {
     }
     */
 
-    async cargarFondoHUD() {
-        // Carga la imagen usando Assets.load()
-        // Esto devuelve una Promise que resuelve la Textura de la imagen
-        const texture = await PIXI.Assets.load('imagenes/hud_1.png'); // Reemplaza con la ruta de tu imagen
-
-        // Crea un Sprite a partir de la Textura cargada
-        this.hud = new PIXI.TilingSprite(texture);
-
-        //Ajuste de punto central
-        this.hud.anchor.set(0.5);
-
-
-        //Ajuste de ubicacion
-        this.hud.x = this.width / 2
-        this.hud.y = 25
-
-        //Ajuste de tamaño
-        this.hud.width = 500;
-        this.hud.height = 50;
-
-        this.hud.zIndex = 1000;
-
-        // Añade el Sprite al escenario para que se muestre en pantalla
-        this.pixiApp.stage.addChild(this.hud);
-    }
-
-    keysDown(letra){
-        this.keys[letra.key.toLowerCase()] = true;
-    }
-
-    keysUp(letra){
-        this.keys[letra.key.toLowerCase()] = false;
-        this.generarTropasEnemigasCon(letra)
-        this.generarAvionesCon(letra)
-        this.generarTropasAliadasCon(letra)
-    }
-
-    async generarTropasEnemigas() {
-        const texture = await PIXI.Assets.load("imagenes/enemigos_eliminados.png");
-        //console.log(texture)
-        for(let i = 0; i < 5; i++){
-            //const posXRandom = Math.floor(Math.random() * this.width)
-            const posX = this.width - 10
-            const posYRandom = Math.floor(Math.random() * this.height) 
-            const enemigoNuevo = new Enemigo(
-                //posXRandom, //posición x
-                posX, //posición x
-                posYRandom, //posición y
-                this, //juego Principal
-                32, //ancho
-                32, //alto
-                texture, //textura
-                15, //radio de colisión
-                20, //radio de visión
-                5, //velocidad
-                10, //velocidad máxima
-                3, //aceleración
-                5, //aceleración máxima
-                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
-            )
-            this.enemigos.push(enemigoNuevo)
-        }
-    }
-
     async generarMenu() {
         const texturaMenu = await PIXI.Assets.load("imagenes/ejemplo1.png")
         // Crea un Sprite a partir de la Textura cargada
@@ -313,6 +203,224 @@ class Juego {
             configMenu
         );
         */
+    }
+
+    async cargarFondoHUD() {
+        // Carga la imagen usando Assets.load()
+        // Esto devuelve una Promise que resuelve la Textura de la imagen
+        const texture = await PIXI.Assets.load('imagenes/hud_1.png'); // Reemplaza con la ruta de tu imagen
+
+        // Crea un Sprite a partir de la Textura cargada
+        this.hud = new PIXI.TilingSprite(texture);
+
+        //Ajuste de punto central
+        this.hud.anchor.set(0.5);
+
+
+        //Ajuste de ubicacion
+        this.hud.x = this.width / 2
+        this.hud.y = 25
+
+        //Ajuste de tamaño
+        this.hud.width = 500;
+        this.hud.height = 50;
+
+        this.hud.zIndex = 1000;
+
+        // Añade el Sprite al escenario para que se muestre en pantalla
+        this.pixiApp.stage.addChild(this.hud);
+    }
+
+    async generarPoderAliados() {
+        const texturaPoderAliados = await PIXI.Assets.load("imagenes/aliados_power_up_hud.png");
+        // let configPoder = {
+        //     "alto": 50,
+        //     "ancho": 50,
+        //     "posicion en X": this.width,
+        //     "posicion en Y": 50,
+        //     "juego": this,
+        //     "sprite": texturaPoderAliados,
+        //     "estado": "aliados"
+        // }
+
+        const poderAliados = new Poder(
+            //configPoder
+            50,
+            50, 
+            this.width/2,
+            25,
+            this,
+            texturaPoderAliados,
+            "aliados"
+        )
+        this.poderes.push(poderAliados)
+        this.poderActual = this.poderes[0];
+    }
+
+    async generarPoderBombas() {
+        const texturaPoderBombas = await PIXI.Assets.load("imagenes/bombita_power_up_hud.png");
+        // let configPoder = {
+        //     "alto": 50,
+        //     "ancho": 50,
+        //     "posicion en X": this.width,
+        //     "posicion en Y": 50,
+        //     "juego": this,
+        //     "sprite": texturaPoderAliados,
+        //     "estado": "bombas"
+        // }
+
+        const poderBombas = new Poder(
+            // configPoder
+            50,
+            50, 
+            this.width/2,
+            25,
+            this,
+            texturaPoderBombas,
+            "bombas"
+        )
+        //poderBombas.sprite.visible = false;
+        this.poderes.push(poderBombas)
+    }
+
+    async generarPoderEnemigos() {
+        const texturaPoderEnemigos = await PIXI.Assets.load("imagenes/enemigos_power_up_hud.png");
+        // let configPoder = {
+        //     "alto": 50,
+        //     "ancho": 50,
+        //     "posicion en X": this.width,
+        //     "posicion en Y": 50,
+        //     "juego": this,
+        //     "sprite": texturaPoderAliados,
+        //     "estado": "enemigos"
+        // }
+
+        const poderEnemigos = new Poder(
+            // configPoder
+            50,
+            50, 
+            this.width/2,
+            25,
+            this,
+            texturaPoderEnemigos,
+            "enemigos"
+        )
+        //poderEnemigos.sprite.visible = false;
+        this.poderes.push(poderEnemigos)
+    }
+
+    async generarBotonesDelHUD() {
+        const texturaDer = await PIXI.Assets.load("imagenes/hevilla_der_final_real.png");
+        const texturaDerPres = await PIXI.Assets.load("imagenes/hevilla_der_pres_final_real.png");
+        const texturaIzq = await PIXI.Assets.load("imagenes/hevilla_izq_final_real.png");
+        const texturaIzqPres = await PIXI.Assets.load("imagenes/hevilla_izq_pres_final_real.png");
+        let configBotones = { //hace falta configurar
+            //"width": 50, 
+            //"height": 50,
+            
+        }
+        this.botonDer = new BotonHevilla(
+            50, //ancho
+            50, //alto
+            (this.width / 2) + 45, //x
+            25, //y
+            texturaDer, //sprite
+            texturaDerPres, //textura
+            "der", //direccion
+            //this.pixiApp //juego
+            this //juego
+        )
+        this.botonIzq = new BotonHevilla(
+            50, //ancho
+            50, //alto
+            (this.width / 2) - 45, //x
+            25, //y
+            texturaIzq, //sprite
+            texturaIzqPres, //textura
+            "izq", //direccion
+            //this.pixiApp //juego
+            this //juego
+        )
+    }
+
+    async generarBarraSalud() { //funcional!
+        const texturaSaludFull = await PIXI.Assets.load("imagenes/bateria_hud_3_hit_final.png")
+        const texturaSalud2Hit = await PIXI.Assets.load("imagenes/bateria_hud_2_hit_final.png")
+        const texturaSalud1Hit = await PIXI.Assets.load("imagenes/bateria_hud_1_hit_final.png")
+        const texturaSaludVacia = await PIXI.Assets.load("imagenes/bateria_hud_vacia_final.png")
+        
+        this.bateriaVida = new BateriaVida(
+            50, //ancho
+            50, //alto
+            (this.width/5) + 10, //x
+            25, //y
+            this, //Juego
+            texturaSaludFull, //sprite1
+            texturaSalud2Hit, //sprite2
+            texturaSalud1Hit, //sprite3
+            texturaSaludVacia //sprite4
+        )
+    }
+
+    
+    //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
+    
+    async generarTropas() {
+        const texture = await PIXI.Assets.load("imagenes/posible_puntero_2.png");
+        //console.log(texture)
+        for(let i = 0; i < 5; i++){
+            //const posXRandom = Math.floor(Math.random() * this.width)
+            const posX = -10
+            const posYRandom = Math.floor(Math.random() * this.height) 
+            const aliadoNuevo = new Aliado(
+                //posXRandom, //posición x
+                posX, //posición x
+                posYRandom, //posición y
+                this, //juego 
+                32, //ancho
+                32, //alto
+                texture, //textura
+                15, //radio de colisión
+                20, //radio de visión
+                5, //velocidad
+                10, //velocidad máxima
+                3, //aceleración
+                5, //aceleración máxima
+                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+            )
+            this.aliados.push(aliadoNuevo)
+        }
+    }
+
+    async generarAliadosSiCorresponden() {
+
+    }
+
+    async generarTropasEnemigas() {
+        const texture = await PIXI.Assets.load("imagenes/enemigos_eliminados.png");
+        //console.log(texture)
+        for(let i = 0; i < 5; i++){
+            //const posXRandom = Math.floor(Math.random() * this.width)
+            const posX = this.width - 10
+            const posYRandom = Math.floor(Math.random() * this.height) 
+            const enemigoNuevo = new Enemigo(
+                //posXRandom, //posición x
+                posX, //posición x
+                posYRandom, //posición y
+                this, //juego Principal
+                32, //ancho
+                32, //alto
+                texture, //textura
+                15, //radio de colisión
+                20, //radio de visión
+                5, //velocidad
+                10, //velocidad máxima
+                3, //aceleración
+                5, //aceleración máxima
+                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+            )
+            this.enemigos.push(enemigoNuevo)
+        }
     }
 
     async generarAvion() {
@@ -361,6 +469,19 @@ class Juego {
         */
         //if (!this.ultimoAvion.terminoViaje()) return;
         //this.generarAvion()
+    }
+
+    //RESPONSIVIDAD DE GENERADORES:
+
+    keysDown(letra){
+        this.keys[letra.key.toLowerCase()] = true;
+    }
+
+    keysUp(letra){
+        this.keys[letra.key.toLowerCase()] = false;
+        this.generarTropasEnemigasCon(letra)
+        this.generarAvionesCon(letra)
+        this.generarTropasAliadasCon(letra)
     }
     
     generarTropasAliadasCon(unaTecla) {
@@ -413,6 +534,12 @@ class Juego {
         }
     }
 
+    realizarTickPorCadaPoder() {
+        for (let unPoder of this.poderes) {
+            unPoder.tick()
+        }
+    }
+
     //FUNCIONES DE BÚSQUEDA Y ELIMINACIÓN DE ELEMENTOS (NO funciona correctamente):
     existeElElemento_EnLaLista_(unElemento, unaLista){
         return(unaLista.includes(unElemento))
@@ -454,6 +581,13 @@ class Juego {
         }
     }
 
+    actualizarVisibilidadDePoderActual() {
+        this.poderesNoActuales = this.poderes.filter((p) => p != this.poderActual)
+        this.poderesNoActuales.forEach(p => {
+            p.sprite.visible = false
+        });
+    }
+
     gameLoop(time) {
         this.mouse.tick()
         //console.log(this.menu)
@@ -461,6 +595,9 @@ class Juego {
         this.realizarTickPorCadaAliado()
         this.realizarTickPorCadaEnemigo()
         this.realizarTickPorCadaAvion()
+        this.realizarTickPorCadaPoder()
+        this.bateriaVida.tick()
+        this.actualizarVisibilidadDePoderActual()
         //this.verificacionDeVidaAliados()
         //this.verificacionDeVidaEnemigos()
         //Acciones a repetirse cada frame.

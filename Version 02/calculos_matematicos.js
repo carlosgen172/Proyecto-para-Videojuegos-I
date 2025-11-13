@@ -1,3 +1,7 @@
+function esEntre(valor, min, max) {
+  return valor >= min && valor <= max;
+}
+
 function radianesAGrados(radianes) {
   return radianes * (180 / Math.PI);
 }

@@ -17,8 +17,10 @@ class BotonHevilla extends Boton {
         }
         this.spriteActual = this.sprites[1];
         //console.log(this.spriteActual);
+        //console.log("poderes del jugador: ", this.juego)
+        console.log("poder actual: ", this.juego.poderActual)
 
-        this.generarSpriteDe(urlSprite);
+        //this.generarSpriteDe(urlSprite);
         this.generarSpriteDe(this.spriteActual);
     }
 
@@ -37,6 +39,7 @@ class BotonHevilla extends Boton {
             //this.haSidoInteractuado = !this.haSidoInteractuado
             this.spriteActual = this.sprites[2];
             this.generarSpriteDe(this.spriteActual);
+            this.cambiarPoderaALaIzq();
             console.log("el sprite de la hevilla con dirección: ", this.direccion , "ha cambiado a: ", this.spriteActual);
         }
         //console.log(this.keys);
@@ -46,7 +49,8 @@ class BotonHevilla extends Boton {
         if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
             this.spriteActual = this.sprites[1];
             this.generarSpriteDe(this.spriteActual);
-            console.log("el sprite de la hevilla con dirección: ", this.direccion, "ha cambiado a: ", this.spriteActual)
+            this.cambiarPoderALaDer()
+            console.log("el sprite de la hevilla con dirección: ", this.direccion, "ha cambiado a: ", this.spriteActual.name)
        }
         /*
         if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
@@ -56,6 +60,19 @@ class BotonHevilla extends Boton {
        //console.log(this.spriteActual);
        //console.log(this.keys);
        //this.generarSpriteDe(this.spriteActual);
+    }
+    cambiarPoderaALaIzq() { //no funciona correctamente el cambiar de elemento de una lista
+        if(this.juego.poderActual == this.juego.poderes[0]) return ;
+        this.juego.poderActual = this.juego.poderes[this.juego.poderActual - 1]
+        console.log("poderes disponibles: ", this.juego.poderes)
+        console.log("poder actual:", this.juego.poderActual)
+        // this.jeugo.poderes
+    }
+    cambiarPoderALaDer() {
+        if(this.juego.poderActual == this.juego.poderes[-1]) return ;
+        this.juego.poderActual = this.juego.poderes[this.juego.poderActual + 1]
+        console.log("poderes disponibles: ", this.juego.poderes)
+        console.log("poder actual:", this.juego.poderActual)
     }
 
     tick() {

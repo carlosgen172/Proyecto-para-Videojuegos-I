@@ -38,7 +38,7 @@ class Boton extends GameObject{
         console.log(this.sprite);
 
         this.sprite.zIndex = 1100;
-        this.juego.stage.addChild(this.sprite);
+        this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
     cambiarSegunEstadoActual() {

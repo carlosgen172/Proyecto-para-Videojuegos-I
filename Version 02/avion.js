@@ -23,6 +23,7 @@ class Avion extends ObjetoDinamico {
         //Ajuste de ubicacion
         this.sprite.x = this.x;
         this.sprite.y = this.y;
+        this.sprite.zIndex = 200
 
         //Ajuste de tamaño
         this.sprite.width = this.width;
@@ -45,23 +46,30 @@ class Avion extends ObjetoDinamico {
         return(this.posicion >= (this.juego.width + 50))
     }
 
+
+    //Sistema de actualización de zindex del sprite (no funciona y no es necesario)
     encontrarEnemigoMásActual() {
-        this.enemigos = this.juegoPrincipal.enemigos
+        this.enemigos = this.juego.enemigos
         this.enemigoMasActual = this.enemigos[this.enemigos.length - 1]
     }
     actualizarZindex() {
         //this.enemigos = this.juegoPrincipal.enemigos
-        if (!this.enemigos) {
+        if (!this.juego.enemigos) {
             this.sprite.zIndex = 200
         }
         else {
+            this.encontrarEnemigoMásActual()
+            console.log(this.enemigoMasActual)
             this.sprite.zIndex = this.enemigoMasActual.sprite._zIndex + 1
+            console.log("z index del enemigo más actual ", this.enemigoMasActual.sprite._zIndex)
         }
+
+        console.log("z index del avion:", this.sprite.zIndex)
     }
 
     render() {
         this.actualizarPosDelSpriteSegunPosDelObjeto();
-        this.actualizarZindex();
+        //this.actualizarZindex();
     }
 
     tick() {
