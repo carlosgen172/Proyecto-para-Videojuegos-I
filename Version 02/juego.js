@@ -498,8 +498,8 @@ class Juego {
 
     keysDown(letra){
         this.keys[letra.key.toLowerCase()] = true;
-        if(letra.key.toLowerCase() === "e") this.botonDer.cambiarPoderALaDer();
-        if(letra.key.toLowerCase() === "q") this.botonIzq.cambiarPoderaALaIzq();
+        if(letra.key.toLowerCase() === "e") this.botonDer.rolarPoderHacia_(1);
+        if(letra.key.toLowerCase() === "q") this.botonIzq.rolarPoderHacia_(-1);
     }
 
     keysUp(letra){
@@ -507,6 +507,14 @@ class Juego {
         this.generarTropasEnemigasCon(letra)
         this.generarAvionesCon(letra)
         this.generarTropasAliadasCon(letra)
+        if(letra.key.toLowerCase() === "e") {
+            this.botonDer.spriteActual = this.botonDer.sprites[1];
+            this.botonDer.generarSpriteDe(this.botonDer.spriteActual);
+        }
+        if(letra.key.toLowerCase() === "q") {
+            this.botonIzq.spriteActual = this.botonIzq.sprites[1];
+            this.botonIzq.generarSpriteDe(this.botonIzq.spriteActual);
+        }
     }
     
     generarTropasAliadasCon(unaTecla) {

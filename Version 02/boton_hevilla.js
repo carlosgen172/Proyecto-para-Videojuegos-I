@@ -61,26 +61,41 @@ class BotonHevilla extends Boton {
     //    //console.log(this.keys);
     //    //this.generarSpriteDe(this.spriteActual);
     // }
-    cambiarPoderaALaIzq() { //no funciona correctamente el cambiar de elemento de una lista
+
+
+    rolarPoderHacia_(direccion) { //no funciona correctamente el cambiar de elemento de una lista
         //if(this.juego.poderActual == this.juego.poderes[0]) return;
-        let indicePoderActual = this.juego.poderes.indexOf(this.juego.poderActual) - 1;
+        let indicePoderActual = this.juego.poderes.indexOf(this.juego.poderActual) + direccion;
         console.log("índice poder actual antes de ajuste:", indicePoderActual)
         if(indicePoderActual < 0) {
             indicePoderActual = this.juego.poderes.length - 1;
             console.log("dando la vuelta a los poderes:", indicePoderActual)
+        }
+        else if(indicePoderActual >= this.juego.poderes.length) {
+            indicePoderActual = 0;
+            console.log("dando la vuelta a los poderes parte 2:", indicePoderActual)
         }
         this.juego.poderActual = this.juego.poderes[indicePoderActual]
         console.log("poderes disponibles: ", this.juego.poderes)
         console.log("poder actual:", this.juego.poderActual)
         // this.juego.poderes
         this.juego.actualizarVisibilidadDePoderActual();
+        if(direccion == 1) {
+            this.juego.botonDer.spriteActual = this.juego.botonDer.sprites[2];
+            this.juego.botonDer.generarSpriteDe(this.spriteActual);
+        }
+        else if(direccion == -1) {
+            this.juego.botonIzq.spriteActual = this.juego.botonIzq.sprites[2];
+            this.juego.botonIzq.generarSpriteDe(this.spriteActual);
+        }
     }
-    cambiarPoderALaDer() {
-        if(this.juego.poderActual == this.juego.poderes[-1]) return ;
-        this.juego.poderActual = this.juego.poderes[this.juego.poderActual + 1]
-        console.log("poderes disponibles: ", this.juego.poderes)
-        console.log("poder actual:", this.juego.poderActual)
-    }
+
+    // cambiarPoderALaDer() {
+    //     if(this.juego.poderActual == this.juego.poderes[-1]) return ;
+    //     this.juego.poderActual = this.juego.poderes[this.juego.poderActual + 1]
+    //     console.log("poderes disponibles: ", this.juego.poderes)
+    //     console.log("poder actual:", this.juego.poderActual)
+    // }
 
     tick() {
         //this.cambiarCondicionSiCorresponde();
