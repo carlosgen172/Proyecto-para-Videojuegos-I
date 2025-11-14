@@ -8,9 +8,9 @@ class Enemigo extends ObjetoDinamico {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
-        this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
+        this.velocidad = { x: velocidad, y: velocidad }; // Velocidad en píxeles/frame
         this.velMaxima = velMaxima;
-        this.aceleracion = { x: aceleracion, y: aceleracion}; // Aceleración en píxeles/frame²
+        this.aceleracion = { x: aceleracion, y: aceleracion }; // Aceleración en píxeles/frame²
         this.acelMaxima = acelMaxima;
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
 
@@ -18,34 +18,70 @@ class Enemigo extends ObjetoDinamico {
         //this.container.label = "aliado" + this.id;
         this.fuerza = 5;
 
+
+
+
         this.generarNombreAleatorio();
-        this.generarSpriteDe(sprite);
+        this.cargarSpriteAnimado();
         // console.log(this.nombreCompleto, "se ha generado.")
-        console.log(this.nombreCompleto, "se ha generado, siendo un " , this.constructor.name ," con un nivel de ira de", this.nivelDeIraReal, ".")
+        console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
-    generarSpriteDe(unSprite) {
-        this.sprite = new PIXI.Sprite(unSprite);
-        
-        this.sprite.anchor.set(0.5);
-        
-        //Ajuste de ubicacion
-        this.sprite.x = this.x;
-        this.sprite.y = this.y;
-
-        //Ajuste de tamaño
-        this.sprite.width = this.width;
-        this.sprite.height = this.height;
-        this.sprite.scale.x = this.scaleX;
-
-        //Añadir el sprite dentro del stage:
-        this.juego.pixiApp.stage.addChild(this.sprite);
+    async cargarSpriteAnimado() {
+        const animacionesPersonaje1 = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
+        console.log("animaciones personaje 1:", animacionesPersonaje1);
+        this.spritesAnimados = {};
+        this.cargarSpritesAnimados(animacionesPersonaje1);
+        this.cambiarAnimacion("correr");
     }
+
+    cambiarAnimacion(cual) {
+        //hacemos todos invisibles
+        for (let key of Object.keys(this.spritesAnimados)) {
+            this.spritesAnimados[key].visible = false;
+        }
+        //y despues hacemos visible el q queremos
+        this.spritesAnimados[cual].visible = true;
+    }
+
+    cargarSpritesAnimados(textureData) {
+        for (let key of Object.keys(textureData.animations)) {
+            this.spritesAnimados[key] = new PIXI.AnimatedSprite(
+                textureData.animations[key]
+            );
+
+            this.spritesAnimados[key].play();
+            this.spritesAnimados[key].loop = true;
+            this.spritesAnimados[key].animationSpeed = 0.1;
+            this.spritesAnimados[key].scale.set(2);
+            this.spritesAnimados[key].anchor.set(0.5, 1);
+
+            this.container.addChild(this.spritesAnimados[key]);
+        }
+    }
+
+    // generarSpriteDe(unSprite) {
+    //     this.sprite = new PIXI.Sprite(unSprite);
+
+    //     this.sprite.anchor.set(0.5);
+
+    //     //Ajuste de ubicacion
+    //     this.sprite.x = this.x;
+    //     this.sprite.y = this.y;
+
+    //     //Ajuste de tamaño
+    //     this.sprite.width = this.width;
+    //     this.sprite.height = this.height;
+    //     this.sprite.scale.x = this.scaleX;
+
+    //     //Añadir el sprite dentro del stage:
+    //     this.juego.pixiApp.stage.addChild(this.sprite);
+    // }
 
     // aplicarFisicaNueva() {
     //     /**
     //         * SISTEMA DE FÍSICA ESTABLE CON DELTATIME
-            
+
     //         * Limitamos deltaTime para evitar inestabilidad cuando los FPS bajan:
     //         * - FPS normales (60): deltaTime ≈ 1
     //         * - FPS bajos (15): deltaTime ≈ 4 → limitado a 3
@@ -58,7 +94,7 @@ class Enemigo extends ObjetoDinamico {
     //     // Integración de Euler: v = v₀ + a×Δt (para predecir el siguiete punto por el cual el bot se va a mover, prediciendo la velocidad siguiente según la aceleración)
     //     this.velocidad.x -= this.aceleracion.x * deltaTime;
     //     //this.velocidad.y += this.aceleracion.y * deltaTime;
-        
+
     //     // Se resetea la aceleración para el proximo frame:
     //     this.aceleracion.x = 0;
     //     this.aceleracion.y = 0;
@@ -104,7 +140,7 @@ class Enemigo extends ObjetoDinamico {
     // }
 
     mensajeDeMuerte() {
-        return console.log("El enemigo ", this.nombreCompleto," ha muerto")
+        return console.log("El enemigo ", this.nombreCompleto, " ha muerto")
     }
 
     obtenerLista() {
@@ -127,7 +163,7 @@ class Enemigo extends ObjetoDinamico {
     //         texture: false,
     //         baseTexture: false
     //     });
-        
+
     //     //eliminar la referencia al sprite
     //     this.sprite = null;
 
@@ -140,8 +176,8 @@ class Enemigo extends ObjetoDinamico {
 
     tick() {
         if (this.estoyMuerto) return;
-            this.verificarSiMori();
-        
+        this.verificarSiMori();
+
         let tengoAlgunEnemigoAdelante = false;
         let enemigoMasCerca = null;
         for (const aliado of this.juego.aliados) {
@@ -159,7 +195,7 @@ class Enemigo extends ObjetoDinamico {
         else {
             this.pegar(enemigoMasCerca);
         }
-    
+
         this.aplicarFisica();
         this.render();
     }

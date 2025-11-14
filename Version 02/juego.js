@@ -377,7 +377,7 @@ class Juego {
         this.texturasEnemigos = await Promise.all([
             PIXI.Assets.load("imagenes/enemigos/ensalada/centipede.png"),
             PIXI.Assets.load("imagenes/enemigos/ensalada/hornet.png"),
-            PIXI.Assets.load("imagenes/enemigos/ensalada/scarab.png")
+            PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json")
         ]);
     }
 

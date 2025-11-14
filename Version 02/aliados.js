@@ -29,8 +29,8 @@ class Aliado extends ObjetoDinamico {
         this.sprite.anchor.set(0.5);
         
         //Ajuste de ubicacion
-        this.sprite.x = this.x;
-        this.sprite.y = this.y;
+        this.container.x = this.x;
+        this.container.y = this.y;
 
         //Ajuste de tamaño
         this.sprite.width = this.width;
@@ -38,7 +38,7 @@ class Aliado extends ObjetoDinamico {
         this.sprite.scale.x = this.scaleX;
 
         //Añadir el sprite dentro del stage:
-        this.juego.pixiApp.stage.addChild(this.sprite);
+        this.container.addChild(this.sprite);
     }
 
     asignarTargetA(alguien) {

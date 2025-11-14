@@ -18,6 +18,9 @@ class ObjetoDinamico extends GameObject {
         this.nivelesDeIra = [1, 2, 3, 4, 5]
         this.nivelDeIraReal = this.juego.seleccionarElementoAleatorioDe_(this.nivelesDeIra)
         this.estoyMuerto = false;
+
+        this.container = new PIXI.Container();
+        this.juego.pixiApp.stage.addChild(this.container);
     }
     /*
     generarSpriteDe(unSprite) {
@@ -34,10 +37,10 @@ class ObjetoDinamico extends GameObject {
     pegar(unEnemigo) {
         //unEnemigo.vida -= this.verCuantaFuerzaTengo();
         unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
-        console.log("Le di una piña a", unEnemigo.nombreCompleto, ", sacándole", this.verCuantaFuerzaTengo(), "de vida, y dejándolo a", unEnemigo.vida, "de vida.");
+        // console.log("Le di una piña a", unEnemigo.nombreCompleto, ", sacándole", this.verCuantaFuerzaTengo(), "de vida, y dejándolo a", unEnemigo.vida, "de vida.");
         // console.log("y quedó con", unEnemigo.vida, "de vida.");
         if (unEnemigo.vida == 0) {
-            console.log("Yo,", this.nombreCompleto, "di de baja exitósamente a", unEnemigo.nombreCompleto, ".")
+            //console.log("Yo,", this.nombreCompleto, "di de baja exitósamente a", unEnemigo.nombreCompleto, ".")
         }
         this.ultimoGolpe = performance.now();
     }
@@ -58,9 +61,9 @@ class ObjetoDinamico extends GameObject {
     }
 
     actualizarPosDelSpriteSegunPosDelObjeto(){
-        if (!this.sprite) return;
-        this.sprite.x = this.posicion.x;
-        this.sprite.y = this.posicion.y;
+        if (!this.container) return;
+        this.container.x = this.posicion.x;
+        this.container.y = this.posicion.y;
     }
 
     generarNombreAleatorio() {
