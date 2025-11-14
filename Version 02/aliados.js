@@ -41,19 +41,8 @@ class Aliado extends ObjetoDinamico {
         this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
-    actualizarPosDelSpriteSegunPosDelObjeto(){
-        this.sprite.x = this.posicion.x;
-        this.sprite.y = this.posicion.y;
-    }
-
     asignarTargetA(alguien) {
         this.enemigo = alguien
-    }
-
-    generarNombreAleatorio() {
-        const nombreAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.nombres)
-        const apellidoAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.apellidos)
-        this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
     }
 
     // morir() {
@@ -68,12 +57,20 @@ class Aliado extends ObjetoDinamico {
     //     }
     // }
 
-    morir() {
-        if (this.estoyMuerto) return;
-        console.log("yo,", this.nombreCompleto ,", he morido como un héroe :C")
-        this.juego.aliados = this.juego.aliados.filter((p) => p !== this);
-        this.estoyMuerto = true
+    mensajeDeMuerte() {
+        return console.log("El aliado ", this.nombreCompleto," ha muerto")
     }
+
+    obtenerLista() {
+        return this.juego.aliados;
+    }
+
+    // morir() {
+    //     if (this.estoyMuerto) return;
+    //     console.log("El aliado ", this.nombreCompleto ," ha muerto")
+    //     this.juego.aliados = this.juego.aliados.filter((p) => p !== this);
+    //     this.estoyMuerto = true
+    // }
 
 
     // detenerAlEncontrarEnemigo() {
@@ -133,6 +130,5 @@ class Aliado extends ObjetoDinamico {
     
         this.aplicarFisica();
         this.render();
-    //}
     }
 }

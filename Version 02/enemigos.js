@@ -1,3 +1,5 @@
+//const { Children } = require("react");
+
 class Enemigo extends ObjetoDinamico {
     sprite;
     enemigoDeBandoContrario;
@@ -38,17 +40,6 @@ class Enemigo extends ObjetoDinamico {
 
         //Añadir el sprite dentro del stage:
         this.juego.pixiApp.stage.addChild(this.sprite);
-    }
-
-    actualizarPosDelSpriteSegunPosDelObjeto(){
-        this.sprite.x = this.posicion.x;
-        this.sprite.y = this.posicion.y;
-    }
-
-    generarNombreAleatorio() {
-        const nombreAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.nombres)
-        const apellidoAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.apellidos)
-        this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
     }
 
     // aplicarFisicaNueva() {
@@ -112,12 +103,36 @@ class Enemigo extends ObjetoDinamico {
     //     this.aplicarFriccion()
     // }
 
-    morir() {
-        if (this.estoyMuerto) return;
-        console.log("yo,", this.nombreCompleto ,", he morido como un malo maloso >:C")
-        this.juego.enemigos = this.juego.enemigos.filter((p) => p !== this);
-        this.estoyMuerto = true
+    mensajeDeMuerte() {
+        return console.log("El enemigo ", this.nombreCompleto," ha muerto")
     }
+
+    obtenerLista() {
+        return this.juego.enemigos;
+    }
+
+    // morir() {
+    //     if (this.estoyMuerto) return;
+    //     console.log("El enemigo ", this.nombreCompleto," ha muerto")
+    //     this.juego.enemigos = this.juego.enemigos.filter((p) => p !== this);
+    //     //deshabilitar la visibilidad del sprite
+    //     this.sprite.visible = false;
+
+    //     //remover el sprite del contenedor
+    //     this.sprite.parent.removeChild(this.sprite);
+
+    //     //destruir el sprite para liberar memoria
+    //     this.sprite.destroy({
+    //         children: true,
+    //         texture: false,
+    //         baseTexture: false
+    //     });
+        
+    //     //eliminar la referencia al sprite
+    //     this.sprite = null;
+
+    //     this.estoyMuerto = true
+    // }
 
     render() {
         this.actualizarPosDelSpriteSegunPosDelObjeto()

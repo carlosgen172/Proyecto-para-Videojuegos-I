@@ -1,4 +1,3 @@
-//import {baseNombres, baseApellidos} from 'baseNombresYApellidos.js'; (No funciona)
 class Juego {
     pixiApp;
     width;
@@ -59,6 +58,7 @@ class Juego {
         await this.crearGenerador();
         await this.generarMouse();
         await this.generarMenu();
+        await this.cargarSprites();
         this.generarTropas();
         //this.poderes = [];
         //await this.generarAvion();
@@ -364,10 +364,33 @@ class Juego {
 
     
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
-    
+
+    async cargarSprites() {
+        this.texturasAliados = await Promise.all([
+            PIXI.Assets.load("imagenes/aliados/ensalada/antitank.png"),
+            PIXI.Assets.load("imagenes/aliados/ensalada/assault.png"),
+            PIXI.Assets.load("imagenes/aliados/ensalada/radiooperator.png"),
+            PIXI.Assets.load("imagenes/aliados/ensalada/sniper.png")
+        ]);
+
+        this.texturasEnemigos = await Promise.all([
+            PIXI.Assets.load("imagenes/enemigos/ensalada/centipede.png"),
+            PIXI.Assets.load("imagenes/enemigos/ensalada/hornet.png"),
+            PIXI.Assets.load("imagenes/enemigos/ensalada/scarab.png")
+        ]);
+    }
+
+    listaDeSpritesAliados() {
+        return this.texturasAliados;
+    }
+
+    listaDeSpritesEnemigos() {
+        return this.texturasEnemigos;
+    }
+
     async generarTropas() {
-        const texture = await PIXI.Assets.load("imagenes/posible_puntero_2.png");
-        //console.log(texture)
+        const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesAliados());
+
         for(let i = 0; i < 5; i++){
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = -10
@@ -386,7 +409,7 @@ class Juego {
                 10, //velocidad máxima
                 3, //aceleración
                 5, //aceleración máxima
-                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+                2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
             )
             this.aliados.push(aliadoNuevo)
         }
@@ -397,8 +420,7 @@ class Juego {
     }
 
     async generarTropasEnemigas() {
-        const texture = await PIXI.Assets.load("imagenes/enemigos_eliminados.png");
-        //console.log(texture)
+        const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesEnemigos());
         for(let i = 0; i < 5; i++){
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = this.width - 10
@@ -417,7 +439,7 @@ class Juego {
                 10, //velocidad máxima
                 3, //aceleración
                 5, //aceleración máxima
-                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+                2.25 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
             )
             this.enemigos.push(enemigoNuevo)
         }

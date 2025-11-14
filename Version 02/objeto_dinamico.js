@@ -57,6 +57,18 @@ class ObjetoDinamico extends GameObject {
         //}
     }
 
+    actualizarPosDelSpriteSegunPosDelObjeto(){
+        if (!this.sprite) return;
+        this.sprite.x = this.posicion.x;
+        this.sprite.y = this.posicion.y;
+    }
+
+    generarNombreAleatorio() {
+        const nombreAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.nombres)
+        const apellidoAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.apellidos)
+        this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
+    }
+
 
     //SISTEMA DE VERIFICACIÓN DE MUERTE:
 
@@ -74,6 +86,38 @@ class ObjetoDinamico extends GameObject {
 
     morir() {
         //aún no se plantea dentro del objeto dinámico (funciona distinto según aliado o enemigo)
+    }
+
+    mensajeDeMuerte() {
+        return "Una entidad ha muerto."
+    }
+
+    obtenerLista() {
+        throw new Error("Poner una lista a usar en el método obtenerLista() de la subclase.");
+    }
+
+    morir() {
+        if (this.estoyMuerto) return;
+        console.log(this.mensajeDeMuerte())
+
+        let lista = this.obtenerLista();
+        lista = lista.filter((p) => p !== this);
+        //deshabilitar la visibilidad del sprite
+        this.sprite.visible = false;
+
+        //remover el sprite del contenedor
+        this.sprite.parent.removeChild(this.sprite);
+
+        //destruir el sprite para liberar memoria
+        this.sprite.destroy({
+            texture: false,
+            baseTexture: false
+        });
+        
+        //eliminar la referencia al sprite
+        this.sprite = null;
+
+        this.estoyMuerto = true
     }
 
     //SISTEMA DE FÍSICA:
