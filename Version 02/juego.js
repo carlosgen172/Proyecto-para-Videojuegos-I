@@ -53,6 +53,7 @@ class Juego {
         this.pixiApp.stage.interactive = true;
         window.addEventListener("keydown", this.keysDown.bind(this));
         window.addEventListener("keyup", this.keysUp.bind(this));
+        
 
         await this.cargarBackground();
         await this.crearGenerador();
@@ -246,7 +247,7 @@ class Juego {
         const poderAliados = new Poder(
             //configPoder
             50,
-            50, 
+            50,
             this.width/2,
             25,
             this,
@@ -497,6 +498,8 @@ class Juego {
 
     keysDown(letra){
         this.keys[letra.key.toLowerCase()] = true;
+        if(letra.key.toLowerCase() === "e") this.botonDer.cambiarPoderALaDer();
+        if(letra.key.toLowerCase() === "q") this.botonIzq.cambiarPoderaALaIzq();
     }
 
     keysUp(letra){
@@ -608,6 +611,7 @@ class Juego {
         this.poderesNoActuales.forEach(p => {
             p.sprite.visible = false
         });
+        this.poderActual.sprite.visible = true;
     }
 
     gameLoop(time) {

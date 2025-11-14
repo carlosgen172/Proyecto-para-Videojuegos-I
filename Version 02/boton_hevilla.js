@@ -26,47 +26,54 @@ class BotonHevilla extends Boton {
 
     keysDown(letra){
         this.keys[letra.key.toLowerCase()] = true;
-        this.cambiarSpriteAInteractuadoPor(letra);
+        //this.cambiarSpriteAInteractuadoPor(letra);
     }
 
     keysUp(letra){
         this.keys[letra.key.toLowerCase()] = false;
-        this.cambiarSpriteANoInteractuadoPor(letra);
+        //this.cambiarSpriteANoInteractuadoPor(letra);
     }
 
-    cambiarSpriteAInteractuadoPor(letra) {
-        if(letra.key.toLowerCase() === "q" && this.direccion == "izq" || letra.key.toLowerCase() === "e" && this.direccion == "der") {
-            //this.haSidoInteractuado = !this.haSidoInteractuado
-            this.spriteActual = this.sprites[2];
-            this.generarSpriteDe(this.spriteActual);
-            this.cambiarPoderaALaIzq();
-            console.log("el sprite de la hevilla con dirección: ", this.direccion , "ha cambiado a: ", this.spriteActual);
-        }
-        //console.log(this.keys);
-        //this.generarSpriteDe(this.spriteActual);
-    }
-    cambiarSpriteANoInteractuadoPor(letra) {
-        if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
-            this.spriteActual = this.sprites[1];
-            this.generarSpriteDe(this.spriteActual);
-            this.cambiarPoderALaDer()
-            console.log("el sprite de la hevilla con dirección: ", this.direccion, "ha cambiado a: ", this.spriteActual.name)
-       }
-        /*
-        if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
-            //this.haSidoInteractuado = !this.haSidoInteractuado
-        }
-        */
-       //console.log(this.spriteActual);
-       //console.log(this.keys);
-       //this.generarSpriteDe(this.spriteActual);
-    }
+    // cambiarSpriteAInteractuadoPor(letra) {
+    //     if(letra.key.toLowerCase() === "q" && this.direccion == "izq" || letra.key.toLowerCase() === "e" && this.direccion == "der") {
+    //         //this.haSidoInteractuado = !this.haSidoInteractuado
+    //         this.spriteActual = this.sprites[2];
+    //         this.generarSpriteDe(this.spriteActual);
+    //         this.cambiarPoderaALaIzq();
+    //         console.log("el sprite de la hevilla con dirección: ", this.direccion , "ha cambiado a: ", this.spriteActual);
+    //     }
+    //     //console.log(this.keys);
+    //     //this.generarSpriteDe(this.spriteActual);
+    // }
+    // cambiarSpriteANoInteractuadoPor(letra) {
+    //     if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
+    //         this.spriteActual = this.sprites[1];
+    //         this.generarSpriteDe(this.spriteActual);
+    //         this.cambiarPoderALaDer()
+    //         console.log("el sprite de la hevilla con dirección: ", this.direccion, "ha cambiado a: ", this.spriteActual.name)
+    //     }
+    //     /*
+    //     if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
+    //         //this.haSidoInteractuado = !this.haSidoInteractuado
+    //     }
+    //     */
+    //    //console.log(this.spriteActual);
+    //    //console.log(this.keys);
+    //    //this.generarSpriteDe(this.spriteActual);
+    // }
     cambiarPoderaALaIzq() { //no funciona correctamente el cambiar de elemento de una lista
-        if(this.juego.poderActual == this.juego.poderes[0]) return ;
-        this.juego.poderActual = this.juego.poderes[this.juego.poderActual - 1]
+        //if(this.juego.poderActual == this.juego.poderes[0]) return;
+        let indicePoderActual = this.juego.poderes.indexOf(this.juego.poderActual) - 1;
+        console.log("índice poder actual antes de ajuste:", indicePoderActual)
+        if(indicePoderActual < 0) {
+            indicePoderActual = this.juego.poderes.length - 1;
+            console.log("dando la vuelta a los poderes:", indicePoderActual)
+        }
+        this.juego.poderActual = this.juego.poderes[indicePoderActual]
         console.log("poderes disponibles: ", this.juego.poderes)
         console.log("poder actual:", this.juego.poderActual)
-        // this.jeugo.poderes
+        // this.juego.poderes
+        this.juego.actualizarVisibilidadDePoderActual();
     }
     cambiarPoderALaDer() {
         if(this.juego.poderActual == this.juego.poderes[-1]) return ;

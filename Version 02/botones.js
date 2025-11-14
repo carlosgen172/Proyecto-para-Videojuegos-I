@@ -16,12 +16,12 @@ class Boton extends GameObject{
         this.height = height;
         this.juego = juego;
         //console.log(this);
-        console.log("el ancho del boton:", this.width);
+        //console.log("el ancho del boton:", this.width);
         //this.generarSpriteDe(sprite);
     }
 
     generarSpriteDe(unSprite) {
-        console.log("lo que entra en generarSpriteDe: ", unSprite)
+        //console.log("lo que entra en generarSpriteDe: ", unSprite)
         this.sprite = new PIXI.Sprite(unSprite);
         
         this.sprite.anchor.set(0.5);
@@ -35,7 +35,7 @@ class Boton extends GameObject{
         //this.sprite.height = this.height;
         //this.sprite.scale.x = this.scaleX;
         //Añadir el sprite dentro del stage:
-        console.log(this.sprite);
+        //console.log(this.sprite);
 
         this.sprite.zIndex = 1100;
         this.juego.pixiApp.stage.addChild(this.sprite);
