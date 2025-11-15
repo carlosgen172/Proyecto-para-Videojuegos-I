@@ -75,20 +75,11 @@ class ObjetoDinamico extends GameObject {
 
     //SISTEMA DE VERIFICACIÓN DE MUERTE:
 
-    // verificarSiEstoyMuerto() {
-    // estoyMuerto() {
-    //     return (this.vida <= 0) 
-    // }    
-
     verificarSiMori(){
         if (this.vida <= 0) {
             this.morir();
             return ;
         }
-    }
-
-    morir() {
-        //aún no se plantea dentro del objeto dinámico (funciona distinto según aliado o enemigo)
     }
 
     mensajeDeMuerte() {
@@ -106,19 +97,26 @@ class ObjetoDinamico extends GameObject {
         let lista = this.obtenerLista();
         lista = lista.filter((p) => p !== this);
         //deshabilitar la visibilidad del sprite
-        this.sprite.visible = false;
+        //if (lista = this.juego.enemigos) {
+        if (this.constructor.name == "Enemigo") {
+            this.spritesAnimados.loop = false
+            //this.spritesAnimados.visible = false
+            //this.spritesAnimados.parent.removeChild(this.spritesAnimados);
+            //this.spritesAnimados = null;
+        } else {
+            this.sprite.visible = false;
+            //remover el sprite del contenedor
+            this.sprite.parent.removeChild(this.sprite);
 
-        //remover el sprite del contenedor
-        this.sprite.parent.removeChild(this.sprite);
-
-        //destruir el sprite para liberar memoria
-        this.sprite.destroy({
-            texture: false,
-            baseTexture: false
-        });
-        
-        //eliminar la referencia al sprite
-        this.sprite = null;
+            //destruir el sprite para liberar memoria
+            this.sprite.destroy({
+                texture: false,
+                baseTexture: false
+            });
+            
+            //eliminar la referencia al sprite
+            this.sprite = null;
+        }
 
         this.estoyMuerto = true
     }

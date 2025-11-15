@@ -5,13 +5,9 @@ class BotonHevilla extends Boton {
 
     constructor(width, height, x, y, sprite, urlSprite, direccion, juego) {
         super(width, height, x, y, juego, sprite);
-        window.addEventListener("keydown", this.keysDown.bind(this));
-        window.addEventListener("keyup", this.keysUp.bind(this));
         this.direccion = direccion;
         this.segundoSprite = urlSprite;
         this.sprites = {
-            //1 : "imagenes/hevilla_" + this.direccion + ".png",
-            //2 : "imagenes/hevilla_" + this.direccion + "_pres.png"
             1 : sprite,
             2 : urlSprite
         }
@@ -24,15 +20,15 @@ class BotonHevilla extends Boton {
         this.generarSpriteDe(this.spriteActual);
     }
 
-    keysDown(letra){
-        this.keys[letra.key.toLowerCase()] = true;
-        //this.cambiarSpriteAInteractuadoPor(letra);
-    }
+    // keysDown(letra){
+    //     this.keys[letra.key.toLowerCase()] = true;
+    //     //this.cambiarSpriteAInteractuadoPor(letra);
+    // }
 
-    keysUp(letra){
-        this.keys[letra.key.toLowerCase()] = false;
-        //this.cambiarSpriteANoInteractuadoPor(letra);
-    }
+    // keysUp(letra){
+    //     this.keys[letra.key.toLowerCase()] = false;
+    //     //this.cambiarSpriteANoInteractuadoPor(letra);
+    // }
 
     // cambiarSpriteAInteractuadoPor(letra) {
     //     if(letra.key.toLowerCase() === "q" && this.direccion == "izq" || letra.key.toLowerCase() === "e" && this.direccion == "der") {
@@ -63,7 +59,7 @@ class BotonHevilla extends Boton {
     // }
 
 
-    rolarPoderHacia_(direccion) { //no funciona correctamente el cambiar de elemento de una lista
+    rolarPoderHacia_(direccion) {
         //if(this.juego.poderActual == this.juego.poderes[0]) return;
         let indicePoderActual = this.juego.poderes.indexOf(this.juego.poderActual) + direccion;
         console.log("índice poder actual antes de ajuste:", indicePoderActual)
@@ -78,7 +74,7 @@ class BotonHevilla extends Boton {
         this.juego.poderActual = this.juego.poderes[indicePoderActual]
         console.log("poderes disponibles: ", this.juego.poderes)
         console.log("poder actual:", this.juego.poderActual)
-        // this.juego.poderes
+
         this.juego.actualizarVisibilidadDePoderActual();
         if(direccion == 1) {
             this.juego.botonDer.spriteActual = this.juego.botonDer.sprites[2];
@@ -99,7 +95,6 @@ class BotonHevilla extends Boton {
 
     tick() {
         //this.cambiarCondicionSiCorresponde();
-        //this
         //this.cambiarSpriteAInteractuadoPor(unaLetra);
         //this.cambiarSpriteANoInteractuado();
         //this.generarSpriteDe(this.spriteActual);

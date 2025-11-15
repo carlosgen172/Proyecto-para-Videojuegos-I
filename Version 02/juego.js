@@ -61,6 +61,8 @@ class Juego {
         await this.generarMenu();
         await this.cargarSprites();
         this.generarTropas();
+        this.generarAvion();
+        this.generarTropasEnemigas();
         //this.poderes = [];
         //await this.generarAvion();
         await this.cargarFondoHUD();
@@ -416,8 +418,13 @@ class Juego {
         }
     }
 
-    async generarAliadosSiCorresponden() {
-
+    async generarAliadosSiCorresponde() {
+        if ((this.aliados.length >= 1) && (this.poderActual.estado == "aliados")) {
+            this.generarTropas();
+        }
+        else {
+            console.log("No se puede generar aliados con el poder actual, favor de cambiar al poder correspondiente usando la q y la e para recorrer los poderes disponibles.")
+        }
     }
 
     async generarTropasEnemigas() {
@@ -443,6 +450,15 @@ class Juego {
                 2.25 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
             )
             this.enemigos.push(enemigoNuevo)
+        }
+    }
+
+    async generarEnemigosSiCorresponde() {
+        if ((this.enemigos.length >= 1) && (this.poderActual.estado == "enemigos")) {
+            this.generarTropasEnemigas();
+        }
+        else {
+            console.log("No se puede generar enemigos con el poder actual, favor de cambiar al poder correspondiente usando la q y la e para recorrer los poderes disponibles.")
         }
     }
 
@@ -479,8 +495,12 @@ class Juego {
     async generarAvionSiCorresponde() {
         
         //if (!this.aviones || ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()))) {
-        if (!this.aviones || ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()))) {
-            this.generarAvion(); //no genera ningun avión :c
+        //if (!this.aviones || ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()))) {
+        if ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()) && (this.poderActual.estado == "bombas")) {
+            this.generarAvion();
+        }
+        else {
+            console.log("aún no se puede generar ningun avión, esto puede ser debido a que el último avión aún no terminó su recorrido, o porque no seleccionó el poder correspondiente, favor de cambiar al poder correspondiente usando la q y la e para recorrer los poderes disponibles.")
         }
     
         /*
@@ -519,15 +539,20 @@ class Juego {
     
     generarTropasAliadasCon(unaTecla) {
         if(unaTecla.key.toLowerCase() === "1") {
-            this.generarTropas()
+            //this.generarTropas()
+            this.generarAliadosSiCorresponde()
         }
     }
 
     generarAvionesCon(unaTecla) {
         if(unaTecla.key.toLowerCase() === "2") {
             //this.generadorPrincipal.generarAvion()
-            //this.generarAvionSiCorresponde()
-            this.generarAvion()
+            if (this.aviones == []) {
+                this.generarAvion()
+            } else {
+                this.generarAvionSiCorresponde()
+            }
+            //this.generarAvion()
             //console.log("esta funcionando?")
         }
         
@@ -535,7 +560,7 @@ class Juego {
 
     generarTropasEnemigasCon(unaTecla) {
         if(unaTecla.key.toLowerCase() === "3") {
-            this.generarTropasEnemigas()
+            this.generarEnemigosSiCorresponde()
         }
     }
 

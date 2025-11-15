@@ -344,17 +344,18 @@
       "06.png",
       "07.png",
       "08.png",
-      "09.png",
-      "13.png",
-      "14.png",
-      "15.png",
-      "16.png"
+      "09.png"
     ],
     "atacar": [
       "17.png",
       "18.png",
       "19.png",
       "24.png"
+    ],
+    "atacar_2": [
+      "14.png",
+      "15.png",
+      "16.png"
     ]
   },
   "meta": {

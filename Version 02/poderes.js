@@ -16,9 +16,9 @@ class Poder extends GameObject{
         this.height = height;
         this.juego = juego;
         this.estado = estado;
-        this.puedeGenerarAliados = false;
-        this.puedeGenerarBombas = false;
-        this.puedeGenerarEnemigos = false;
+        // this.puedeGenerarAliados = false;
+        // this.puedeGenerarBombas = false;
+        // this.puedeGenerarEnemigos = false;
         //console.log(this);
         //console.log("el ancho del boton:", this.width);
         this.generarSpriteDe(sprite);
@@ -42,24 +42,30 @@ class Poder extends GameObject{
         this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
-    activarPoder() {
-        //acá se realiza una acción determinada según el poder el cual se esté activo.
-        // if (this.sprite.name = "imagenes/aliados_power_up_hud.png") {
-        if (this.estado == "aliados"){
-            //this.juego.generarTropas()
-            this.puedeGenerarAliados = true
-        } else if (this.estado == "bomba") {
-            // this.juego.generarAvion()
-            // this.puedeGenerarEnemigos = true
-            this.puedeGenerarBombas = true
-        } else {
-            // this.juego.generarTropasEnemigas()
-            this.puedeGenerarEnemigos = true
-        }
-    }
+    // activarPoder() { el nombre se puede usar para hacer un sistema de cooldown para los poderes. 
+    //     //acá se realiza una acción determinada según el poder el cual se esté activo.
+    //     // if (this.sprite.name = "imagenes/aliados_power_up_hud.png") {
+    //     if (this.estado == "aliados"){
+    //         //this.juego.generarTropas()
+    //         this.puedeGenerarAliados = true
+    //         this.puedeGenerarBombas = false
+    //         this.puedeGenerarEnemigos= false
+    //     } else if (this.estado == "bomba") {
+    //         // this.juego.generarAvion()
+    //         // this.puedeGenerarEnemigos = true
+    //         this.puedeGenerarBombas = true
+    //         this.puedeGenerarAliados = false
+    //         this.puedeGenerarEnemigos = false
+    //     } else {
+    //         // this.juego.generarTropasEnemigas()
+    //         this.puedeGenerarEnemigos = true
+    //         this.puedeGenerarAliados = false
+    //         this.puedeGenerarBombas = false
+    //     }
+    // }
 
     tick() {
         //this.cambiarSegunEstadoActual();
-        this.activarPoder();
+        // this.activarPoder();
     }
 }

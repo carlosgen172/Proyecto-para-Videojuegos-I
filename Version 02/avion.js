@@ -43,7 +43,7 @@ class Avion extends ObjetoDinamico {
         //if(this.posicion.x >= this.screen.width) {
             
         //}
-        return(this.posicion >= (this.juego.width + 50))
+        return(this.posicion.x >= (this.juego.width + 50))
     }
 
 
@@ -52,6 +52,7 @@ class Avion extends ObjetoDinamico {
         this.enemigos = this.juego.enemigos
         this.enemigoMasActual = this.enemigos[this.enemigos.length - 1]
     }
+    
     actualizarZindex() {
         //this.enemigos = this.juegoPrincipal.enemigos
         if (!this.juego.enemigos) {

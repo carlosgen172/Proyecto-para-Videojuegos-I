@@ -192,7 +192,9 @@ class Enemigo extends ObjetoDinamico {
             this.aceleracion.x = -1;
         }
         // else if (this.puedeGolpear()) {
+        //else if (enemigoMasCerca != undefined) {
         else {
+            //this.cambiarAnimacion("atacar") //ataca, pero se queda colgado con un error en la visibilidad del sprite.
             this.pegar(enemigoMasCerca);
         }
 
