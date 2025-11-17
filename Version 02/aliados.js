@@ -117,6 +117,10 @@ class Aliado extends ObjetoDinamico {
             if (distanciaDeEnemigo < Math.random() * 300) {
                 tengoAlgunEnemigoAdelante = true;
                 enemigoMasCerca = enemigo;
+                if(enemigoMasCerca.verificarSiMori()) {
+                    tengoAlgunEnemigoAdelante = false
+                    enemigoMasCerca = null
+                }
                 break;
             }
         }
@@ -125,6 +129,7 @@ class Aliado extends ObjetoDinamico {
         }
         //else if (this.puedeGolpear()) {
         else {
+            //if(enemigoMasCerca.verificarSiMori()) return;
             this.pegar(enemigoMasCerca);
         }
     

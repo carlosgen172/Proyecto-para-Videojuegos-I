@@ -18,6 +18,7 @@ class ObjetoDinamico extends GameObject {
         this.nivelesDeIra = [1, 2, 3, 4, 5]
         this.nivelDeIraReal = this.juego.seleccionarElementoAleatorioDe_(this.nivelesDeIra)
         this.estoyMuerto = false;
+        this.ultimoGolpe = 0;
 
         this.container = new PIXI.Container();
         this.juego.pixiApp.stage.addChild(this.container);
@@ -36,6 +37,9 @@ class ObjetoDinamico extends GameObject {
 
     pegar(unEnemigo) {
         //unEnemigo.vida -= this.verCuantaFuerzaTengo();
+        //if(unEnemigo.verificarSiMori()) return;
+        //if(unEnemigo.vida == 0) return;
+        //if (!this.puedeGolpear()) return;
         unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
         // console.log("Le di una piña a", unEnemigo.nombreCompleto, ", sacándole", this.verCuantaFuerzaTengo(), "de vida, y dejándolo a", unEnemigo.vida, "de vida.");
         // console.log("y quedó con", unEnemigo.vida, "de vida.");
@@ -100,6 +104,9 @@ class ObjetoDinamico extends GameObject {
         //if (lista = this.juego.enemigos) {
         if (this.constructor.name == "Enemigo") {
             this.spritesAnimados.loop = false
+            // this.juego.enemigos.filter((p) => p !== this)
+            this.juego.enemigosMuertos.push(this)
+            //this.cantEnemigosMuertos += 1
             //this.spritesAnimados.visible = false
             //this.spritesAnimados.parent.removeChild(this.spritesAnimados);
             //this.spritesAnimados = null;

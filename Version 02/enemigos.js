@@ -17,7 +17,7 @@ class Enemigo extends ObjetoDinamico {
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
         this.fuerza = 5;
-
+        //this.cantEnemigosMuertos = 0;
 
 
 
@@ -185,6 +185,7 @@ class Enemigo extends ObjetoDinamico {
             if (distanciaDeEnemigo < Math.random() * 300) {
                 tengoAlgunEnemigoAdelante = true;
                 enemigoMasCerca = aliado;
+                // if(enemigoMasCerca.verificarSiMori()) return;
                 break;
             }
         }
@@ -194,8 +195,10 @@ class Enemigo extends ObjetoDinamico {
         // else if (this.puedeGolpear()) {
         //else if (enemigoMasCerca != undefined) {
         else {
+            // if(enemigoMasCerca.verificarSiMori()) return;
             //this.cambiarAnimacion("atacar") //ataca, pero se queda colgado con un error en la visibilidad del sprite.
             this.pegar(enemigoMasCerca);
+            
         }
 
         this.aplicarFisica();

@@ -7,6 +7,8 @@ class Juego {
     jugador;
     aliados = [];
     enemigos = [];
+    enemigosMuertos = [];
+    personas = [];
     aviones = [];
     poderes = [];
     //poderActual = null;
@@ -71,6 +73,7 @@ class Juego {
         await this.generarPoderEnemigos();
         await this.generarBotonesDelHUD();
         await this.generarBarraSalud();
+        await this.generarTextoEnemigosMuertos();
         this.poderActual = this.poderes[0];
         console.log("poder actual dentro de la clase juego:", this.poderActual)
         this.containerPrincipal = new PIXI.Container();
@@ -365,6 +368,12 @@ class Juego {
         )
     }
 
+    async generarTextoEnemigosMuertos() {
+        this.textoEnemigosMuertos = new HUD(
+            this
+        )
+    }
+
     
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
 
@@ -415,6 +424,7 @@ class Juego {
                 2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
             )
             this.aliados.push(aliadoNuevo)
+            this.personas.push(aliadoNuevo)
         }
     }
 
@@ -450,6 +460,7 @@ class Juego {
                 2.25 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
             )
             this.enemigos.push(enemigoNuevo)
+            this.personas.push(enemigoNuevo)
         }
     }
 
@@ -656,6 +667,7 @@ class Juego {
         this.realizarTickPorCadaAvion()
         this.realizarTickPorCadaPoder()
         this.bateriaVida.tick()
+        this.textoEnemigosMuertos.tick()
         this.actualizarVisibilidadDePoderActual()
         //this.verificacionDeVidaAliados()
         //this.verificacionDeVidaEnemigos()
