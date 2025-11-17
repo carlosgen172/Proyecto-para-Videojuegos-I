@@ -32,7 +32,7 @@ class ObjetoDinamico extends GameObject {
     //SISTEMA DE PELEA:
 
     puedeGolpear() {
-        return(performance.now > this.delayAtaque + this.ultimoGolpe)
+        return (performance.now > this.delayAtaque + this.ultimoGolpe)
     }
 
     pegar(unEnemigo) {
@@ -64,7 +64,7 @@ class ObjetoDinamico extends GameObject {
         //}
     }
 
-    actualizarPosDelSpriteSegunPosDelObjeto(){
+    actualizarPosDelSpriteSegunPosDelObjeto() {
         if (!this.container) return;
         this.container.x = this.posicion.x;
         this.container.y = this.posicion.y;
@@ -79,10 +79,9 @@ class ObjetoDinamico extends GameObject {
 
     //SISTEMA DE VERIFICACIÓN DE MUERTE:
 
-    verificarSiMori(){
+    verificarSiMori() {
         if (this.vida <= 0) {
             this.morir();
-            return ;
         }
     }
 
@@ -103,9 +102,23 @@ class ObjetoDinamico extends GameObject {
         //deshabilitar la visibilidad del sprite
         //if (lista = this.juego.enemigos) {
         if (this.constructor.name == "Enemigo") {
-            this.spritesAnimados.loop = false
+            //this.spritesAnimados.loop = false
             // this.juego.enemigos.filter((p) => p !== this)
-            this.juego.enemigosMuertos.push(this)
+
+            this.juego.enemigosMuertos.push(this);
+            this.cambiarAnimacion("morir", false);
+
+            setTimeout(() => {
+                this.container.visible = false;
+                this.container.parent.removeChild(this.container);
+                this.container.destroy({
+                    texture: false,
+                    baseTexture: false
+                });
+                this.container = null;
+                this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigosMuertos); 
+            }, 2000);
+
             //this.cantEnemigosMuertos += 1
             //this.spritesAnimados.visible = false
             //this.spritesAnimados.parent.removeChild(this.spritesAnimados);
@@ -120,7 +133,7 @@ class ObjetoDinamico extends GameObject {
                 texture: false,
                 baseTexture: false
             });
-            
+
             //eliminar la referencia al sprite
             this.sprite = null;
         }
@@ -131,14 +144,14 @@ class ObjetoDinamico extends GameObject {
     //SISTEMA DE FÍSICA:
 
     aplicarFisica() {
-            /**
-            * SISTEMA DE FÍSICA ESTABLE CON DELTATIME
-            
-            * Limitamos deltaTime para evitar inestabilidad cuando los FPS bajan:
-            * - FPS normales (60): deltaTime ≈ 1
-            * - FPS bajos (15): deltaTime ≈ 4 → limitado a 3
-            * - Esto previene saltos extremos en la simulación física
-        */
+        /**
+        * SISTEMA DE FÍSICA ESTABLE CON DELTATIME
+        
+        * Limitamos deltaTime para evitar inestabilidad cuando los FPS bajan:
+        * - FPS normales (60): deltaTime ≈ 1
+        * - FPS bajos (15): deltaTime ≈ 4 → limitado a 3
+        * - Esto previene saltos extremos en la simulación física
+    */
         const deltaTime = Math.min(this.juego.pixiApp.ticker.deltaTime, 3);
 
         //Aplicamos y limitamos las fuerzas acumuladas:
@@ -146,7 +159,7 @@ class ObjetoDinamico extends GameObject {
         // Integración de Euler: v = v₀ + a×Δt (para predecir el siguiete punto por el cual el bot se va a mover, prediciendo la velocidad siguiente según la aceleración)
         this.velocidad.x += this.aceleracion.x * deltaTime;
         this.velocidad.y += this.aceleracion.y * deltaTime;
-        
+
         // Se resetea la aceleración para el proximo frame:
         this.aceleracion.x = 0;
         this.aceleracion.y = 0;
@@ -159,7 +172,7 @@ class ObjetoDinamico extends GameObject {
         this.posicion.x += this.velocidad.x * deltaTime;
         this.posicion.y += this.velocidad.y * deltaTime;
 
-         // PASO 4: Calcular ángulo de movimiento usando arctangente
+        // PASO 4: Calcular ángulo de movimiento usando arctangente
         // atan2(y,x) nos da el ángulo en radianes del vector velocidad
         this.calcularAnguloDeMovimiento();
     }

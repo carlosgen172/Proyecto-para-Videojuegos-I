@@ -1,5 +1,3 @@
-//const { Children } = require("react");
-
 class Enemigo extends ObjetoDinamico {
     sprite;
     enemigoDeBandoContrario;
@@ -28,20 +26,20 @@ class Enemigo extends ObjetoDinamico {
     }
 
     async cargarSpriteAnimado() {
-        const animacionesPersonaje1 = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
-        console.log("animaciones personaje 1:", animacionesPersonaje1);
+        const animacionesPersonaje = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
         this.spritesAnimados = {};
-        this.cargarSpritesAnimados(animacionesPersonaje1);
-        this.cambiarAnimacion("correr");
+        this.cargarSpritesAnimados(animacionesPersonaje);
+        this.cambiarAnimacion("correr", true);
     }
 
-    cambiarAnimacion(cual) {
+    cambiarAnimacion(cual, loop) {
         //hacemos todos invisibles
         for (let key of Object.keys(this.spritesAnimados)) {
             this.spritesAnimados[key].visible = false;
         }
         //y despues hacemos visible el q queremos
         this.spritesAnimados[cual].visible = true;
+        this.spritesAnimados[cual].loop = loop;
     }
 
     cargarSpritesAnimados(textureData) {
@@ -175,7 +173,6 @@ class Enemigo extends ObjetoDinamico {
     }
 
     tick() {
-        if (this.estoyMuerto) return;
         this.verificarSiMori();
 
         let tengoAlgunEnemigoAdelante = false;
