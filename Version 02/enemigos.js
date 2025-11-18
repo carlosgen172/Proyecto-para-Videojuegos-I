@@ -2,6 +2,8 @@ class Enemigo extends ObjetoDinamico {
     sprite;
     enemigoDeBandoContrario;
     distanciaParaLlegar = 300;
+    // tengoAlgunEnemigoAdelante;
+    // enemigoMasCerca;
     constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
@@ -14,15 +16,16 @@ class Enemigo extends ObjetoDinamico {
 
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
-        this.fuerza = 5;
+        this.fuerza = 0.5;
         //this.cantEnemigosMuertos = 0;
-
+        // this.tengoAlgunEnemigoAdelante = false;
+        // this.enemigoMasCerca = null;
 
 
         this.generarNombreAleatorio();
         this.cargarSpriteAnimado();
         // console.log(this.nombreCompleto, "se ha generado.")
-        console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
+        //console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
     async cargarSpriteAnimado() {
@@ -114,59 +117,17 @@ class Enemigo extends ObjetoDinamico {
         this.enemigo = alguien
     }
 
-    // detenerAlEncontrarEnemigo() {
-    //     if (!this.enemigo) return ;
-    //     if (!this.enemigo in this.juegoPrincipal.aliados) return ;
-    //     const distanciaDeEnemigo = calcularDistancia(this, this.enemigo)
-    //     if(distanciaDeEnemigo > this.radioVision) return ;
-
-    //     // Decaimiento exponencial: va de 1 a 0 a medida que se acerca
-    //     let factor = Math.pow(dist / this.distanciaParaLlegar, 3);
-
-    //     const difX = this.target.posicion.x - this.posicion.x;
-    //     const difY = this.target.posicion.y - this.posicion.y;
-
-    //     let vectorTemporal = {
-    //         x: -difX,
-    //         y: -difY,
-    //     };
-    //     vectorTemporal = limitarVector(vectorTemporal, 1);
-
-    //     this.aceleracion.x += -vectorTemporal.x * factor;
-
-    //     this.aplicarFriccion()
-    // }
-
     mensajeDeMuerte() {
         return console.log("El enemigo ", this.nombreCompleto, " ha muerto")
     }
 
-    obtenerLista() {
-        return this.juego.enemigos;
+    direccionDeAvance() {
+        return -1;
     }
 
-    // morir() {
-    //     if (this.estoyMuerto) return;
-    //     console.log("El enemigo ", this.nombreCompleto," ha muerto")
-    //     this.juego.enemigos = this.juego.enemigos.filter((p) => p !== this);
-    //     //deshabilitar la visibilidad del sprite
-    //     this.sprite.visible = false;
-
-    //     //remover el sprite del contenedor
-    //     this.sprite.parent.removeChild(this.sprite);
-
-    //     //destruir el sprite para liberar memoria
-    //     this.sprite.destroy({
-    //         children: true,
-    //         texture: false,
-    //         baseTexture: false
-    //     });
-
-    //     //eliminar la referencia al sprite
-    //     this.sprite = null;
-
-    //     this.estoyMuerto = true
-    // }
+    obtenerLista() {
+        return this.juego.aliados;
+    }
 
     render() {
         this.actualizarPosDelSpriteSegunPosDelObjeto()
@@ -174,30 +135,7 @@ class Enemigo extends ObjetoDinamico {
 
     tick() {
         this.verificarSiMori();
-
-        let tengoAlgunEnemigoAdelante = false;
-        let enemigoMasCerca = null;
-        for (const aliado of this.juego.aliados) {
-            const distanciaDeEnemigo = calcularDistancia(this.posicion, aliado.posicion)
-            if (distanciaDeEnemigo < Math.random() * 300) {
-                tengoAlgunEnemigoAdelante = true;
-                enemigoMasCerca = aliado;
-                // if(enemigoMasCerca.verificarSiMori()) return;
-                break;
-            }
-        }
-        if (!tengoAlgunEnemigoAdelante) {
-            this.aceleracion.x = -1;
-        }
-        // else if (this.puedeGolpear()) {
-        //else if (enemigoMasCerca != undefined) {
-        else {
-            // if(enemigoMasCerca.verificarSiMori()) return;
-            //this.cambiarAnimacion("atacar") //ataca, pero se queda colgado con un error en la visibilidad del sprite.
-            this.pegar(enemigoMasCerca);
-            
-        }
-
+        this.decidirAtacarOAvanzar();
         this.aplicarFisica();
         this.render();
     }

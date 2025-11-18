@@ -5,6 +5,8 @@ class ObjetoDinamico extends GameObject {
     aceleracionMaxima;
     vida;
     fuerza;
+    tengoAlgunEnemigoAdelante;
+    enemigoMasCerca;
 
     //CONSTRUCTOR/INICIADOR:
 
@@ -12,13 +14,15 @@ class ObjetoDinamico extends GameObject {
         super(x, y, juegoPrincipal);
         this.width = width;
         this.height = height;
-        this.vida = 100;
+        this.vida = 500;
         //this.fuerza = 10;
         this.delayAtaque = 500;
         this.nivelesDeIra = [1, 2, 3, 4, 5]
         this.nivelDeIraReal = this.juego.seleccionarElementoAleatorioDe_(this.nivelesDeIra)
         this.estoyMuerto = false;
         this.ultimoGolpe = 0;
+        this.tengoAlgunEnemigoAdelante = false;
+        this.enemigoMasCerca = null;
 
         this.container = new PIXI.Container();
         this.juego.pixiApp.stage.addChild(this.container);
@@ -64,11 +68,54 @@ class ObjetoDinamico extends GameObject {
         //}
     }
 
+    direccionDeAvance() {
+        console.log("Debe poner la dirección de avance en la subclase.");
+    }
+
+    obtenerLista() {
+        throw new Error("Poner una lista a usar en el método obtenerLista() de la subclase.");
+    }
+
+    //esta funcion elige si avanzar o atacar segun si hay un enemigo cerca
+    decidirAtacarOAvanzar() {
+        //este for busca el enemigo más cercano y lo asigna como target
+        for (const objetoDeLista of this.obtenerLista()) {
+            const distanciaDeEnemigo = calcularDistancia(this.posicion, objetoDeLista.posicion)
+            if (distanciaDeEnemigo < Math.random() * 300) {
+                this.tengoAlgunEnemigoAdelante = true;
+                this.enemigoMasCerca = objetoDeLista;
+                break;
+            }
+        }
+        
+        //este condicional sirve para decidir si avanzar o atacar
+        if (!this.tengoAlgunEnemigoAdelante && !this.estoyMuerto) {
+            this.aceleracion.x = this.direccionDeAvance();
+        }
+        else if (this.tengoAlgunEnemigoAdelante && !this.estoyMuerto) {
+            //if(enemigoMasCerca.verificarSiMori()) return;
+            //this.cambiarAnimacion("atacar") //ataca, pero se queda colgado con un error en la visibilidad del sprite.
+
+            this.aceleracion.x = 0;
+            this.pegar(this.enemigoMasCerca);
+
+            //la entidad golpea hasta que el enemigo muere, luego vuelve a avanzar
+            this.tengoAlgunEnemigoAdelante = false;
+            this.enemigoMasCerca = null;
+        }
+    }
+
+    //ACTUALIZACION DE LA POSICION:
+
+    //actualiza la posicion del contenedor segun la posicion del objeto dinamico
     actualizarPosDelSpriteSegunPosDelObjeto() {
         if (!this.container) return;
         this.container.x = this.posicion.x;
         this.container.y = this.posicion.y;
     }
+
+
+    //GENERACION DE NOMBRE ALEATORIO:   
 
     generarNombreAleatorio() {
         const nombreAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.nombres)
@@ -89,41 +136,30 @@ class ObjetoDinamico extends GameObject {
         return "Una entidad ha muerto."
     }
 
-    obtenerLista() {
-        throw new Error("Poner una lista a usar en el método obtenerLista() de la subclase.");
-    }
-
     morir() {
+        //este condicional previene que se ejecute más de una vez el código de muerte
         if (this.estoyMuerto) return;
-        console.log(this.mensajeDeMuerte())
 
-        let lista = this.obtenerLista();
-        lista = lista.filter((p) => p !== this);
-        //deshabilitar la visibilidad del sprite
-        //if (lista = this.juego.enemigos) {
+        //este condicional maneja la muerte según el tipo de entidad
         if (this.constructor.name == "Enemigo") {
-            //this.spritesAnimados.loop = false
-            // this.juego.enemigos.filter((p) => p !== this)
-
             this.juego.enemigosMuertos.push(this);
             this.cambiarAnimacion("morir", false);
+            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
 
+            //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
             setTimeout(() => {
                 this.container.visible = false;
                 this.container.parent.removeChild(this.container);
+                console.log("se ha removido el contenedor", this.container);
                 this.container.destroy({
                     texture: false,
                     baseTexture: false
                 });
                 this.container = null;
-                this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigosMuertos); 
+                
             }, 2000);
-
-            //this.cantEnemigosMuertos += 1
-            //this.spritesAnimados.visible = false
-            //this.spritesAnimados.parent.removeChild(this.spritesAnimados);
-            //this.spritesAnimados = null;
-        } else {
+        }
+        else if (this.constructor.name == "Aliado") {
             this.sprite.visible = false;
             //remover el sprite del contenedor
             this.sprite.parent.removeChild(this.sprite);
@@ -136,6 +172,7 @@ class ObjetoDinamico extends GameObject {
 
             //eliminar la referencia al sprite
             this.sprite = null;
+            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
         }
 
         this.estoyMuerto = true

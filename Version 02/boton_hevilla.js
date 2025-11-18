@@ -12,10 +12,6 @@ class BotonHevilla extends Boton {
             2 : urlSprite
         }
         this.spriteActual = this.sprites[1];
-        //console.log(this.spriteActual);
-        //console.log("poderes del jugador: ", this.juego)
-        console.log("poder actual: ", this.juego.poderActual)
-
         //this.generarSpriteDe(urlSprite);
         this.generarSpriteDe(this.spriteActual);
     }

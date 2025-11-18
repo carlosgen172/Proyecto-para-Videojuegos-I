@@ -11,19 +11,18 @@ class Juego {
     personas = [];
     aviones = [];
     poderes = [];
-    //poderActual = null;
+    poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
-    //poderActual = poderes[0]
     nombres = ["Angel", "Arturo", "Ariel", "Elian", "Federico", "Juan", "Jose", "Joseías", "Marcos", "Mauricio", "Lionel", "Omar"]
     apellidos = ["Aguiar", "Bautista", "Jose", "Potter", "Rodriguez", "Villalva", "Zapata"]
 
-    constructor(){
+    constructor() {
         this.width = 700;
         this.height = 500;
-        
-        this.mouse = {posicion: {x: 0, y: 0}};
-        
+
+        this.mouse = { posicion: { x: 0, y: 0 } };
+
         // this.nombres = baseNombres
         // this.apellidos = baseApellidos
         this.initPIXI();
@@ -51,11 +50,11 @@ class Juego {
         this.pixiApp.renderer.canvas.style.position = "absolute";
 
         document.body.appendChild(this.pixiApp.canvas);
-        
+
         this.pixiApp.stage.interactive = true;
         window.addEventListener("keydown", this.keysDown.bind(this));
         window.addEventListener("keyup", this.keysUp.bind(this));
-        
+
 
         await this.cargarBackground();
         await this.crearGenerador();
@@ -75,11 +74,10 @@ class Juego {
         await this.generarBarraSalud();
         await this.generarTextoEnemigosMuertos();
         this.poderActual = this.poderes[0];
-        console.log("poder actual dentro de la clase juego:", this.poderActual)
         this.containerPrincipal = new PIXI.Container();
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
-        
+
     }
 
 
@@ -112,25 +110,25 @@ class Juego {
     }
 
     agregarInteractividadDelMouse() {
-     // Escuchar el evento mousemove
-    this.pixiApp.canvas.onmousemove = (event) => {
-    this.mouse.posicion = this.convertirCoordenadaDelMouse(event.x, event.y);
-    };
+        // Escuchar el evento mousemove
+        this.pixiApp.canvas.onmousemove = (event) => {
+            this.mouse.posicion = this.convertirCoordenadaDelMouse(event.x, event.y);
+        };
 
-    this.pixiApp.canvas.onmousedown = (event) => {
-    this.mouse.down = this.convertirCoordenadaDelMouse(event.x, event.y);
-    this.mouse.apretado = true;
-    };
-    this.pixiApp.canvas.onmouseup = (event) => {
-    this.mouse.up = this.convertirCoordenadaDelMouse(event.x, event.y);
-    this.mouse.apretado = false;
-    this.menu.realizarPresentacion()
-    }
+        this.pixiApp.canvas.onmousedown = (event) => {
+            this.mouse.down = this.convertirCoordenadaDelMouse(event.x, event.y);
+            this.mouse.apretado = true;
+        };
+        this.pixiApp.canvas.onmouseup = (event) => {
+            this.mouse.up = this.convertirCoordenadaDelMouse(event.x, event.y);
+            this.mouse.apretado = false;
+            this.menu.realizarPresentacion()
+        }
     }
 
     convertirCoordenadaDelMouse(mouseX, mouseY) {
-    // Convertir coordenadas del mouse del viewport a coordenadas del mundo
-    // teniendo en cuenta la posición y escala del containerPrincipal
+        // Convertir coordenadas del mouse del viewport a coordenadas del mundo
+        // teniendo en cuenta la posición y escala del containerPrincipal
         return {
             //x: (mouseX - this.juego.canvas.data.global.x) / this.zoom,
             //y: (mouseY - this.juego.canvas.data.global.y) / this.zoom,
@@ -140,7 +138,7 @@ class Juego {
     }
 
     //FUNCIONES GENERADORAS DE LA INTERFAZ DE USUARIO:
-    
+
     async cargarBackground() {
         // Carga la imagen usando Assets.load()
         // Esto devuelve una Promise que resuelve la Textura de la imagen
@@ -163,7 +161,7 @@ class Juego {
 
         // Añade el Sprite al escenario para que se muestre en pantalla
         this.pixiApp.stage.addChild(this.fondo);
-        
+
     }
 
     /*
@@ -182,18 +180,18 @@ class Juego {
     async generarMenu() {
         const texturaMenu = await PIXI.Assets.load("imagenes/ejemplo1.png")
         // Crea un Sprite a partir de la Textura cargada
-        
+
         let configMenu = {
-            "alto" : 500,
+            "alto": 500,
             "ancho": 500,
-            "posX": this.width/2,
-            "posY": this.height/2,
+            "posX": this.width / 2,
+            "posY": this.height / 2,
             "pixiApp": this.pixiApp,
             "juegoPrincipal": this,
             "texturaDefault": texturaMenu
         }
 
-        
+
         this.menu = new Menu(
             500,
             500,
@@ -203,7 +201,7 @@ class Juego {
             this,
             texturaMenu
         );
-        
+
         /*
         this.menu = new Menu(
             configMenu
@@ -253,7 +251,7 @@ class Juego {
             //configPoder
             50,
             50,
-            this.width/2,
+            this.width / 2,
             25,
             this,
             texturaPoderAliados,
@@ -278,8 +276,8 @@ class Juego {
         const poderBombas = new Poder(
             // configPoder
             50,
-            50, 
-            this.width/2,
+            50,
+            this.width / 2,
             25,
             this,
             texturaPoderBombas,
@@ -304,8 +302,8 @@ class Juego {
         const poderEnemigos = new Poder(
             // configPoder
             50,
-            50, 
-            this.width/2,
+            50,
+            this.width / 2,
             25,
             this,
             texturaPoderEnemigos,
@@ -323,7 +321,7 @@ class Juego {
         let configBotones = { //hace falta configurar
             //"width": 50, 
             //"height": 50,
-            
+
         }
         this.botonDer = new BotonHevilla(
             50, //ancho
@@ -354,11 +352,11 @@ class Juego {
         const texturaSalud2Hit = await PIXI.Assets.load("imagenes/bateria_hud_2_hit_final.png")
         const texturaSalud1Hit = await PIXI.Assets.load("imagenes/bateria_hud_1_hit_final.png")
         const texturaSaludVacia = await PIXI.Assets.load("imagenes/bateria_hud_vacia_final.png")
-        
+
         this.bateriaVida = new BateriaVida(
             50, //ancho
             50, //alto
-            (this.width/5) + 10, //x
+            (this.width / 5) + 10, //x
             25, //y
             this, //Juego
             texturaSaludFull, //sprite1
@@ -374,7 +372,7 @@ class Juego {
         )
     }
 
-    
+
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
 
     async cargarSprites() {
@@ -403,15 +401,15 @@ class Juego {
     async generarTropas() {
         const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesAliados());
 
-        for(let i = 0; i < 5; i++){
+        for (let i = 0; i < 5; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = -10
-            const posYRandom = Math.floor(Math.random() * this.height) 
+            const posYRandom = Math.floor(Math.random() * this.height) + 100
             const aliadoNuevo = new Aliado(
                 //posXRandom, //posición x
                 posX, //posición x
                 posYRandom, //posición y
-                this, //juego 
+                this, //juego
                 32, //ancho
                 32, //alto
                 texture, //textura
@@ -429,7 +427,7 @@ class Juego {
     }
 
     async generarAliadosSiCorresponde() {
-        if ((this.aliados.length >= 1) && (this.poderActual.estado == "aliados")) {
+        if (this.poderActual.estado == "aliados") {
             this.generarTropas();
         }
         else {
@@ -439,10 +437,11 @@ class Juego {
 
     async generarTropasEnemigas() {
         const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesEnemigos());
-        for(let i = 0; i < 5; i++){
+        for (let i = 0; i < 5; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = this.width - 10
-            const posYRandom = Math.floor(Math.random() * this.height) 
+            //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
+            const posYRandom = Math.floor(Math.random() * this.height) + 100
             const enemigoNuevo = new Enemigo(
                 //posXRandom, //posición x
                 posX, //posición x
@@ -465,7 +464,7 @@ class Juego {
     }
 
     async generarEnemigosSiCorresponde() {
-        if ((this.enemigos.length >= 1) && (this.poderActual.estado == "enemigos")) {
+        if (this.poderActual.estado == "enemigos") {
             this.generarTropasEnemigas();
         }
         else {
@@ -477,34 +476,34 @@ class Juego {
         const texturaAvion = await PIXI.Assets.load("imagenes/avion_bombardero.png");
 
         //for(let i = 0; i < 1; i++){
-            //const posXRandom = Math.floor(Math.random() * this.width)
-            const posX = -10
-            const posYRandom = Math.floor(Math.random() * this.height) 
-            const avionNuevo = new Avion(
-                //posXRandom, //posición x
-                posX, //posición x
-                posYRandom, //posición y
-                this, //juego Principal
-                64, //ancho
-                64, //alto
-                texturaAvion, //textura
-                64, //radio de colisión
-                64, //radio de visión
-                5, //velocidad
-                10, //velocidad máxima
-                3, //aceleración
-                5, //aceleración máxima
-                1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
-            )
-            this.ultimoAvion = avionNuevo
-            this.aviones.push(avionNuevo)
-            
+        //const posXRandom = Math.floor(Math.random() * this.width)
+        const posX = -10
+        const posYRandom = Math.floor(Math.random() * this.height)
+        const avionNuevo = new Avion(
+            //posXRandom, //posición x
+            posX, //posición x
+            posYRandom, //posición y
+            this, //juego Principal
+            64, //ancho
+            64, //alto
+            texturaAvion, //textura
+            64, //radio de colisión
+            64, //radio de visión
+            5, //velocidad
+            10, //velocidad máxima
+            3, //aceleración
+            5, //aceleración máxima
+            1 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+        )
+        this.ultimoAvion = avionNuevo
+        this.aviones.push(avionNuevo)
+
         //}
-        
+
     }
 
     async generarAvionSiCorresponde() {
-        
+
         //if (!this.aviones || ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()))) {
         //if (!this.aviones || ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()))) {
         if ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()) && (this.poderActual.estado == "bombas")) {
@@ -513,7 +512,7 @@ class Juego {
         else {
             console.log("aún no se puede generar ningun avión, esto puede ser debido a que el último avión aún no terminó su recorrido, o porque no seleccionó el poder correspondiente, favor de cambiar al poder correspondiente usando la q y la e para recorrer los poderes disponibles.")
         }
-    
+
         /*
         if (!this.aviones) {
             if (this.ultimoAvion.terminoViaje()) {
@@ -527,50 +526,51 @@ class Juego {
 
     //RESPONSIVIDAD DE GENERADORES:
 
-    keysDown(letra){
-        this.keys[letra.key.toLowerCase()] = true;
-        if(letra.key.toLowerCase() === "e") this.botonDer.rolarPoderHacia_(1);
-        if(letra.key.toLowerCase() === "q") this.botonIzq.rolarPoderHacia_(-1);
+    keysDown(letra) {
+        const key = letra.key.toLowerCase();
+        this.presionarHebillaCon_(key, true);
     }
 
-    keysUp(letra){
-        this.keys[letra.key.toLowerCase()] = false;
-        this.generarTropasEnemigasCon(letra)
-        this.generarAvionesCon(letra)
-        this.generarTropasAliadasCon(letra)
-        if(letra.key.toLowerCase() === "e") {
-            this.botonDer.spriteActual = this.botonDer.sprites[1];
-            this.botonDer.generarSpriteDe(this.botonDer.spriteActual);
-        }
-        if(letra.key.toLowerCase() === "q") {
-            this.botonIzq.spriteActual = this.botonIzq.sprites[1];
-            this.botonIzq.generarSpriteDe(this.botonIzq.spriteActual);
-        }
-    }
-    
-    generarTropasAliadasCon(unaTecla) {
-        if(unaTecla.key.toLowerCase() === "1") {
-            //this.generarTropas()
-            this.generarAliadosSiCorresponde()
-        }
+    keysUp(letra) {
+        const key = letra.key.toLowerCase();
+        this.presionarHebillaCon_(key, false);
+        this.generarPoderesCon(key)
     }
 
-    generarAvionesCon(unaTecla) {
-        if(unaTecla.key.toLowerCase() === "2") {
-            //this.generadorPrincipal.generarAvion()
-            if (this.aviones == []) {
-                this.generarAvion()
-            } else {
-                this.generarAvionSiCorresponde()
+    presionarHebillaCon_(unaTecla, estaPresionada) {
+        this.keys[unaTecla] = estaPresionada;
+
+        //Si se presiona
+        if (estaPresionada) {
+            if (unaTecla === "e") this.botonDer.rolarPoderHacia_(1);
+            if (unaTecla === "q") this.botonIzq.rolarPoderHacia_(-1);
+        }
+
+        //Si se suelta
+        else {
+            if (unaTecla === "e") {
+                this.botonDer.spriteActual = this.botonDer.sprites[1];
+                this.botonDer.generarSpriteDe(this.botonDer.spriteActual);
             }
-            //this.generarAvion()
-            //console.log("esta funcionando?")
+            if (unaTecla === "q") {
+                this.botonIzq.spriteActual = this.botonIzq.sprites[1];
+                this.botonIzq.generarSpriteDe(this.botonIzq.spriteActual);
+            }
         }
-        
     }
 
-    generarTropasEnemigasCon(unaTecla) {
-        if(unaTecla.key.toLowerCase() === "3") {
+    generarPoderesCon(unaTecla) {
+        if (unaTecla == "f" && this.poderActual.estado == "aliados") {
+            this.generarAliadosSiCorresponde();
+        }
+        if (unaTecla == "f" && this.poderActual.estado == "bombas") {
+            if (this.aviones == []) {
+                this.generarAvion();
+            } else {
+                this.generarAvionSiCorresponde();
+            }
+        }
+        if (unaTecla == "f" && this.poderActual.estado == "enemigos") {
             this.generarEnemigosSiCorresponde()
         }
     }
@@ -599,31 +599,31 @@ class Juego {
 
     realizarTickPorCadaEnemigo() {
         for (let unEnemigo of this.enemigos) {
-            unEnemigo.tick()
+            unEnemigo.tick();
         }
     }
 
     realizarTickPorCadaPoder() {
         for (let unPoder of this.poderes) {
-            unPoder.tick()
+            unPoder.tick();
         }
     }
 
     //FUNCIONES DE BÚSQUEDA Y ELIMINACIÓN DE ELEMENTOS (NO funciona correctamente):
-    existeElElemento_EnLaLista_(unElemento, unaLista){
-        return(unaLista.includes(unElemento))
+    existeElElemento_EnLaLista_(unElemento, unaLista) {
+        return (unaLista.includes(unElemento))
     }
 
     indiceDeElemento_EnLaLista_(unElemento, unaLista) {
         let indice = null;
-        if(this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
+        if (this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
             indice = unaLista.indexOf(unElemento);
         }
         return indice;
     }
 
     eliminarElElemento_DeLaLista_(unElemento, unaLista) {
-        if(this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
+        if (this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
             unaLista.splice(this.indiceDeElemento_EnLaLista_(unElemento, unaLista), 1)
         }
     }
@@ -631,23 +631,6 @@ class Juego {
     seleccionarElementoAleatorioDe_(unaLista) {
         const indiceAleatorio = Math.floor(Math.random() * unaLista.length);
         return unaLista[indiceAleatorio];
-    }
-
-    //No funciona, reemplazado por otro código:
-    verificacionDeVidaAliados() {
-        for (let aliado of this.aliados) {
-            if (aliado.estoyMuerto()) {
-                aliado.morir();
-            }
-        }
-    }
-
-    verificacionDeVidaEnemigos() {
-        for (let enemigo of this.enemigos) {
-            if (enemigo.estoyMuerto()) {
-                enemigo.morir();
-            }
-        }
     }
 
     actualizarVisibilidadDePoderActual() {
@@ -660,7 +643,6 @@ class Juego {
 
     gameLoop(time) {
         this.mouse.tick()
-        //console.log(this.menu)
         this.menu.tick()
         this.realizarTickPorCadaAliado()
         this.realizarTickPorCadaEnemigo()
@@ -669,8 +651,6 @@ class Juego {
         this.bateriaVida.tick()
         this.textoEnemigosMuertos.tick()
         this.actualizarVisibilidadDePoderActual()
-        //this.verificacionDeVidaAliados()
-        //this.verificacionDeVidaEnemigos()
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
