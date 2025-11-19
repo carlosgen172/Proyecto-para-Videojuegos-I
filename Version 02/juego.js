@@ -142,7 +142,7 @@ class Juego {
     async cargarBackground() {
         // Carga la imagen usando Assets.load()
         // Esto devuelve una Promise que resuelve la Textura de la imagen
-        const texture = await PIXI.Assets.load('imagenes/boton_flecha_hud_der.png'); // Reemplaza con la ruta de tu imagen
+        const texture = await PIXI.Assets.load('imagenes/Tileset/Piso_provisorio/Secuencia/226.png'); // Reemplaza con la ruta de tu imagen
 
         // Crea un Sprite a partir de la Textura cargada
         this.fondo = new PIXI.TilingSprite(texture);

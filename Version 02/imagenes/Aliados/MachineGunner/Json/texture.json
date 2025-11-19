@@ -1,0 +1,59 @@
+{
+  "frames": {
+    "MachineGunner-Class.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 110
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 1,
+        "w": 80,
+        "h": 110
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "animations": {
+    "correr": [
+      "00.png",
+      "01.png",
+      "05.png",
+      "06.png"
+    ],
+    "atacar": [
+      "06.png",
+      "15.png",
+      "16.png"
+    ],
+    "morir": [
+      "25.png",
+      "26.png",
+      "27.png",
+      "28.png",
+      "29.png"
+    ]
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "texture.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 80,
+      "h": 110
+    },
+    "scale": 1
+  }
+}

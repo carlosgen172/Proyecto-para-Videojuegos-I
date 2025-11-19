@@ -12,6 +12,29 @@ function calcularDistancia(obj1, obj2) {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
+function traerPuntajeMasAlto() {
+  const puntajeAlto = localStorage.getItem("puntajeAlto");
+  if(puntajeAlto) {
+    return parseInt(puntajeAlto);
+  } else {
+    return 0;
+  }
+}
+
+function guardarPuntajeMasAlto(puntajeMasAlto) {
+  localStorage.puntajeAlto = puntajeMasAlto;
+}
+
+function compararPuntajeYGuardarSiEsMayor(puntajeActual) {
+  if(puntajeActual > traerPuntajeMasAlto()) {
+    guardarPuntajeMasAlto(puntajeActual);
+    return true;
+  }
+  return false;
+}
+
+
+
 function limitarVector(vector, magnitudMaxima = 1) {
   const magnitudActual = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
 

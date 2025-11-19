@@ -14,9 +14,9 @@ class ObjetoDinamico extends GameObject {
         super(x, y, juegoPrincipal);
         this.width = width;
         this.height = height;
-        this.vida = 500;
+        this.vida = 100;
         //this.fuerza = 10;
-        this.delayAtaque = 500;
+        this.delayAtaque = 100;
         this.nivelesDeIra = [1, 2, 3, 4, 5]
         this.nivelDeIraReal = this.juego.seleccionarElementoAleatorioDe_(this.nivelesDeIra)
         this.estoyMuerto = false;
@@ -36,14 +36,14 @@ class ObjetoDinamico extends GameObject {
     //SISTEMA DE PELEA:
 
     puedeGolpear() {
-        return (performance.now > this.delayAtaque + this.ultimoGolpe)
+        return (performance.now() > this.delayAtaque + this.ultimoGolpe)
     }
 
     pegar(unEnemigo) {
         //unEnemigo.vida -= this.verCuantaFuerzaTengo();
         //if(unEnemigo.verificarSiMori()) return;
         //if(unEnemigo.vida == 0) return;
-        //if (!this.puedeGolpear()) return;
+        if (!this.puedeGolpear()) return;
         unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
         // console.log("Le di una piña a", unEnemigo.nombreCompleto, ", sacándole", this.verCuantaFuerzaTengo(), "de vida, y dejándolo a", unEnemigo.vida, "de vida.");
         // console.log("y quedó con", unEnemigo.vida, "de vida.");
@@ -150,7 +150,7 @@ class ObjetoDinamico extends GameObject {
             setTimeout(() => {
                 this.container.visible = false;
                 this.container.parent.removeChild(this.container);
-                console.log("se ha removido el contenedor", this.container);
+                //console.log("se ha removido el contenedor", this.container);
                 this.container.destroy({
                     texture: false,
                     baseTexture: false
