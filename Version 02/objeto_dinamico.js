@@ -27,6 +27,48 @@ class ObjetoDinamico extends GameObject {
         this.container = new PIXI.Container();
         this.juego.pixiApp.stage.addChild(this.container);
     }
+
+    //SISTEMA DE CARGA/GENERACIÓN DE SPRITESHEETS:
+    async cargarSpriteAnimado() {
+        if (this.constructor.name == "Enemigo") {
+            this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
+        }else if (this.constructor.name == "Aliado"){
+            //this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json");
+            this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
+        } else {
+            console.log("error: no existe spritesheet para este objeto")
+        }
+        this.spritesAnimados = {};
+        this.cargarSpritesAnimados(this.animacionesPersonaje);
+        this.cambiarAnimacion("correr", true);
+    }
+
+    cambiarAnimacion(cual, loop) {
+        //hacemos todos invisibles
+        for (let key of Object.keys(this.spritesAnimados)) {
+            this.spritesAnimados[key].visible = false;
+        }
+        //y despues hacemos visible el q queremos
+        this.spritesAnimados[cual].visible = true;
+        this.spritesAnimados[cual].loop = loop;
+    }
+
+    cargarSpritesAnimados(textureData) {
+        for (let key of Object.keys(textureData.animations)) {
+            this.spritesAnimados[key] = new PIXI.AnimatedSprite(
+                textureData.animations[key]
+            );
+
+            this.spritesAnimados[key].play();
+            this.spritesAnimados[key].loop = true;
+            this.spritesAnimados[key].animationSpeed = 0.1;
+            this.spritesAnimados[key].scale.set(2);
+            this.spritesAnimados[key].anchor.set(0.5, 1);
+
+            this.container.addChild(this.spritesAnimados[key]);
+        }
+    }
+
     /*
     generarSpriteDe(unSprite) {
         //Aún no se genera un sprite
@@ -44,6 +86,7 @@ class ObjetoDinamico extends GameObject {
         //if(unEnemigo.verificarSiMori()) return;
         //if(unEnemigo.vida == 0) return;
         if (!this.puedeGolpear()) return;
+        this.cambiarAnimacion("atacar", true);
         unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
         // console.log("Le di una piña a", unEnemigo.nombreCompleto, ", sacándole", this.verCuantaFuerzaTengo(), "de vida, y dejándolo a", unEnemigo.vida, "de vida.");
         // console.log("y quedó con", unEnemigo.vida, "de vida.");
@@ -99,6 +142,9 @@ class ObjetoDinamico extends GameObject {
             this.aceleracion.x = 0;
             this.pegar(this.enemigoMasCerca);
 
+            this.cambiarAnimacion("atacar", false)
+            this.cambiarAnimacion("correr", true);
+
             //la entidad golpea hasta que el enemigo muere, luego vuelve a avanzar
             this.tengoAlgunEnemigoAdelante = false;
             this.enemigoMasCerca = null;
@@ -136,6 +182,48 @@ class ObjetoDinamico extends GameObject {
         return "Una entidad ha muerto."
     }
 
+    // morir() {
+    //     //este condicional previene que se ejecute más de una vez el código de muerte
+    //     if (this.estoyMuerto) return;
+
+    //     //este condicional maneja la muerte según el tipo de entidad
+    //     if (this.constructor.name == "Enemigo") {
+    //         this.juego.enemigosMuertos.push(this);
+    //         this.cambiarAnimacion("morir", false);
+    //         this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
+
+    //         //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
+    //         setTimeout(() => {
+    //             this.container.visible = false;
+    //             this.container.parent.removeChild(this.container);
+    //             //console.log("se ha removido el contenedor", this.container);
+    //             this.container.destroy({
+    //                 texture: false,
+    //                 baseTexture: false
+    //             });
+    //             this.container = null;
+                
+    //         }, 2000);
+    //     }
+    //     else if (this.constructor.name == "Aliado") {
+    //         this.sprite.visible = false;
+    //         //remover el sprite del contenedor
+    //         this.sprite.parent.removeChild(this.sprite);
+
+    //         //destruir el sprite para liberar memoria
+    //         this.sprite.destroy({
+    //             texture: false,
+    //             baseTexture: false
+    //         });
+
+    //         //eliminar la referencia al sprite
+    //         this.sprite = null;
+    //         this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
+    //     }
+
+    //     this.estoyMuerto = true
+    // }
+
     morir() {
         //este condicional previene que se ejecute más de una vez el código de muerte
         if (this.estoyMuerto) return;
@@ -160,6 +248,24 @@ class ObjetoDinamico extends GameObject {
             }, 2000);
         }
         else if (this.constructor.name == "Aliado") {
+            this.cambiarAnimacion("morir", false);
+            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
+
+            //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
+            setTimeout(() => {
+                this.container.visible = false;
+                this.container.parent.removeChild(this.container);
+                //console.log("se ha removido el contenedor", this.container);
+                this.container.destroy({
+                    texture: false,
+                    baseTexture: false
+                });
+                this.container = null;
+                
+            }, 2000);
+        }
+
+        else if (this.constructor.name == "Avion") {
             this.sprite.visible = false;
             //remover el sprite del contenedor
             this.sprite.parent.removeChild(this.sprite);
@@ -172,8 +278,44 @@ class ObjetoDinamico extends GameObject {
 
             //eliminar la referencia al sprite
             this.sprite = null;
-            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
+            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aviones);
         }
+        else if (this.constructor.name == "Bala") {
+            this.sprite.visible = false;
+            //remover el sprite del contenedor
+            this.sprite.parent.removeChild(this.sprite);
+
+            //destruir el sprite para liberar memoria
+            this.sprite.destroy({
+                texture: false,
+                baseTexture: false
+            });
+
+            //eliminar la referencia al sprite
+            this.sprite = null;
+            //this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
+        }
+        else {
+            console.log("no se pudo cargar el sprite/spritesheet, favor de verificar que el mismo se haya vinculado bien.")
+        }
+
+        //}
+        //else if (this.constructor.name == "Aliado") {
+        // else {
+        //     this.sprite.visible = false;
+        //     //remover el sprite del contenedor
+        //     this.sprite.parent.removeChild(this.sprite);
+
+        //     //destruir el sprite para liberar memoria
+        //     this.sprite.destroy({
+        //         texture: false,
+        //         baseTexture: false
+        //     });
+
+        //     //eliminar la referencia al sprite
+        //     this.sprite = null;
+        //     this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
+        // }
 
         this.estoyMuerto = true
     }

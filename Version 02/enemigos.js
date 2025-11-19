@@ -28,38 +28,38 @@ class Enemigo extends ObjetoDinamico {
         //console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
-    async cargarSpriteAnimado() {
-        const animacionesPersonaje = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
-        this.spritesAnimados = {};
-        this.cargarSpritesAnimados(animacionesPersonaje);
-        this.cambiarAnimacion("correr", true);
-    }
+    // async cargarSpriteAnimado() {
+    //     const animacionesPersonaje = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
+    //     this.spritesAnimados = {};
+    //     this.cargarSpritesAnimados(animacionesPersonaje);
+    //     this.cambiarAnimacion("correr", true);
+    // }
 
-    cambiarAnimacion(cual, loop) {
-        //hacemos todos invisibles
-        for (let key of Object.keys(this.spritesAnimados)) {
-            this.spritesAnimados[key].visible = false;
-        }
-        //y despues hacemos visible el q queremos
-        this.spritesAnimados[cual].visible = true;
-        this.spritesAnimados[cual].loop = loop;
-    }
+    // cambiarAnimacion(cual, loop) {
+    //     //hacemos todos invisibles
+    //     for (let key of Object.keys(this.spritesAnimados)) {
+    //         this.spritesAnimados[key].visible = false;
+    //     }
+    //     //y despues hacemos visible el q queremos
+    //     this.spritesAnimados[cual].visible = true;
+    //     this.spritesAnimados[cual].loop = loop;
+    // }
 
-    cargarSpritesAnimados(textureData) {
-        for (let key of Object.keys(textureData.animations)) {
-            this.spritesAnimados[key] = new PIXI.AnimatedSprite(
-                textureData.animations[key]
-            );
+    // cargarSpritesAnimados(textureData) {
+    //     for (let key of Object.keys(textureData.animations)) {
+    //         this.spritesAnimados[key] = new PIXI.AnimatedSprite(
+    //             textureData.animations[key]
+    //         );
 
-            this.spritesAnimados[key].play();
-            this.spritesAnimados[key].loop = true;
-            this.spritesAnimados[key].animationSpeed = 0.1;
-            this.spritesAnimados[key].scale.set(2);
-            this.spritesAnimados[key].anchor.set(0.5, 1);
+    //         this.spritesAnimados[key].play();
+    //         this.spritesAnimados[key].loop = true;
+    //         this.spritesAnimados[key].animationSpeed = 0.1;
+    //         this.spritesAnimados[key].scale.set(2);
+    //         this.spritesAnimados[key].anchor.set(0.5, 1);
 
-            this.container.addChild(this.spritesAnimados[key]);
-        }
-    }
+    //         this.container.addChild(this.spritesAnimados[key]);
+    //     }
+    // }
 
     // generarSpriteDe(unSprite) {
     //     this.sprite = new PIXI.Sprite(unSprite);

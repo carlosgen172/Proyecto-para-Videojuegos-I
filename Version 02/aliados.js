@@ -25,6 +25,7 @@ class Aliado extends ObjetoDinamico {
 
         this.generarNombreAleatorio();
         this.generarSpriteDe(sprite);
+        this.cargarSpriteAnimado();
         //console.log(this.nombreCompleto, "se ha generado, siendo un " , this.constructor.name ," con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
@@ -44,6 +45,10 @@ class Aliado extends ObjetoDinamico {
 
         //Añadir el sprite dentro del stage:
         this.container.addChild(this.sprite);
+    }
+
+    elegirSpritesheetAleatorio() {
+        return this.sprite
     }
 
     asignarTargetA(alguien) {

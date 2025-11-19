@@ -236,7 +236,7 @@ class Juego {
     }
 
     async generarPoderAliados() {
-        const texturaPoderAliados = await PIXI.Assets.load("imagenes/aliados_power_up_hud.png");
+        const texturaPoderAliados = await PIXI.Assets.load("imagenes/aliados_power_up_hud_corregido.png");
         // let configPoder = {
         //     "alto": 50,
         //     "ancho": 50,
@@ -262,7 +262,7 @@ class Juego {
     }
 
     async generarPoderBombas() {
-        const texturaPoderBombas = await PIXI.Assets.load("imagenes/bombita_power_up_hud.png");
+        const texturaPoderBombas = await PIXI.Assets.load("imagenes/bombita_power_up_hud_corregido.png");
         // let configPoder = {
         //     "alto": 50,
         //     "ancho": 50,
@@ -288,7 +288,7 @@ class Juego {
     }
 
     async generarPoderEnemigos() {
-        const texturaPoderEnemigos = await PIXI.Assets.load("imagenes/enemigos_power_up_hud.png");
+        const texturaPoderEnemigos = await PIXI.Assets.load("imagenes/exterminio_o_desolacion_power_up.png");
         // let configPoder = {
         //     "alto": 50,
         //     "ancho": 50,
@@ -383,6 +383,11 @@ class Juego {
             PIXI.Assets.load("imagenes/aliados/ensalada/sniper.png")
         ]);
 
+        this.spritesheetsAliados = await Promise.all([
+            PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json")
+            //PIXI.Assets.load("imagenes/Aliados/MachineGunner/Json/texture.json"),
+        ])
+
         this.texturasEnemigos = await Promise.all([
             PIXI.Assets.load("imagenes/enemigos/ensalada/centipede.png"),
             PIXI.Assets.load("imagenes/enemigos/ensalada/hornet.png"),
@@ -393,13 +398,16 @@ class Juego {
     listaDeSpritesAliados() {
         return this.texturasAliados;
     }
-
+    listaDeSpritesheetsAliados() {
+        return this.spritesheetsAliados;
+    }
     listaDeSpritesEnemigos() {
         return this.texturasEnemigos;
     }
 
     async generarTropas() {
-        const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesAliados());
+        //const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesAliados());
+        const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesheetsAliados());
 
         for (let i = 0; i < 5; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
