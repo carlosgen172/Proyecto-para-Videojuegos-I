@@ -12,6 +12,18 @@ function calcularDistancia(obj1, obj2) {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
+function calcularDistanciaEnX(obj1, obj2) {
+  const dx = obj2.x - obj1.x;
+  return Math.sqrt(dx * dx);
+}
+
+function calcularDistanciaEnY(obj1, obj2) {
+  const dy = obj2.y - obj1.y;
+  return Math.sqrt(dy * dy);
+}
+
+// Funciones para manejar el puntaje más alto usando localStorage
+//-------------------------------
 function traerPuntajeMasAlto() {
   const puntajeAlto = localStorage.getItem("puntajeAlto");
   if(puntajeAlto) {
@@ -32,7 +44,7 @@ function compararPuntajeYGuardarSiEsMayor(puntajeActual) {
   }
   return false;
 }
-
+//-------------------------------
 
 
 function limitarVector(vector, magnitudMaxima = 1) {

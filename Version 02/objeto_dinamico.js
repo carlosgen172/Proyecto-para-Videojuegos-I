@@ -1,8 +1,8 @@
 class ObjetoDinamico extends GameObject {
     radioColision;
     radioVision;
-    velocidadMaxima;
-    aceleracionMaxima;
+    velocidadMaxima = 0.8;
+    aceleracionMaxima = 0.2;
     vida;
     fuerza;
     tengoAlgunEnemigoAdelante;
@@ -23,7 +23,6 @@ class ObjetoDinamico extends GameObject {
         this.ultimoGolpe = 0;
         this.tengoAlgunEnemigoAdelante = false;
         this.enemigoMasCerca = null;
-
         this.container = new PIXI.Container();
         this.juego.pixiApp.stage.addChild(this.container);
     }
@@ -123,8 +122,9 @@ class ObjetoDinamico extends GameObject {
     decidirAtacarOAvanzar() {
         //este for busca el enemigo más cercano y lo asigna como target
         for (const objetoDeLista of this.obtenerLista()) {
-            const distanciaDeEnemigo = calcularDistancia(this.posicion, objetoDeLista.posicion)
-            if (distanciaDeEnemigo < Math.random() * 300) {
+            const distanciaDeEnemigoEnX = calcularDistanciaEnX(this.posicion, objetoDeLista.posicion)
+            const distanciaDeEnemigoEnY = calcularDistanciaEnY(this.posicion, objetoDeLista.posicion)
+            if (distanciaDeEnemigoEnX < Math.random() * 300 && distanciaDeEnemigoEnY < 50) {
                 this.tengoAlgunEnemigoAdelante = true;
                 this.enemigoMasCerca = objetoDeLista;
                 break;

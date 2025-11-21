@@ -1,0 +1,221 @@
+[33mcommit 0233d215a83bcf537b17f79766350ed508435282[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Nov 18 23:32:02 2025 -0300
+
+    Corrección del sistema de cooldown (modificación en la vida y delay del ataque), agregado de animaciones/tiles y guardado de puntaje más alto
+
+[33mcommit 13f3afd769eb0e7c022a1ca4acbca3d29a329f1a[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Nov 18 13:08:37 2025 -0300
+
+    Corrección de la generación de aliados/enemigos, mejora de la lógica del código de: el cambio y la generación de poderes, sistema tanto de muertes como de detección de enemigos
+
+[33mcommit 29f94f27589bfe279ebb585b6d78c8014a5ea4ad[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Nov 17 13:47:59 2025 -0300
+
+    Mejora de animaciones de muerte y eliminacion de lineas obsoletas
+
+[33mcommit edba43135ba5fb055a230b600ba67ba450556ac4[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Sun Nov 16 21:00:11 2025 -0300
+
+    Agregado de clase bala (a verificar si ponerlo dentro de la clase de objeto dinámico/aliado o enemigo/juego) y de contador de kills, aún no se pudo solucionar el tema del cooldown para atacar y la detección de los pjs.
+
+[33mcommit eb4ea7c8a7a129f0fa1479616a685d186a6ab389[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Sat Nov 15 17:50:46 2025 -0300
+
+    Correccion en la interactividad con respecto al poder actual y los poderes capaces de activar por el usuario, entre otras pequeñas correcciones.
+
+[33mcommit e49e23a786a8862a90baa0b549d6260aec8e0b52[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Fri Nov 14 20:35:30 2025 -0300
+
+    Agregado de animaciones y containers, falta completar
+
+[33mcommit 5159212f05b54516fc17b7049d46637ff295f9fc[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Fri Nov 14 19:54:29 2025 -0300
+
+    Arreglo de los sprites de las hevillas al presionarlos
+
+[33mcommit 13f7451c607635e55f12da7217ed7d978009387a[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Fri Nov 14 19:33:51 2025 -0300
+
+    Corrección de visibilidad de los sprites de los poderes
+
+[33mcommit 96552287401b4911319439c9611eb3b4f80d2ae5[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Fri Nov 14 17:49:33 2025 -0300
+
+    Corrección de la eliminación de los sprites de los pjs al morir, mejora de flujo del código, agregado de sprites tanto para aliados como para los enemigos
+
+[33mcommit 08d6b1a7cdec8a5374650185d37d663da0fd1c7e[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Thu Nov 13 18:51:53 2025 -0300
+
+    Implementación del sistema de poderes (a corregir/replantear) y del sistema de vida (funcional, pero se necesita implementar con el jugador), entre otros agregados y correcciones.
+
+[33mcommit 5875a6a5cdc4b3bc722ef06571723de2a84195d3[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Wed Nov 12 20:49:59 2025 -0300
+
+    Corrección del sistema de muerte en aliados y enemigos, mejor organización de código en el objeto dinámico y otras pequeñas modficaciones pertinentes.
+
+[33mcommit 92e6fe644f457b13830922e39782c464d5bd28cc[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Wed Nov 12 13:55:05 2025 -0300
+
+    Mejora de ubicación del HUD, agregado de funciones de verificación de vida de pjs, correción de función indice de una lista, mejorar sistema de muerte
+
+[33mcommit a45be7ff39f79f0dd7268540974c020a5700e3bb[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Tue Nov 11 14:55:13 2025 -0300
+
+    Agregado de sistema de nombres aleatorios, corrección de aparición del mouse y corrección de funcionamiento de la clase Avion, planteamiento de funcionalidad de vida/muerte de los pjs
+
+[33mcommit 2adfcba01992d8d0c6b890e485d7c8a07cb935ce[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Nov 11 10:57:28 2025 -0300
+
+    Agregado de detección de objetos y su detenimiento ante éstos a la clase enemigos
+
+[33mcommit 41b48922de4d8022c14e7f0047b80a7522c89fa9[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Nov 10 21:39:04 2025 -0300
+
+    Agregado de funcion pegar (incompleto) en objeto dinamico
+
+[33mcommit 488ef90a447d9b5a924251c3f931fc93f6430182[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Nov 10 21:08:33 2025 -0300
+
+    Mejora de deteccion de tropas y detenimiento al encontrarse
+
+[33mcommit 9925b24d33637a1cf8e8116e419d6566693e0fed[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Nov 10 20:44:10 2025 -0300
+
+    Regularizacion de las clases
+
+[33mcommit d8e465cf83f6633180b21f18f73878eb010b302f[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Mon Nov 10 00:01:27 2025 -0300
+
+    Correccion del sistema de botones, agregado de una funcionalidad extra basado en el segundo power up, agregado de más assets, entre otras cosas experimentales - a mejorar -.
+
+[33mcommit fe3d4a85067aa9eb9bd8cf8c23b8cdfb08a0ca9c[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 27 00:00:14 2025 -0300
+
+    Intento de agregado de jugador con sus atributos, faltan cosas
+
+[33mcommit eff05cefd5e5acc91d3af34cfc9d75d356272765[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Sun Oct 26 18:48:49 2025 -0300
+
+    Correcciones a la clase Enemigo -  nuevo sistema de movimiento - y agregado de sistema de spawneo de Aliados y Enemigos a través de teclas.
+
+[33mcommit e9a7e232796ab075683f542625225a1073575058[m
+Author: ArnezSebastian <darkr1derm0dster32@gmail.com>
+Date:   Sat Oct 25 19:33:09 2025 -0300
+
+    Modificacion e los archivos de aliados y del objeto dinamico para que sólo se puedan mover de forma vertical, creación de la clase Enemigo.
+
+[33mcommit c0e323a04cae215354c6d3c19f7a1e7a43424448[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Wed Oct 22 09:15:56 2025 -0300
+
+    Corregido error de coordenadas del mouse
+
+[33mcommit 992e510a5a91c719e9d124d728395910b0e5ec7a[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:34:17 2025 -0300
+
+    Delete personajes.js
+
+[33mcommit 08c599a79e636d0bf101988d3f1bf40c63194ce5[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:33:47 2025 -0300
+
+    Delete juego.js
+
+[33mcommit 382903189a109c2d33fc08101a0df378bdc8e86f[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:33:35 2025 -0300
+
+    Delete jugador.js
+
+[33mcommit 704275a5e71be7d775d5fe9eb56738ef0d469936[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:33:17 2025 -0300
+
+    Delete index.html
+
+[33mcommit 46730e63fa6b3737f81027ad67780a139ddf8e10[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:33:07 2025 -0300
+
+    Delete README.md
+
+[33mcommit 6144fde20cf8b23e2aa4dc561660ec1b214d4462[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:32:55 2025 -0300
+
+    Delete imagenes directory
+
+[33mcommit 56614c95b6c0e4ac40ff2891a7a36f3c9f366a00[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:32:04 2025 -0300
+
+    version 02 subida
+
+[33mcommit 0b051e186c4dac32f2a64738ba75a672b52e2898[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:20:24 2025 -0300
+
+    version 1 subida
+
+[33mcommit a2fb61cffdd65efd94ba85dc4d3095e5d4e76c73[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:19:08 2025 -0300
+
+    Delete version 0.1
+
+[33mcommit e5b2c37c7de800e075a12ab11b52fd34a775dcd1[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Mon Oct 20 21:18:06 2025 -0300
+
+    Create version 0.1
+
+[33mcommit 2445c91e3ce5fe2262337eb4f1e1a0a7984b67b5[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Sep 30 17:33:33 2025 -0300
+
+    Agregado de aliados, enemigos, y rango de vision.
+
+[33mcommit 9521def0f0f412ee47c9631fae4010b0c3d6f142[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Sep 23 14:31:51 2025 -0300
+
+    Actualizacion de README.md
+
+[33mcommit c67e6224154771dd3e89378b3e6f48a0dfb9877f[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Sep 23 14:28:39 2025 -0300
+
+    Actualizacion de README.md
+
+[33mcommit cac12f4bd46a101a4d344f1a8e28ccbcdb2cd5c6[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Sep 23 14:27:43 2025 -0300
+
+    Añadiendo los primeros archivos
+
+[33mcommit c3d3814464146f2877c1e8789f679af3ef71c060[m
+Author: carlosgen172 <carlosgen211@gmail.com>
+Date:   Tue Sep 23 14:21:12 2025 -0300
+
+    Initial commit

@@ -11,6 +11,7 @@ class Juego {
     personas = [];
     aviones = [];
     poderes = [];
+    cantEnemigosMinimaEnPantalla = 20;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
@@ -61,9 +62,7 @@ class Juego {
         await this.generarMouse();
         await this.generarMenu();
         await this.cargarSprites();
-        this.generarTropas();
-        this.generarAvion();
-        this.generarTropasEnemigas();
+
         //this.poderes = [];
         //await this.generarAvion();
         await this.cargarFondoHUD();
@@ -412,7 +411,7 @@ class Juego {
         for (let i = 0; i < 5; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = -10
-            const posYRandom = Math.floor(Math.random() * this.height) + 100
+            const posYRandom = Math.floor(Math.random() * (this.height - 100)) + 100
             const aliadoNuevo = new Aliado(
                 //posXRandom, //posición x
                 posX, //posición x
@@ -423,10 +422,8 @@ class Juego {
                 texture, //textura
                 15, //radio de colisión
                 20, //radio de visión
-                5, //velocidad
-                10, //velocidad máxima
-                3, //aceleración
-                5, //aceleración máxima
+                0.5, //velocidad
+                0.1, //aceleración
                 2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
             )
             this.aliados.push(aliadoNuevo)
@@ -445,25 +442,23 @@ class Juego {
 
     async generarTropasEnemigas() {
         const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesEnemigos());
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 1; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = this.width - 10
             //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
-            const posYRandom = Math.floor(Math.random() * this.height) + 100
+            const posYRandom = Math.floor(Math.random() * (this.height - 100)) + 100
             const enemigoNuevo = new Enemigo(
                 //posXRandom, //posición x
                 posX, //posición x
                 posYRandom, //posición y
                 this, //juego Principal
-                32, //ancho
-                32, //alto
+                16, //ancho
+                16, //alto
                 texture, //textura
                 15, //radio de colisión
                 20, //radio de visión
-                5, //velocidad
-                10, //velocidad máxima
-                3, //aceleración
-                5, //aceleración máxima
+                0.5, //velocidad
+                0.1, //aceleración
                 2.25 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
             )
             this.enemigos.push(enemigoNuevo)
@@ -583,6 +578,12 @@ class Juego {
         }
     }
 
+    aparicionDeEnemigo() {
+        if(this.enemigos.length < this.cantEnemigosMinimaEnPantalla) {
+            this.generarTropasEnemigas() * this.aliados.length;
+        }
+    }
+
     /*
     realizarClick() {
         this.menu.on('pointerdown', () => {
@@ -649,13 +650,14 @@ class Juego {
         this.poderActual.sprite.visible = true;
     }
 
-    gameLoop(time) {
+    gameLoop() {
         this.mouse.tick()
         this.menu.tick()
         this.realizarTickPorCadaAliado()
         this.realizarTickPorCadaEnemigo()
         this.realizarTickPorCadaAvion()
         this.realizarTickPorCadaPoder()
+        this.aparicionDeEnemigo()
         this.bateriaVida.tick()
         this.textoEnemigosMuertos.tick()
         this.actualizarVisibilidadDePoderActual()

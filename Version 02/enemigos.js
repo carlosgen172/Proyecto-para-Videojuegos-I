@@ -4,14 +4,12 @@ class Enemigo extends ObjetoDinamico {
     distanciaParaLlegar = 300;
     // tengoAlgunEnemigoAdelante;
     // enemigoMasCerca;
-    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
+    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, aceleracion, scaleX) {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
         this.velocidad = { x: velocidad, y: velocidad }; // Velocidad en píxeles/frame
-        this.velMaxima = velMaxima;
         this.aceleracion = { x: aceleracion, y: aceleracion }; // Aceleración en píxeles/frame²
-        this.acelMaxima = acelMaxima;
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
 
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
@@ -28,90 +26,6 @@ class Enemigo extends ObjetoDinamico {
         //console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
-    // async cargarSpriteAnimado() {
-    //     const animacionesPersonaje = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
-    //     this.spritesAnimados = {};
-    //     this.cargarSpritesAnimados(animacionesPersonaje);
-    //     this.cambiarAnimacion("correr", true);
-    // }
-
-    // cambiarAnimacion(cual, loop) {
-    //     //hacemos todos invisibles
-    //     for (let key of Object.keys(this.spritesAnimados)) {
-    //         this.spritesAnimados[key].visible = false;
-    //     }
-    //     //y despues hacemos visible el q queremos
-    //     this.spritesAnimados[cual].visible = true;
-    //     this.spritesAnimados[cual].loop = loop;
-    // }
-
-    // cargarSpritesAnimados(textureData) {
-    //     for (let key of Object.keys(textureData.animations)) {
-    //         this.spritesAnimados[key] = new PIXI.AnimatedSprite(
-    //             textureData.animations[key]
-    //         );
-
-    //         this.spritesAnimados[key].play();
-    //         this.spritesAnimados[key].loop = true;
-    //         this.spritesAnimados[key].animationSpeed = 0.1;
-    //         this.spritesAnimados[key].scale.set(2);
-    //         this.spritesAnimados[key].anchor.set(0.5, 1);
-
-    //         this.container.addChild(this.spritesAnimados[key]);
-    //     }
-    // }
-
-    // generarSpriteDe(unSprite) {
-    //     this.sprite = new PIXI.Sprite(unSprite);
-
-    //     this.sprite.anchor.set(0.5);
-
-    //     //Ajuste de ubicacion
-    //     this.sprite.x = this.x;
-    //     this.sprite.y = this.y;
-
-    //     //Ajuste de tamaño
-    //     this.sprite.width = this.width;
-    //     this.sprite.height = this.height;
-    //     this.sprite.scale.x = this.scaleX;
-
-    //     //Añadir el sprite dentro del stage:
-    //     this.juego.pixiApp.stage.addChild(this.sprite);
-    // }
-
-    // aplicarFisicaNueva() {
-    //     /**
-    //         * SISTEMA DE FÍSICA ESTABLE CON DELTATIME
-
-    //         * Limitamos deltaTime para evitar inestabilidad cuando los FPS bajan:
-    //         * - FPS normales (60): deltaTime ≈ 1
-    //         * - FPS bajos (15): deltaTime ≈ 4 → limitado a 3
-    //         * - Esto previene saltos extremos en la simulación física
-    //     */
-    //     const deltaTime = Math.min(this.juego.pixiApp.ticker.deltaTime, 3);
-
-    //     //Aplicamos y limitamos las fuerzas acumuladas:
-    //     this.limitarAceleracion();
-    //     // Integración de Euler: v = v₀ + a×Δt (para predecir el siguiete punto por el cual el bot se va a mover, prediciendo la velocidad siguiente según la aceleración)
-    //     this.velocidad.x -= this.aceleracion.x * deltaTime;
-    //     //this.velocidad.y += this.aceleracion.y * deltaTime;
-
-    //     // Se resetea la aceleración para el proximo frame:
-    //     this.aceleracion.x = 0;
-    //     this.aceleracion.y = 0;
-
-    //     // PASO 2: Aplicar modificadores de velocidad
-    //     //this.aplicarFriccion(); // Resistencia al movimiento
-    //     this.limitarVelocidad(); // Velocidad terminal
-
-    //     // PASO 3: Integrar posición: x = x₀ + v×Δt (se calcula la siguiete posición según la velocidad del objeto)
-    //     this.posicion.x -= this.velocidad.x * deltaTime;
-    //     //this.posicion.y += this.velocidad.y * deltaTime;
-
-    //      // PASO 4: Calcular ángulo de movimiento usando arctangente
-    //     // atan2(y,x) nos da el ángulo en radianes del vector velocidad
-    //     this.calcularAnguloDeMovimiento();
-    // }
 
     asignarTargetA(alguien) {
         this.enemigo = alguien

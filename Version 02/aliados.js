@@ -4,14 +4,12 @@ class Aliado extends ObjetoDinamico {
     distanciaParaLlegar = 300;
     // tengoAlgunEnemigoAdelante;
     // enemigoMasCerca;
-    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
+    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, aceleracion, scaleX) {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
         this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
-        this.velMaxima = velMaxima;
         this.aceleracion = { x: aceleracion, y: aceleracion}; // Aceleración en píxeles/frame²
-        this.acelMaxima = acelMaxima;
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
         this.fuerza = 1;
 
