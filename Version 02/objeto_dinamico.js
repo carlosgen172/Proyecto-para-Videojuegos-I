@@ -30,7 +30,7 @@ class ObjetoDinamico extends GameObject {
     //SISTEMA DE CARGA/GENERACIÓN DE SPRITESHEETS:
     async cargarSpriteAnimado() {
         if (this.constructor.name == "Enemigo") {
-            this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json");
+            this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
         }else if (this.constructor.name == "Aliado"){
             //this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json");
             this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
@@ -42,6 +42,7 @@ class ObjetoDinamico extends GameObject {
         this.cambiarAnimacion("correr", true);
     }
 
+    //se cambia la animacion y se determina si se repite o no
     cambiarAnimacion(cual, loop) {
         //hacemos todos invisibles
         for (let key of Object.keys(this.spritesAnimados)) {
@@ -57,7 +58,6 @@ class ObjetoDinamico extends GameObject {
             this.spritesAnimados[key] = new PIXI.AnimatedSprite(
                 textureData.animations[key]
             );
-
             this.spritesAnimados[key].play();
             this.spritesAnimados[key].loop = true;
             this.spritesAnimados[key].animationSpeed = 0.1;
@@ -66,6 +66,15 @@ class ObjetoDinamico extends GameObject {
 
             this.container.addChild(this.spritesAnimados[key]);
         }
+    }
+
+    listaDeSpritessheetsDisponibles() {
+        //elegir entre los spritesheets disponibles segun la subclase
+    }
+
+    elegirSpritesheetAleatorio() {
+        const sheet = juego.seleccionarElementoAleatorioDe_(this.listaDeSpritessheetsDisponibles());
+        return sheet;
     }
 
     /*
@@ -81,22 +90,13 @@ class ObjetoDinamico extends GameObject {
     }
 
     pegar(unEnemigo) {
-        //unEnemigo.vida -= this.verCuantaFuerzaTengo();
-        //if(unEnemigo.verificarSiMori()) return;
-        //if(unEnemigo.vida == 0) return;
         if (!this.puedeGolpear()) return;
         this.cambiarAnimacion("atacar", true);
         unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
-        // console.log("Le di una piña a", unEnemigo.nombreCompleto, ", sacándole", this.verCuantaFuerzaTengo(), "de vida, y dejándolo a", unEnemigo.vida, "de vida.");
-        // console.log("y quedó con", unEnemigo.vida, "de vida.");
-        if (unEnemigo.vida == 0) {
-            //console.log("Yo,", this.nombreCompleto, "di de baja exitósamente a", unEnemigo.nombreCompleto, ".")
-        }
         this.ultimoGolpe = performance.now();
     }
 
     verCuantaFuerzaTengo() {
-        //return 10;
         return this.fuerza * this.nivelDeIraReal
     }
 
@@ -160,7 +160,6 @@ class ObjetoDinamico extends GameObject {
         this.container.y = this.posicion.y;
     }
 
-
     //GENERACION DE NOMBRE ALEATORIO:   
 
     generarNombreAleatorio() {
@@ -169,8 +168,7 @@ class ObjetoDinamico extends GameObject {
         this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
     }
 
-
-    //SISTEMA DE VERIFICACIÓN DE MUERTE:
+    //SISTEMA DE MUERTE:
 
     verificarSiMori() {
         if (this.vida <= 0) {
@@ -181,48 +179,6 @@ class ObjetoDinamico extends GameObject {
     mensajeDeMuerte() {
         return "Una entidad ha muerto."
     }
-
-    // morir() {
-    //     //este condicional previene que se ejecute más de una vez el código de muerte
-    //     if (this.estoyMuerto) return;
-
-    //     //este condicional maneja la muerte según el tipo de entidad
-    //     if (this.constructor.name == "Enemigo") {
-    //         this.juego.enemigosMuertos.push(this);
-    //         this.cambiarAnimacion("morir", false);
-    //         this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
-
-    //         //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
-    //         setTimeout(() => {
-    //             this.container.visible = false;
-    //             this.container.parent.removeChild(this.container);
-    //             //console.log("se ha removido el contenedor", this.container);
-    //             this.container.destroy({
-    //                 texture: false,
-    //                 baseTexture: false
-    //             });
-    //             this.container = null;
-                
-    //         }, 2000);
-    //     }
-    //     else if (this.constructor.name == "Aliado") {
-    //         this.sprite.visible = false;
-    //         //remover el sprite del contenedor
-    //         this.sprite.parent.removeChild(this.sprite);
-
-    //         //destruir el sprite para liberar memoria
-    //         this.sprite.destroy({
-    //             texture: false,
-    //             baseTexture: false
-    //         });
-
-    //         //eliminar la referencia al sprite
-    //         this.sprite = null;
-    //         this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
-    //     }
-
-    //     this.estoyMuerto = true
-    // }
 
     morir() {
         //este condicional previene que se ejecute más de una vez el código de muerte
@@ -244,7 +200,6 @@ class ObjetoDinamico extends GameObject {
                     baseTexture: false
                 });
                 this.container = null;
-                
             }, 2000);
         }
         else if (this.constructor.name == "Aliado") {
@@ -261,7 +216,6 @@ class ObjetoDinamico extends GameObject {
                     baseTexture: false
                 });
                 this.container = null;
-                
             }, 2000);
         }
 
@@ -298,25 +252,6 @@ class ObjetoDinamico extends GameObject {
         else {
             console.log("no se pudo cargar el sprite/spritesheet, favor de verificar que el mismo se haya vinculado bien.")
         }
-
-        //}
-        //else if (this.constructor.name == "Aliado") {
-        // else {
-        //     this.sprite.visible = false;
-        //     //remover el sprite del contenedor
-        //     this.sprite.parent.removeChild(this.sprite);
-
-        //     //destruir el sprite para liberar memoria
-        //     this.sprite.destroy({
-        //         texture: false,
-        //         baseTexture: false
-        //     });
-
-        //     //eliminar la referencia al sprite
-        //     this.sprite = null;
-        //     this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
-        // }
-
         this.estoyMuerto = true
     }
 

@@ -4,7 +4,7 @@ class Enemigo extends ObjetoDinamico {
     distanciaParaLlegar = 300;
     // tengoAlgunEnemigoAdelante;
     // enemigoMasCerca;
-    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, aceleracion, scaleX) {
+    constructor(x, y, juegoPrincipal, width, height, radioColision, radioVision, velocidad, aceleracion, scaleX) {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
@@ -24,6 +24,10 @@ class Enemigo extends ObjetoDinamico {
         this.cargarSpriteAnimado();
         // console.log(this.nombreCompleto, "se ha generado.")
         //console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
+    }
+
+    listaDeSpritessheetsDisponibles() {
+        return this.juego.spritesheetsEnemigos;
     }
 
 

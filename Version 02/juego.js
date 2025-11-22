@@ -11,6 +11,8 @@ class Juego {
     personas = [];
     aviones = [];
     poderes = [];
+    spritesheetsAliados = [];
+    spritesheetsEnemigos = [];
     cantEnemigosMinimaEnPantalla = 20;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
@@ -60,7 +62,7 @@ class Juego {
         await this.cargarBackground();
         await this.crearGenerador();
         await this.generarMouse();
-        await this.generarMenu();
+        //await this.generarMenu();
         await this.cargarSprites();
 
         //this.poderes = [];
@@ -72,6 +74,7 @@ class Juego {
         await this.generarBotonesDelHUD();
         await this.generarBarraSalud();
         await this.generarTextoEnemigosMuertos();
+        //await this.generarFondoMenu();
         this.poderActual = this.poderes[0];
         this.containerPrincipal = new PIXI.Container();
         this.agregarInteractividadDelMouse();
@@ -121,7 +124,7 @@ class Juego {
         this.pixiApp.canvas.onmouseup = (event) => {
             this.mouse.up = this.convertirCoordenadaDelMouse(event.x, event.y);
             this.mouse.apretado = false;
-            this.menu.realizarPresentacion()
+            //this.menu.realizarPresentacion()
         }
     }
 
@@ -176,37 +179,37 @@ class Juego {
     }
     */
 
-    async generarMenu() {
-        const texturaMenu = await PIXI.Assets.load("imagenes/ejemplo1.png")
-        // Crea un Sprite a partir de la Textura cargada
+    // async generarMenu() {
+    //     const texturaMenu = await PIXI.Assets.load("imagenes/ejemplo1.png")
+    //     // Crea un Sprite a partir de la Textura cargada
 
-        let configMenu = {
-            "alto": 500,
-            "ancho": 500,
-            "posX": this.width / 2,
-            "posY": this.height / 2,
-            "pixiApp": this.pixiApp,
-            "juegoPrincipal": this,
-            "texturaDefault": texturaMenu
-        }
+    //     let configMenu = {
+    //         "alto": 500,
+    //         "ancho": 500,
+    //         "posX": this.width / 2,
+    //         "posY": this.height / 2,
+    //         "pixiApp": this.pixiApp,
+    //         "juegoPrincipal": this,
+    //         "texturaDefault": texturaMenu
+    //     }
 
 
-        this.menu = new Menu(
-            500,
-            500,
-            0,
-            0,
-            this.pixiApp,
-            this,
-            texturaMenu
-        );
+    //     this.menu = new Menu(
+    //         500,
+    //         500,
+    //         0,
+    //         0,
+    //         this.pixiApp,
+    //         this,
+    //         texturaMenu
+    //     );
 
-        /*
-        this.menu = new Menu(
-            configMenu
-        );
-        */
-    }
+    //     /*
+    //     this.menu = new Menu(
+    //         configMenu
+    //     );
+    //     */
+    // }
 
     async cargarFondoHUD() {
         // Carga la imagen usando Assets.load()
@@ -375,39 +378,23 @@ class Juego {
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
 
     async cargarSprites() {
-        this.texturasAliados = await Promise.all([
-            PIXI.Assets.load("imagenes/aliados/ensalada/antitank.png"),
-            PIXI.Assets.load("imagenes/aliados/ensalada/assault.png"),
-            PIXI.Assets.load("imagenes/aliados/ensalada/radiooperator.png"),
-            PIXI.Assets.load("imagenes/aliados/ensalada/sniper.png")
-        ]);
-
         this.spritesheetsAliados = await Promise.all([
-            PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json")
-            //PIXI.Assets.load("imagenes/Aliados/MachineGunner/Json/texture.json"),
+            PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json"),
+            PIXI.Assets.load("imagenes/Aliados/machineGunner/Json/texture.json")
         ])
 
-        this.texturasEnemigos = await Promise.all([
-            PIXI.Assets.load("imagenes/enemigos/ensalada/centipede.png"),
-            PIXI.Assets.load("imagenes/enemigos/ensalada/hornet.png"),
+        this.spritesheetsEnemigos = await Promise.all([
             PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json")
-        ]);
-    }
-
-    listaDeSpritesAliados() {
-        return this.texturasAliados;
-    }
-    listaDeSpritesheetsAliados() {
-        return this.spritesheetsAliados;
-    }
-    listaDeSpritesEnemigos() {
-        return this.texturasEnemigos;
+        ])
+        // this.texturasEnemigos = await Promise.all([
+        //     PIXI.Assets.load("imagenes/enemigos/ensalada/centipede.png"),
+        //     PIXI.Assets.load("imagenes/enemigos/ensalada/hornet.png"),
+        //     PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json")
+        // ]);
     }
 
     async generarTropas() {
-        //const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesAliados());
-        const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesheetsAliados());
-
+        //const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesheetsAliados());
         for (let i = 0; i < 5; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = -10
@@ -419,7 +406,6 @@ class Juego {
                 this, //juego
                 32, //ancho
                 32, //alto
-                texture, //textura
                 15, //radio de colisión
                 20, //radio de visión
                 0.5, //velocidad
@@ -441,20 +427,18 @@ class Juego {
     }
 
     async generarTropasEnemigas() {
-        const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesEnemigos());
+        //const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesheetsEnemigos());
         for (let i = 0; i < 1; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = this.width - 10
             //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
             const posYRandom = Math.floor(Math.random() * (this.height - 100)) + 100
             const enemigoNuevo = new Enemigo(
-                //posXRandom, //posición x
                 posX, //posición x
                 posYRandom, //posición y
                 this, //juego Principal
-                16, //ancho
-                16, //alto
-                texture, //textura
+                32, //ancho
+                32, //alto
                 15, //radio de colisión
                 20, //radio de visión
                 0.5, //velocidad
@@ -652,7 +636,7 @@ class Juego {
 
     gameLoop() {
         this.mouse.tick()
-        this.menu.tick()
+        //this.menu.tick()
         this.realizarTickPorCadaAliado()
         this.realizarTickPorCadaEnemigo()
         this.realizarTickPorCadaAvion()

@@ -4,7 +4,7 @@ class Aliado extends ObjetoDinamico {
     distanciaParaLlegar = 300;
     // tengoAlgunEnemigoAdelante;
     // enemigoMasCerca;
-    constructor(x, y, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, aceleracion, scaleX) {
+    constructor(x, y, juegoPrincipal, width, height, radioColision, radioVision, velocidad, aceleracion, scaleX) {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
@@ -22,31 +22,12 @@ class Aliado extends ObjetoDinamico {
         //this.estoyMuerto = false
 
         this.generarNombreAleatorio();
-        this.generarSpriteDe(sprite);
         this.cargarSpriteAnimado();
         //console.log(this.nombreCompleto, "se ha generado, siendo un " , this.constructor.name ," con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
-    generarSpriteDe(unSprite) {
-        this.sprite = new PIXI.Sprite(unSprite);
-        
-        this.sprite.anchor.set(0.5);
-        
-        //Ajuste de ubicacion
-        this.container.x = this.x;
-        this.container.y = this.y;
-
-        //Ajuste de tamaño
-        this.sprite.width = this.width;
-        this.sprite.height = this.height;
-        this.sprite.scale.x = this.scaleX;
-
-        //Añadir el sprite dentro del stage:
-        this.container.addChild(this.sprite);
-    }
-
-    elegirSpritesheetAleatorio() {
-        return this.sprite
+    listaDeSpritessheetsDisponibles() {
+        return this.juego.spritesheetsAliados;
     }
 
     asignarTargetA(alguien) {
