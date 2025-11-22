@@ -35,7 +35,7 @@ class Poder extends GameObject{
         this.sprite.y = this.y;
 
         //Añadir el sprite dentro del stage:
-        console.log(this.sprite);
+        //console.log(this.sprite);
 
         this.sprite.zIndex = 1100;
         //console.log(this.juego)

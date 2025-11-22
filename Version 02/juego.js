@@ -54,7 +54,7 @@ class Juego {
 
         document.body.appendChild(this.pixiApp.canvas);
 
-        this.pixiApp.stage.interactive = true;
+        this.pixiApp.stage.eventMode = "static";
         window.addEventListener("keydown", this.keysDown.bind(this));
         window.addEventListener("keyup", this.keysUp.bind(this));
 
@@ -380,11 +380,16 @@ class Juego {
     async cargarSprites() {
         this.spritesheetsAliados = await Promise.all([
             PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json"),
-            PIXI.Assets.load("imagenes/Aliados/machineGunner/Json/texture.json")
+            PIXI.Assets.load("imagenes/Aliados/machineGunner/Json/texture.json"),
+            PIXI.Assets.load("imagenes/Aliados/radioOperator/json/texture.json"),
+            PIXI.Assets.load("imagenes/Aliados/sniper/json/texture.json")
         ])
 
         this.spritesheetsEnemigos = await Promise.all([
-            PIXI.Assets.load("imagenes/Enemigos/Scarab/texture.json")
+            PIXI.Assets.load("imagenes/Enemigos/hornet/json/texture.json"),
+            PIXI.Assets.load("imagenes/Enemigos/Scarab/json/texture.json"),
+            PIXI.Assets.load("imagenes/Enemigos/spider/json/texture.json"),
+            PIXI.Assets.load("imagenes/Enemigos/wasp/json/texture.json")
         ])
         // this.texturasEnemigos = await Promise.all([
         //     PIXI.Assets.load("imagenes/enemigos/ensalada/centipede.png"),
@@ -563,7 +568,7 @@ class Juego {
     }
 
     aparicionDeEnemigo() {
-        if(this.enemigos.length < this.cantEnemigosMinimaEnPantalla) {
+        if (this.enemigos.length < this.cantEnemigosMinimaEnPantalla) {
             this.generarTropasEnemigas() * this.aliados.length;
         }
     }
@@ -652,3 +657,5 @@ class Juego {
 }
 
 const juego = new Juego();
+
+

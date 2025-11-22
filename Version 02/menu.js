@@ -108,68 +108,6 @@ class Menu extends GameObject {
             //console.log("funciona?")
         //} 
     }
-    
-    /*
-    realizarPresentacion() {
-        //console.log(this.juego)
-        if(this.juegoPrincipal.mouse.apretado == false) {
-            this.cantClicks += 1
-        }
-        if (!this.textoExplicativo && this.cantClicks > 0) return;
-        this.juego.stage.removeChild(this.textoExplicativo)
-        if (this.cantClicks == 0) {
-            this.textoExplicativo = new PIXI.Text(
-                'LIBERTY',
-                {
-                    fontSize: 50,
-                    fill: 'white'
-                }
-            )
-        }
-        else if (this.cantClicks == 1) {
-            this.textoExplicativo = new PIXI.Text(
-                'Bienvenido a Liberty, en este juego...',
-                {
-                    fontSize: 50,
-                    fill: 'white'
-                }
-            )
-        }
-        else if (this.cantClicks == 2) {
-            this.textoExplicativo = new PIXI.Text(
-                'Mecánicas',
-                {
-                    fontSize: 50,
-                    fill: 'white'
-                }
-            )
-        }
-        else {
-            this.textoExplicativo = new PIXI.Text(
-                'Fin de explicación',
-                {
-                    fontSize: 50,
-                    fill: 'white'
-                }
-            )
-        }
-
-
-        this.textoExplicativo.anchor.set(0.5);
-        this.textoExplicativo.x = this.juego.screen.width / 2;
-        this.textoExplicativo.y = this.juego.screen.height / 2;
-        this.juego.stage.addChild(this.textoExplicativo);
-        //... configuraciones del texto que van a aparecer progresivamente al presionar la tecla Q
-        /*
-        setTimeout(() => {
-            // Elimina el elemento del contenedor padre (por ejemplo, app.stage)
-            this.juego.stage.removeChild(this.textoExplicativo);
-            // Opcionalmente, puedes desvincularlo de la escena para liberar memoria
-            this.destroy();
-        }, 5000); 
-        /
-    }
-    */
 
     tick() {
         //this.realizarPresentacion()
