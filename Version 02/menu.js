@@ -80,11 +80,16 @@ class Menu extends GameObject {
     }
 
     cambioDePantallas() {
-        if (this.texturaDePantallaActual == this.juego.pantallas[0] && this.botonEnPantalla.botonActualPresionado) {
-            this.texturaDePantallaActual = this.juego.pantallas[1];
-        }
-        if (this.texturaDePantallaActual == this.juego.pantallas[0] ) {
-            this.pantallaActual.visible = false;
+        // if (this.texturaDePantallaActual == this.juego.pantallas[0] && this.botonEnPantalla.presionado) {
+        //     console.log("textura de la pantalla actual: ", this.texturaDePantallaActual)
+        //     this.texturaDePantallaActual = this.juego.pantallas[1];
+        // }
+
+        //no se crea otro sprite pero el que se creo permanece en pantalla, no cambia las pantallas
+        //aunque si apago el sprite con la propiedad visible si lo hace.
+        if (this.texturaDePantallaActual == this.juego.pantallas[0]) {
+            this.pantallaActual.texturaDePantallaActual = this.juego.pantallas[1];
+            console.log("padsad");
 
             //este console sirve para saber si la pantalla actual es un contenedor, y así manejar mejor la visibilidad
             //console.log(this.pantallaActual instanceof PIXI.Container);

@@ -1,7 +1,7 @@
 class BotonMenu extends Boton {
     botonActual;
     texturaDeBotonActual;
-    botonActualPresionado = false;
+    presionado = false;
     constructor(x, y, juego, width, height) {
         super(x, y, juego, width, height);
         this.spritesDisponibles = this.juego.secuenciaBotonJugar;
@@ -41,7 +41,6 @@ class BotonMenu extends Boton {
             setTimeout(() => {
                 this.botonActual.visible = false;
                 this.juego.menu.cambioDePantallas();
-                this.botonActualPresionado = true;
             }, 500);
             console.log("comenzando el juego... con el boton actual en: ", this.botonActual.visible);
             //this.juego.puedeJugar = true;
