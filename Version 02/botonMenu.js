@@ -2,9 +2,14 @@ class BotonMenu extends Boton {
     botonActual;
     texturaDeBotonActual;
     presionado = false;
-    constructor(x, y, juego, width, height) {
+    constructor(x, y, juego, width, height, listaDeTexturas, pantallaDestino) {
         super(x, y, juego, width, height);
-        this.spritesDisponibles = this.juego.secuenciaBotonJugar;
+        this.spritesDisponibles = listaDeTexturas;
+        this.pantallaDestino = pantallaDestino;
+
+        this.container = new PIXI.Container();
+        this.container.x = x;
+        this.container.y = y;
     }
 
     async init() {
@@ -13,48 +18,88 @@ class BotonMenu extends Boton {
 
         this.botonActual = this.sprite;
 
-        this.botonActualPresionado = false;
-
         //activar interactividad
         this.botonActual.interactive = true;
         this.botonActual.buttonMode = true;
 
         //añadir eventos de interacción
         // CLICK
-        this.botonActual.on("pointerdown", () => {this.onClick();});
+        this.botonActual.on("pointerdown", () => { this.onClick(); });
 
         // HOVER (significa pasar el mouse por encima)
-        this.botonActual.on("pointerover", () => {this.onHover();});
+        this.botonActual.on("pointerover", () => { this.onHover(); });
 
         // LEAVE (significa sacar el mouse de encima)
-        this.botonActual.on("pointerout", () => {this.onOut();});
+        this.botonActual.on("pointerout", () => { this.onOut(); });
+
+        //se guarda el tinte/opacidad original para luego modificarlo
+        this.tintOriginal = this.sprite.tint;
+
+        //variable bandera
+        //this.cambioRealizado = false;
     }
 
-    // MÉTODOS DE INTERACCIÓN
+    generarSpriteDe(unSprite) {
+        //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
+        //console.log("Stage children antes:", this.juego.pixiApp.stage.children.length);
+        this.sprite = new PIXI.Sprite(unSprite);
+
+        this.sprite.anchor.set(0.5);
+
+        //Ajuste de ubicacion
+        this.sprite.x = 0;
+        this.sprite.y = 0;
+
+        //Ajuste de tamaño
+        this.sprite.width = this.width;
+        this.sprite.height = this.height;
+
+        this.sprite.zIndex = 1100;
+        this.container.addChild(this.sprite);
+        this.juego.pixiApp.stage.addChild(this.container);
+        //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
+        //console.log("Stage children después:", this.juego.pixiApp.stage.children.length);
+
+    }
+
     onClick() {
-        // ejemplo: cambiar sprite
-        this.texturaDeBotonActual = this.spritesDisponibles[1];
-        //se genera de vuelta porque se cambió el sprite y hay que actualizar la imagen
-        console.log("sprite actual del botón al hacer click:", this.texturaDeBotonActual);
-        //una vez apretado el boton y si puedeJugar es false, se cambiara la pantalla y el boton actual
-        if(!this.botonActualPresionado) {
+        this.botonActual.texture = this.spritesDisponibles[1];
+        if (this.pantallaDestino == 0) {
             setTimeout(() => {
-                this.botonActual.visible = false;
-                this.juego.menu.cambioDePantallas();
-            }, 500);
-            console.log("comenzando el juego... con el boton actual en: ", this.botonActual.visible);
-            //this.juego.puedeJugar = true;
+                this.juego.menu.cambiarPantalla(1);
+                this.ocultarBoton();
+            }, 250)
+
         }
-        
+        else if (!this.pantallaDestino == 0 && this.pantallaDestino == 2) {
+            setTimeout(() => {
+                this.juego.menu.ocultarPantalla();
+                this.ocultarBoton();
+                this.ocultarTodosLosBotones(this.juego.botones)
+            }, 250)
+        }
+        // setTimeout(() => {
+        //     this.juego.menu.ocultarPantalla();
+        // }, 1000)
     }
 
     onHover() {
-        // ejemplo: efecto visual
-        this.sprite.alpha = 0.8;
+        this.sprite.tint = 0xBBBBBB;
+        //cambiar solo a la pantalla asignada a este boton
+        this.juego.menu.cambiarPantalla(this.pantallaDestino);
     }
 
     onOut() {
-        this.sprite.alpha = 1;
+        this.sprite.tint = this.tintOriginal;
     }
 
+    ocultarBoton() {
+        this.container.visible = false;
+    }
+
+    ocultarTodosLosBotones(listaDeBotones) {
+        for (const boton of listaDeBotones) {
+            boton.ocultarBoton();
+        }
+    }
 }

@@ -36,10 +36,13 @@ class Menu extends GameObject {
     async init() {
         //se hace textura para poder manejar la visibilidad de las pantallas
         this.texturaDePantallaActual = this.juego.pantallas[0];
-        await this.generarSpriteDe(this.texturaDePantallaActual);
+        this.sprite = this.texturaDePantallaActual;
+        await this.generarSpriteDe(this.sprite);
 
         this.pantallaActual = this.sprite;
         this.botonEnPantalla = this.juego.botonJugar;
+
+        this.indiceActual = 0;
     }
 
     async generarTexto() {
@@ -79,23 +82,16 @@ class Menu extends GameObject {
         this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
-    cambioDePantallas() {
-        // if (this.texturaDePantallaActual == this.juego.pantallas[0] && this.botonEnPantalla.presionado) {
-        //     console.log("textura de la pantalla actual: ", this.texturaDePantallaActual)
-        //     this.texturaDePantallaActual = this.juego.pantallas[1];
-        // }
-
-        //no se crea otro sprite pero el que se creo permanece en pantalla, no cambia las pantallas
-        //aunque si apago el sprite con la propiedad visible si lo hace.
-        if (this.texturaDePantallaActual == this.juego.pantallas[0]) {
-            this.pantallaActual.texturaDePantallaActual = this.juego.pantallas[1];
-            console.log("padsad");
-
-            //este console sirve para saber si la pantalla actual es un contenedor, y así manejar mejor la visibilidad
-            //console.log(this.pantallaActual instanceof PIXI.Container);
-        }
+    cambiarPantalla(indiceDestino) {
+        this.indiceActual = indiceDestino; // con esto vamos a la pantalla deseada
+        const nuevaPantalla = this.juego.pantallas[indiceDestino];
+        this.pantallaActual.texture = nuevaPantalla;
+        console.log("Pantalla actual:", indiceDestino);
     }
 
+    ocultarPantalla() {
+        this.pantallaActual.visible = false;
+    }
 
     realizarPresentacion() {
         //if(this.juegoPrincipal.mouse.apretado == false) {

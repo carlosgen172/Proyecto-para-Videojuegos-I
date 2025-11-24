@@ -14,6 +14,7 @@ class Juego {
     spritesheetsAliados = [];
     spritesheetsEnemigos = [];
     pantallas = [];
+    botones = [];
     puedeJugar = false;
     cantEnemigosMinimaEnPantalla = 20;
     poderActual;
@@ -164,32 +165,11 @@ class Juego {
 
     }
 
-    /*
-    generarFondoCon(unaTextura) {
-        //aquí se genera el fondo.
-        //this.fondo = new Fondo {ancho, alto, x, y, color}
-        this.fondo = new PIXI.TilingSprite({
-            unaTextura,
-            width: this.pixiApp.screen.width,
-            height: this.pixiApp.screen.height
-        });
-        this.pixiApp.stage.addChild(this.fondo);
-    }
-    */
-
     async generarMenu() {
         //TEXTURAS
         //Pantallas
 
         //Botones
-        this.botonJugar = new BotonMenu(
-            (this.width / 2), //x
-            (this.height / 2) + 105, //y
-            this,
-            180,
-            64
-        )
-        await this.botonJugar.init();
 
         this.menu = new Menu(
             this.width / 2,
@@ -199,6 +179,82 @@ class Juego {
             500
         );
         await this.menu.init();
+
+        this.botonJugar = new BotonMenu(
+            (this.width / 2), //x
+            (this.height / 2) + 105, //y
+            this,
+            180,
+            64,
+            this.secuenciaBotonJugar,
+            0
+        )
+        await this.botonJugar.init();
+
+        this.botonSeguir = new BotonMenu(
+            this.width - 515, //x
+            this.height - 215, //y
+            this,
+            180,
+            64,
+            this.secuenciaBotonSeguir,
+            1
+        )
+        await this.botonSeguir.init();
+
+        this.botonNueva = new BotonMenu(
+            this.width - 515, //x
+            this.height - 153, //y
+            this,
+            180,
+            64,
+            this.secuenciaBotonNueva,
+            2
+        )
+        await this.botonNueva.init();
+
+        this.botonVolver = new BotonMenu(
+            this.width - 515, //x
+            this.height - 90, //y
+            this,
+            180,
+            64,
+            this.secuenciaBotonVolver,
+            3
+        )
+        await this.botonVolver.init();
+
+        const listaBotonesMenu = [
+            this.botonJugar,
+            this.botonSeguir,
+            this.botonNueva,
+            this.botonVolver
+        ]
+
+        this.botones = listaBotonesMenu;
+    }
+
+    visibilidadDeBotonesSegunPantalla() {
+        if(this.menu.pantallaActual.texture == this.pantallas[1]) {
+            this.botonSeguir.sprite.visible = true;
+            this.botonNueva.sprite.visible = true;
+            this.botonVolver.sprite.visible = true;
+        }
+        else if(this.menu.pantallaActual.texture == this.pantallas[2]) {
+            this.botonSeguir.sprite.visible = true;
+            this.botonNueva.sprite.visible = true;
+            this.botonVolver.sprite.visible = true;
+        }
+        else if(this.menu.pantallaActual.texture == this.pantallas[3]) {
+            this.botonSeguir.sprite.visible = true;
+            this.botonNueva.sprite.visible = true;
+            this.botonVolver.sprite.visible = true;
+        }
+        else {
+            this.botonSeguir.sprite.visible = false;
+            this.botonNueva.sprite.visible = false;
+            this.botonVolver.sprite.visible = false;
+        }
     }
 
     async cargarFondoHUD() {
@@ -419,6 +475,21 @@ class Juego {
         this.secuenciaBotonJugar = await Promise.all([
             PIXI.Assets.load("imagenes/menu/boton_jugar.png"),
             PIXI.Assets.load("imagenes/menu/boton_jugar_pres.png")
+        ])
+
+        this.secuenciaBotonSeguir = await Promise.all([
+            PIXI.Assets.load("imagenes/menu/boton_seguir.png"),
+            PIXI.Assets.load("imagenes/menu/boton_seguir_pres.png")
+        ])
+
+        this.secuenciaBotonNueva = await Promise.all([
+            PIXI.Assets.load("imagenes/menu/boton_partida_Nueva.png"),
+            PIXI.Assets.load("imagenes/menu/boton_partida_nueva_pres.png")
+        ])
+
+        this.secuenciaBotonVolver = await Promise.all([
+            PIXI.Assets.load("imagenes/menu/boton_volver.png"),
+            PIXI.Assets.load("imagenes/menu/boton_volver_pres.png")
         ])
     }
 
@@ -673,6 +744,7 @@ class Juego {
     gameLoop() {
         //this.mouse.tick()
         //this.menu.tick()
+        this.visibilidadDeBotonesSegunPantalla()
         if (this.puedeJugar) {
             this.realizarTickPorCadaAliado()
             this.realizarTickPorCadaEnemigo()
@@ -686,6 +758,8 @@ class Juego {
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
+        
+
     }
 }
 
