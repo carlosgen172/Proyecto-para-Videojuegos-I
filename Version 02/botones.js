@@ -1,4 +1,4 @@
-class Boton extends GameObject{
+class Boton extends GameObject {
     x;
     y;
     width;
@@ -14,18 +14,19 @@ class Boton extends GameObject{
         this.width = width;
         this.height = height;
         this.juego = juego;
-        this.posicion = {x: x, y: y};
+        this.posicion = { x: x, y: y };
         //console.log(this);
         //console.log("el ancho del boton:", this.width);
         //this.generarSpriteDe(sprite);
     }
 
     generarSpriteDe(unSprite) {
-        //console.log("lo que entra en generarSpriteDe: ", unSprite)
+        //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
+        //console.log("Stage children antes:", this.juego.pixiApp.stage.children.length);
         this.sprite = new PIXI.Sprite(unSprite);
-        
+
         this.sprite.anchor.set(0.5);
-        
+
         //Ajuste de ubicacion
         this.sprite.x = this.x;
         this.sprite.y = this.y;
@@ -33,17 +34,16 @@ class Boton extends GameObject{
         //Ajuste de tamaño
         this.sprite.width = this.width;
         this.sprite.height = this.height;
-        //this.sprite.scale.x = this.scaleX;
-        //Añadir el sprite dentro del stage:
-        //console.log(this.sprite);
-
+        
         this.sprite.zIndex = 1100;
         this.juego.pixiApp.stage.addChild(this.sprite);
+        //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
+        //console.log("Stage children después:", this.juego.pixiApp.stage.children.length);
     }
 
     cambiarSegunEstadoActual() {
         //if(this.haSidoInteractuado) {
-            //this.sprite = 
+        //this.sprite = 
         //}
     }
 

@@ -1,6 +1,7 @@
 class BotonMenu extends Boton {
     botonActual;
     texturaDeBotonActual;
+    botonActualPresionado = false;
     constructor(x, y, juego, width, height) {
         super(x, y, juego, width, height);
         this.spritesDisponibles = this.juego.secuenciaBotonJugar;
@@ -11,6 +12,9 @@ class BotonMenu extends Boton {
         await this.generarSpriteDe(this.texturaDeBotonActual);
 
         this.botonActual = this.sprite;
+
+        this.botonActualPresionado = false;
+
         //activar interactividad
         this.botonActual.interactive = true;
         this.botonActual.buttonMode = true;
@@ -28,20 +32,21 @@ class BotonMenu extends Boton {
 
     // MÉTODOS DE INTERACCIÓN
     onClick() {
-        
         // ejemplo: cambiar sprite
         this.texturaDeBotonActual = this.spritesDisponibles[1];
         //se genera de vuelta porque se cambió el sprite y hay que actualizar la imagen
         console.log("sprite actual del botón al hacer click:", this.texturaDeBotonActual);
         //una vez apretado el boton y si puedeJugar es false, se cambiara la pantalla y el boton actual
-        if(!this.juego.puedeJugar) {
+        if(!this.botonActualPresionado) {
             setTimeout(() => {
                 this.botonActual.visible = false;
+                this.juego.menu.cambioDePantallas();
+                this.botonActualPresionado = true;
             }, 500);
             console.log("comenzando el juego... con el boton actual en: ", this.botonActual.visible);
-            this.juego.puedeJugar = true;
-            this.juego.menu.cambioDePantallas();
+            //this.juego.puedeJugar = true;
         }
+        
     }
 
     onHover() {

@@ -7,6 +7,7 @@ class Menu extends GameObject {
     sprite;
     pantallaActual;
     texturaDePantallaActual;
+    botonEnPantalla;
 
     presentacionTextual = [
         'LIBERTY',
@@ -38,6 +39,7 @@ class Menu extends GameObject {
         await this.generarSpriteDe(this.texturaDePantallaActual);
 
         this.pantallaActual = this.sprite;
+        this.botonEnPantalla = this.juego.botonJugar;
     }
 
     async generarTexto() {
@@ -78,14 +80,11 @@ class Menu extends GameObject {
     }
 
     cambioDePantallas() {
-
-        // if (this.texturaDePantallaActual == this.juego.pantallas[0]) {
-        //     this.texturaDePantallaActual = this.juego.pantallas[1];
-        // }
-        if (this.texturaDePantallaActual == this.juego.pantallas[0] && this.juego.puedeJugar) {
-            setTimeout(() => {
-                this.pantallaActual.visible = false;
-            }, 500);
+        if (this.texturaDePantallaActual == this.juego.pantallas[0] && this.botonEnPantalla.botonActualPresionado) {
+            this.texturaDePantallaActual = this.juego.pantallas[1];
+        }
+        if (this.texturaDePantallaActual == this.juego.pantallas[0] ) {
+            this.pantallaActual.visible = false;
 
             //este console sirve para saber si la pantalla actual es un contenedor, y así manejar mejor la visibilidad
             //console.log(this.pantallaActual instanceof PIXI.Container);

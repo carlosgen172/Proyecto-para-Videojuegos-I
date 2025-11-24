@@ -182,6 +182,14 @@ class Juego {
         //Pantallas
 
         //Botones
+        this.botonJugar = new BotonMenu(
+            (this.width / 2), //x
+            (this.height / 2) + 105, //y
+            this,
+            180,
+            64
+        )
+        await this.botonJugar.init();
 
         this.menu = new Menu(
             this.width / 2,
@@ -191,15 +199,6 @@ class Juego {
             500
         );
         await this.menu.init();
-
-        this.botonJugar = new BotonMenu(
-            (this.width / 2), //x
-            (this.height / 2) + 105, //y
-            this,
-            180,
-            64
-        )
-        await this.botonJugar.init();
     }
 
     async cargarFondoHUD() {
@@ -208,7 +207,7 @@ class Juego {
         const texture = await PIXI.Assets.load('imagenes/hud_1.png'); // Reemplaza con la ruta de tu imagen
 
         // Crea un Sprite a partir de la Textura cargada
-        this.hud = new PIXI.TilingSprite(texture);
+        this.hud = new PIXI.Sprite(texture);
 
         //Ajuste de punto central
         this.hud.anchor.set(0.5);
@@ -219,13 +218,20 @@ class Juego {
         this.hud.y = 25
 
         //Ajuste de tamaño
-        this.hud.width = 500;
+        this.hud.width = 700;
         this.hud.height = 50;
 
         this.hud.zIndex = 1000;
 
         // Añade el Sprite al escenario para que se muestre en pantalla
         this.pixiApp.stage.addChild(this.hud);
+
+        if (this.puedeJugar) {
+            this.hud.visible = true;
+        }
+        else {
+            this.hud.visible = false;
+        }
     }
 
     async generarPoderAliados() {
@@ -252,6 +258,14 @@ class Juego {
         )
         this.poderes.push(poderAliados)
         this.poderActual = this.poderes[0];
+
+        if (this.puedeJugar) {
+            poderAliados.sprite.visible = true;
+        }
+        else {
+            poderAliados.sprite.visible = false;
+        }
+
     }
 
     async generarPoderBombas() {
@@ -278,19 +292,17 @@ class Juego {
         )
         //poderBombas.sprite.visible = false;
         this.poderes.push(poderBombas)
+
+        if (this.puedeJugar) {
+            poderBombas.sprite.visible = true;
+        }
+        else {
+            poderBombas.sprite.visible = false;
+        }
     }
 
     async generarPoderEnemigos() {
         const texturaPoderEnemigos = await PIXI.Assets.load("imagenes/exterminio_o_desolacion_power_up.png");
-        // let configPoder = {
-        //     "alto": 50,
-        //     "ancho": 50,
-        //     "posicion en X": this.width,
-        //     "posicion en Y": 50,
-        //     "juego": this,
-        //     "sprite": texturaPoderAliados,
-        //     "estado": "enemigos"
-        // }
 
         const poderEnemigos = new Poder(
             // configPoder
@@ -304,6 +316,12 @@ class Juego {
         )
         //poderEnemigos.sprite.visible = false;
         this.poderes.push(poderEnemigos)
+        if (this.puedeJugar) {
+            poderEnemigos.sprite.visible = true;
+        }
+        else {
+            poderEnemigos.sprite.visible = false;
+        }
     }
 
     async generarBotonesDelHUD() {
@@ -311,31 +329,35 @@ class Juego {
         const texturaDerPres = await PIXI.Assets.load("imagenes/hevilla_der_pres_final_real.png");
         const texturaIzq = await PIXI.Assets.load("imagenes/hevilla_izq_final_real.png");
         const texturaIzqPres = await PIXI.Assets.load("imagenes/hevilla_izq_pres_final_real.png");
-        // let configBotones = { //hace falta configurar
-        //     //"width": 50, 
-        //     //"height": 50,
 
-        // }
         this.botonDer = new BotonHevilla(
-            (this.width / 2) + 45, //x
+            (this.width / 2) + 60, //x
             25, //y
             this,
-            50,
-            50,
+            35,
+            30,
             texturaDer, //sprite
             texturaDerPres, //segundoSprite
             "der"
         )
         this.botonIzq = new BotonHevilla(
-            (this.width / 2) - 45, //x
+            (this.width / 2) - 60, //x
             25, //y
             this,
-            50,
-            50,
+            35,
+            30,
             texturaIzq, //sprite
             texturaIzqPres, //segundoSprite
             "izq", //direccion
         )
+        if (this.puedeJugar) {
+            this.botonDer.sprite.visible = true;
+            this.botonIzq.sprite.visible = true;
+        }
+        else {
+            this.botonDer.sprite.visible = false;
+            this.botonIzq.sprite.visible = false;
+        }
     }
 
     generarMenuYBotones() {
@@ -348,17 +370,19 @@ class Juego {
         const texturaSalud1Hit = await PIXI.Assets.load("imagenes/bateria_hud_1_hit_final.png")
         const texturaSaludVacia = await PIXI.Assets.load("imagenes/bateria_hud_vacia_final.png")
 
-        this.bateriaVida = new BateriaVida(
-            50, //ancho
-            50, //alto
-            (this.width / 5) + 10, //x
-            25, //y
-            this, //Juego
-            texturaSaludFull, //sprite1
-            texturaSalud2Hit, //sprite2
-            texturaSalud1Hit, //sprite3
-            texturaSaludVacia //sprite4
-        )
+        if (this.puedeJugar) {
+            this.bateriaVida = new BateriaVida(
+                50, //ancho
+                50, //alto
+                (this.width / 5) + 10, //x
+                25, //y
+                this, //Juego
+                texturaSaludFull, //sprite1
+                texturaSalud2Hit, //sprite2
+                texturaSalud1Hit, //sprite3
+                texturaSaludVacia //sprite4
+            )
+        }
     }
 
     async generarTextoEnemigosMuertos() {
@@ -520,13 +544,17 @@ class Juego {
 
     keysDown(letra) {
         const key = letra.key.toLowerCase();
-        this.presionarHebillaCon_(key, true);
+        if (this.puedeJugar) {
+            this.presionarHebillaCon_(key, true);
+        }
     }
 
     keysUp(letra) {
         const key = letra.key.toLowerCase();
-        this.presionarHebillaCon_(key, false);
-        this.generarPoderesCon(key)
+        if (this.puedeJugar) {
+            this.presionarHebillaCon_(key, false);
+            this.generarPoderesCon(key)
+        }
     }
 
     presionarHebillaCon_(unaTecla, estaPresionada) {
@@ -534,35 +562,35 @@ class Juego {
 
         //Si se presiona
         if (estaPresionada) {
-            if (unaTecla === "e") this.botonDer.rolarPoderHacia_(1);
-            if (unaTecla === "q") this.botonIzq.rolarPoderHacia_(-1);
+            if (unaTecla === "e") {
+                this.botonDer.rolarPoderHacia_(1);
+                this.botonDer.actualizarSpritesSegunDireccionHacia_(1, true);
+            }
+            if (unaTecla === "q") {
+                this.botonIzq.rolarPoderHacia_(-1);
+                this.botonIzq.actualizarSpritesSegunDireccionHacia_(-1, true);
+            }
         }
 
         //Si se suelta
         else {
-            if (unaTecla === "e") {
-                this.botonDer.sprite = this.botonDer.sprites[1];
-                this.botonDer.generarSpriteDe(this.botonDer.sprite);
-            }
-            if (unaTecla === "q") {
-                this.botonIzq.sprite = this.botonIzq.sprites[1];
-                this.botonIzq.generarSpriteDe(this.botonIzq.sprite);
-            }
+            if (unaTecla === "e") this.botonDer.actualizarSpritesSegunDireccionHacia_(1, false);
+            if (unaTecla === "q") this.botonIzq.actualizarSpritesSegunDireccionHacia_(-1, false);
         }
     }
 
     generarPoderesCon(unaTecla) {
-        if (unaTecla == "f" && this.poderActual.estado == "aliados" && this.puedeJugar) {
+        if (unaTecla == "f" && this.poderActual.estado == "aliados") {
             this.generarAliadosSiCorresponde();
         }
-        if (unaTecla == "f" && this.poderActual.estado == "bombas" && this.puedeJugar) {
+        if (unaTecla == "f" && this.poderActual.estado == "bombas") {
             if (this.aviones == []) {
                 this.generarAvion();
             } else {
                 this.generarAvionSiCorresponde();
             }
         }
-        if (unaTecla == "f" && this.poderActual.estado == "enemigos" && this.puedeJugar) {
+        if (unaTecla == "f" && this.poderActual.estado == "enemigos") {
             this.generarEnemigosSiCorresponde()
         }
     }
@@ -645,14 +673,16 @@ class Juego {
     gameLoop() {
         //this.mouse.tick()
         //this.menu.tick()
-        this.realizarTickPorCadaAliado()
-        this.realizarTickPorCadaEnemigo()
-        this.realizarTickPorCadaAvion()
-        this.realizarTickPorCadaPoder()
-        this.aparicionDeEnemigo()
-        this.bateriaVida.tick()
-        this.textoEnemigosMuertos.tick()
-        this.actualizarVisibilidadDePoderActual()
+        if (this.puedeJugar) {
+            this.realizarTickPorCadaAliado()
+            this.realizarTickPorCadaEnemigo()
+            this.realizarTickPorCadaAvion()
+            this.realizarTickPorCadaPoder()
+            this.aparicionDeEnemigo()
+            this.bateriaVida.tick()
+            this.textoEnemigosMuertos.tick()
+            this.actualizarVisibilidadDePoderActual()
+        }
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
