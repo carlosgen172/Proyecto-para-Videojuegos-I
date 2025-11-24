@@ -1,20 +1,20 @@
 class Boton extends GameObject{
-    width;
-    height;
     x;
     y;
-    sprite;
+    width;
+    height;
     juego;
+    sprite;
     haSidoInteractuado = false;
 
-    constructor(width, height, x, y, juego, sprite) {
-        super();
+    constructor(x, y, juego, width, height) {
+        super(x, y, juego);
         this.x = x;
         this.y = y;
-        this.posicion = {x: x, y: y};
         this.width = width;
         this.height = height;
         this.juego = juego;
+        this.posicion = {x: x, y: y};
         //console.log(this);
         //console.log("el ancho del boton:", this.width);
         //this.generarSpriteDe(sprite);
@@ -31,8 +31,8 @@ class Boton extends GameObject{
         this.sprite.y = this.y;
 
         //Ajuste de tamaño
-        //this.sprite.width = this.width;
-        //this.sprite.height = this.height;
+        this.sprite.width = this.width;
+        this.sprite.height = this.height;
         //this.sprite.scale.x = this.scaleX;
         //Añadir el sprite dentro del stage:
         //console.log(this.sprite);

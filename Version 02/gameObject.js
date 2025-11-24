@@ -7,7 +7,7 @@ class GameObject {
     juego; //el mismo juego, así se puede comunicar de forma más simple con el juego principal. No es necesario el pixiApp así.
     
     constructor(x, y, juego){
-        //Se le indica la posición general, creando una variable nueva que guarde posición en ambos ejes.
+        //se indica la posición inicial del objeto
         this.x = x;
         this.y = y;
         this.posicion = {x: x, y: y};

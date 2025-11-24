@@ -1,59 +1,15 @@
 class BotonHevilla extends Boton {
-    spriteActual;
-    keys = {};
-    
-
-    constructor(width, height, x, y, sprite, urlSprite, direccion, juego) {
-        super(width, height, x, y, juego, sprite);
+    constructor(x, y, juego, width, height, sprite, segundoSprite, direccion) {
+        super(x, y, juego, width, height);
         this.direccion = direccion;
-        this.segundoSprite = urlSprite;
+        this.segundoSprite = segundoSprite;
         this.sprites = {
             1 : sprite,
-            2 : urlSprite
+            2 : segundoSprite
         }
-        this.spriteActual = this.sprites[1];
-        //this.generarSpriteDe(urlSprite);
-        this.generarSpriteDe(this.spriteActual);
+        this.sprite = this.sprites[1];
+        this.generarSpriteDe(this.sprite);
     }
-
-    // keysDown(letra){
-    //     this.keys[letra.key.toLowerCase()] = true;
-    //     //this.cambiarSpriteAInteractuadoPor(letra);
-    // }
-
-    // keysUp(letra){
-    //     this.keys[letra.key.toLowerCase()] = false;
-    //     //this.cambiarSpriteANoInteractuadoPor(letra);
-    // }
-
-    // cambiarSpriteAInteractuadoPor(letra) {
-    //     if(letra.key.toLowerCase() === "q" && this.direccion == "izq" || letra.key.toLowerCase() === "e" && this.direccion == "der") {
-    //         //this.haSidoInteractuado = !this.haSidoInteractuado
-    //         this.spriteActual = this.sprites[2];
-    //         this.generarSpriteDe(this.spriteActual);
-    //         this.cambiarPoderaALaIzq();
-    //         console.log("el sprite de la hevilla con dirección: ", this.direccion , "ha cambiado a: ", this.spriteActual);
-    //     }
-    //     //console.log(this.keys);
-    //     //this.generarSpriteDe(this.spriteActual);
-    // }
-    // cambiarSpriteANoInteractuadoPor(letra) {
-    //     if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
-    //         this.spriteActual = this.sprites[1];
-    //         this.generarSpriteDe(this.spriteActual);
-    //         this.cambiarPoderALaDer()
-    //         console.log("el sprite de la hevilla con dirección: ", this.direccion, "ha cambiado a: ", this.spriteActual.name)
-    //     }
-    //     /*
-    //     if(letra.key.toLowerCase() === "q" || letra.key.toLowerCase() === "e") {
-    //         //this.haSidoInteractuado = !this.haSidoInteractuado
-    //     }
-    //     */
-    //    //console.log(this.spriteActual);
-    //    //console.log(this.keys);
-    //    //this.generarSpriteDe(this.spriteActual);
-    // }
-
 
     rolarPoderHacia_(direccion) {
         //if(this.juego.poderActual == this.juego.poderes[0]) return;
@@ -74,20 +30,13 @@ class BotonHevilla extends Boton {
         this.juego.actualizarVisibilidadDePoderActual();
         if(direccion == 1) {
             this.juego.botonDer.spriteActual = this.juego.botonDer.sprites[2];
-            this.juego.botonDer.generarSpriteDe(this.spriteActual);
+            this.juego.botonDer.generarSpriteDe(this.sprite);
         }
         else if(direccion == -1) {
             this.juego.botonIzq.spriteActual = this.juego.botonIzq.sprites[2];
-            this.juego.botonIzq.generarSpriteDe(this.spriteActual);
+            this.juego.botonIzq.generarSpriteDe(this.sprite);
         }
     }
-
-    // cambiarPoderALaDer() {
-    //     if(this.juego.poderActual == this.juego.poderes[-1]) return ;
-    //     this.juego.poderActual = this.juego.poderes[this.juego.poderActual + 1]
-    //     console.log("poderes disponibles: ", this.juego.poderes)
-    //     console.log("poder actual:", this.juego.poderActual)
-    // }
 
     tick() {
         //this.cambiarCondicionSiCorresponde();

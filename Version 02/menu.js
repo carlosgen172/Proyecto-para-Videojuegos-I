@@ -1,47 +1,43 @@
 class Menu extends GameObject {
-    width;
-    height;
     x;
     y;
-    sprite;
     juego;
-    /*
-    ordenPresentacion = {
-        1: "inicio",
-        2: "explicación mecánicas",
-        3: "final"
-    }
-    */
+    width;
+    height;
+    sprite;
+    pantallaActual;
+    texturaDePantallaActual;
 
     presentacionTextual = [
         'LIBERTY',
         'Bienvenido a Liberty, en este juego tomas el papel de Pancho, el líder de un grupo rebelde, el cual se encagará de poner fin a la malvada dictadura de su padre, el señor Maidana.',
         'Para esto, deberás derrotas a su temible horda de enemigos, oleada por oleada.',
         'Consigue la mayor cantidad de enemigos derrotados y avanza hacia la victoria!!'
-        
-        ]
 
-    indiceActual = 0
-    
-    constructor(width, height, x, y, juego, juegoPrincipal, sprite) {
-        super();
+    ];
+
+    constructor(x, y, juego, width, height) {
+        super(x, y, juego);
+        this.x = x;
+        this.y = y;
+        this.juego = juego;
         this.width = width;
         this.height = height;
-        this.x = x
-        this.y = y
-        this.posicion = {x: x, y: y};
+        this.posicion = { x: x, y: y };
 
-        this.juego = juego;
-        this.juegoPrincipal = juegoPrincipal
         //this.cantClicks = 0
 
-        //this.generarSpriteDe(sprite);
-        this.generarTexto();
+        //this.generarTexto();
         //this.textoActual.interactive = true
-        console.log("texto a mostrar:", this.textoActual)
-        this.textoActual.zIndex = 2900
+        //this.textoActual.zIndex = 2900
+    }
 
-        //console.log("indice actual",indiceActual)
+    async init() {
+        //se hace textura para poder manejar la visibilidad de las pantallas
+        this.texturaDePantallaActual = this.juego.pantallas[0];
+        await this.generarSpriteDe(this.texturaDePantallaActual);
+
+        this.pantallaActual = this.sprite;
     }
 
     async generarTexto() {
@@ -55,7 +51,7 @@ class Menu extends GameObject {
         let indiceActual = 0
         */
         this.textoActual = new PIXI.Text(
-            this.presentacionTextual[this.indiceActual], 
+            this.presentacionTextual[this.indiceActual],
             //presentacionTextual[indiceActual],
             {
                 fontSize: 50,
@@ -65,51 +61,61 @@ class Menu extends GameObject {
         this.textoActual.anchor.set(0.5);
         this.textoActual.x = this.juego.screen.width / 2;
         this.textoActual.y = this.juego.screen.height / 2;
-        this.juego.stage.addChild(this.textoActual);
+        this.juego.pixiApp.stage.addChild(this.textoActual);
     }
 
 
-    generarSpriteDe(unSprite) {
+    async generarSpriteDe(unSprite) {
         this.sprite = new PIXI.Sprite(unSprite);
+
         this.sprite.anchor.set(0.5);
         //Ajuste de ubicacion
-        //this.sprite.x = this.juego.mouse.posicion.x;
-        //this.sprite.y = this.juego.mouse.posicion.y;
+
         this.sprite.x = this.x;
         this.sprite.y = this.y;
 
-        //Ajuste de tamaño
-        this.sprite.width = this.width;
-        this.sprite.height = this.height;
-
-        this.juego.stage.addChild(this.sprite);
+        this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
-    
+    cambioDePantallas() {
+
+        // if (this.texturaDePantallaActual == this.juego.pantallas[0]) {
+        //     this.texturaDePantallaActual = this.juego.pantallas[1];
+        // }
+        if (this.texturaDePantallaActual == this.juego.pantallas[0] && this.juego.puedeJugar) {
+            setTimeout(() => {
+                this.pantallaActual.visible = false;
+            }, 500);
+
+            //este console sirve para saber si la pantalla actual es un contenedor, y así manejar mejor la visibilidad
+            //console.log(this.pantallaActual instanceof PIXI.Container);
+        }
+    }
+
 
     realizarPresentacion() {
         //if(this.juegoPrincipal.mouse.apretado == false) {
-            if (!this.textoActual) return;
-            if(this.textoActual == null) return;
-            if(this.indiceActual >= 3) {
-                setTimeout(() => {
+        if (!this.textoActual) return;
+        if (this.textoActual == null) return;
+        if (this.indiceActual >= 3) {
+            setTimeout(() => {
                 // Elimina el elemento del contenedor padre (por ejemplo, app.stage)
                 this.juego.stage.removeChild(this.textoActual);
                 // Opcionalmente, puedes desvincularlo de la escena para liberar memoria
                 //this.destroy();
-                },1); 
-            }
-            this.indiceActual = (this.indiceActual + 1) % this.presentacionTextual.length
-            
-            //this.indiceActual = (this.indiceActual + 1).Math.min(this.presentacionTextual.length)
-            //this.indiceActual = this.indiceActual + 1
-            this.textoActual.text = this.presentacionTextual[this.indiceActual] 
-            this.textoActual.fontSize = 20
-            //console.log("funciona?")
+            }, 1);
+        }
+        this.indiceActual = (this.indiceActual + 1) % this.presentacionTextual.length
+
+        //this.indiceActual = (this.indiceActual + 1).Math.min(this.presentacionTextual.length)
+        //this.indiceActual = this.indiceActual + 1
+        this.textoActual.text = this.presentacionTextual[this.indiceActual]
+        this.textoActual.fontSize = 20
+        //console.log("funciona?")
         //} 
     }
 
     tick() {
-        //this.realizarPresentacion()
+
     }
 }
