@@ -34,7 +34,10 @@ class ObjetoDinamico extends GameObject {
         }else if (this.constructor.name == "Aliado"){
             //this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json");
             this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
-        } else {
+        } else if (this.constructor.name == "Jugador"){
+            this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Jugador/json/texture.json");
+        }
+        else {
             console.log("error: no existe spritesheet para este objeto")
         }
         this.spritesAnimados = {};
@@ -217,6 +220,9 @@ class ObjetoDinamico extends GameObject {
                 });
                 this.container = null;
             }, 2000);
+        }
+        else if (this.constructor.name == "Jugador") {
+            this.cambiarAnimacion("morir", false);
         }
 
         else if (this.constructor.name == "Avion") {

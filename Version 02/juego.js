@@ -75,6 +75,7 @@ class Juego {
         await this.generarPoderEnemigos();
         await this.generarBarraSalud();
         await this.generarTextoEnemigosMuertos();
+        await this.generarJugador();
         //await this.generarFondoMenu();
         this.poderActual = this.poderes[0];
         this.containerPrincipal = new PIXI.Container();
@@ -145,7 +146,7 @@ class Juego {
     async cargarBackground() {
         // Carga la imagen usando Assets.load()
         // Esto devuelve una Promise que resuelve la Textura de la imagen
-        const texture = await PIXI.Assets.load('imagenes/Tileset/Piso_provisorio/Secuencia/226.png'); // Reemplaza con la ruta de tu imagen
+        const texture = await PIXI.Assets.load('imagenes/menu/tileMapLiberty_v4.png'); // Reemplaza con la ruta de tu imagen
 
         // Crea un Sprite a partir de la Textura cargada
         this.fondo = new PIXI.TilingSprite(texture);
@@ -461,12 +462,39 @@ class Juego {
         ])
     }
 
+    async generarJugador() {
+        const posX = 50;
+        const posY = this.height / 2;
+        this.jugador = new Jugador(
+            //posXRandom, //posición x
+            posX, //posición x
+            posY, //posición y
+            this, //juego
+            32, //ancho
+            32, //alto
+            15, //radio de colisión
+            20, //radio de visión
+            0.5, //velocidad
+            0.1, //aceleración
+            2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+        )
+        if (this.puedeJugar) {
+            this.jugador.visible = true;
+            console.log("el jugador es visible ", this.jugador.visible)
+        }
+        else {
+            this.jugador.visible = false;
+            console.log("el jugador no se ha podido visibilizar ", this.jugador.visible)
+        }
+        console.log("se genero el jugador: ", this.jugador, "en la posicion ", this.jugador.x, this.jugador.y)
+    }
+
     async generarTropas() {
         //const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesheetsAliados());
         for (let i = 0; i < 5; i++) {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = -10
-            const posYRandom = Math.floor(Math.random() * (this.height - 100)) + 100
+            const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const aliadoNuevo = new Aliado(
                 //posXRandom, //posición x
                 posX, //posición x
@@ -485,6 +513,12 @@ class Juego {
         }
     }
 
+    async generarJugadorSiCorresponde() {
+        if (this.puedeJugar) {
+            await this.generarJugador();
+        }
+    }
+
     async generarAliadosSiCorresponde() {
         if (this.poderActual.estado == "aliados") {
             this.generarTropas();
@@ -500,7 +534,7 @@ class Juego {
             //const posXRandom = Math.floor(Math.random() * this.width)
             const posX = this.width - 10
             //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
-            const posYRandom = Math.floor(Math.random() * (this.height - 100)) + 100
+            const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const enemigoNuevo = new Enemigo(
                 posX, //posición x
                 posYRandom, //posición y
@@ -640,7 +674,6 @@ class Juego {
                 this.generarTropasEnemigas() * this.aliados.length;
             }
         }, 2000);
-
     }
 
     /*
@@ -713,6 +746,9 @@ class Juego {
         //this.mouse.tick()
         //this.menu.tick()
         this.visibilidadDeBotonesSegunPantalla()
+        if (this.jugador) {
+            this.jugador.visible = this.puedeJugar;
+        }
         if (this.bateriaVida) {
             this.bateriaVida.sprite.visible = this.puedeJugar;
         }

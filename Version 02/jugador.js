@@ -2,21 +2,19 @@ class Jugador extends ObjetoDinamico {
     sprite;
     enemigo;
     distanciaParaLlegar = 300;
-    constructor(x, y, juego, juegoPrincipal, width, height, sprite, radioColision, radioVision, velocidad, velMaxima, aceleracion, acelMaxima, scaleX) {
-        super(x, y, juego, juegoPrincipal, width, height);
-        this.juego = juegoPrincipal;
+    constructor(x, y, juegoPrincipal, width, height, radioColision, radioVision, velocidad, aceleracion, scaleX) {
+        super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
         this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
-        this.velMaxima = velMaxima;
         this.aceleracion = { x: aceleracion, y: aceleracion}; // Aceleración en píxeles/frame²
-        this.acelMaxima = acelMaxima;
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
 
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
 
-        this.generarSpriteDe(sprite);
+        this.generarNombreAleatorio();
+        this.cargarSpriteAnimado();
     }
 
     generarSpriteDe(unSprite) {
