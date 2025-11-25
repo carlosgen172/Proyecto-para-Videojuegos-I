@@ -18,7 +18,12 @@ class Enemigo extends ObjetoDinamico {
         //this.cantEnemigosMuertos = 0;
         // this.tengoAlgunEnemigoAdelante = false;
         // this.enemigoMasCerca = null;
-
+        
+        //PARA LO DEL FSM:
+        this.fsm = new Fsm(this)
+        this.fsm.anadir('Jugador_Agresivo', new personajeEnojado());
+        //this.fsm.anadir('Jugador_Chill', new personajeTranquilo());
+        //this.fsm.setear('IDLE');
 
         this.generarNombreAleatorio();
         this.cargarSpriteAnimado();
@@ -51,9 +56,14 @@ class Enemigo extends ObjetoDinamico {
         this.actualizarPosDelSpriteSegunPosDelObjeto()
     }
 
+    update(dt) {
+        this.fsm.update()
+    }
+
     tick() {
         this.verificarSiMori();
         this.decidirAtacarOAvanzar();
+        //this.update(dt);
         this.aplicarFisica();
         this.render();
     }
