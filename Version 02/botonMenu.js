@@ -101,7 +101,9 @@ class BotonMenu extends Boton {
     onHover() {
         this.sprite.tint = 0xBBBBBB;
         //cambiar solo a la pantalla asignada a este boton
-        this.juego.menu.cambiarPantalla(this.pantallaDestino);
+        if (!this.juego.menu.texturaDePantallaActual == this.juego.pantallas[4]) {
+            this.juego.menu.cambiarPantalla(this.pantallaDestino);
+        }
     }
 
     onOut() {
@@ -121,6 +123,10 @@ class BotonMenu extends Boton {
         this.container.visible = true;
     }
 
+    moverBotonAdelante() {
+        this.container.zIndex = 6000;
+    }
+
     ocultarTodosLosBotones(listaDeBotones) {
         for (const boton of listaDeBotones) {
             boton.ocultarBoton();
@@ -130,6 +136,12 @@ class BotonMenu extends Boton {
     aparecerTodosLosBotones(listaDeBotones) {
         for (const boton of listaDeBotones) {
             boton.aparecerBoton();
+        }
+    }
+
+    moverAdelanteTodosLosBotones(listaDeBotones) {
+        for (const boton of listaDeBotones) {
+            boton.moverBotonAdelante();
         }
     }
 }

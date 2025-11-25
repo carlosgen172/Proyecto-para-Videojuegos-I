@@ -17,13 +17,13 @@ class Menu extends GameObject {
 
     ];
 
-    constructor(x, y, juego, width, height) {
+    constructor(x, y, juego) {
         super(x, y, juego);
         this.x = x;
         this.y = y;
         this.juego = juego;
-        this.width = width;
-        this.height = height;
+        // this.width = width;
+        // this.height = height;
         this.posicion = { x: x, y: y };
 
         //this.cantClicks = 0
@@ -91,6 +91,10 @@ class Menu extends GameObject {
 
     ocultarPantalla() {
         this.pantallaActual.visible = false;
+    }
+
+    mostrarPantalla() {
+        this.pantallaActual.visible = true;
     }
 
     realizarPresentacion() {

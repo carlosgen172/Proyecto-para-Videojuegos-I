@@ -53,7 +53,7 @@ class Enemigo extends ObjetoDinamico {
     }
 
     render() {
-        this.actualizarPosDelSpriteSegunPosDelObjeto()
+        this.actualizarPosDelContainerSegunPosDelObjeto();
     }
 
     update(dt) {

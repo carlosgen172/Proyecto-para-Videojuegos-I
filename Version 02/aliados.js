@@ -2,28 +2,20 @@ class Aliado extends ObjetoDinamico {
     sprite;
     enemigo;
     distanciaParaLlegar = 300;
-    // tengoAlgunEnemigoAdelante;
-    // enemigoMasCerca;
     constructor(x, y, juegoPrincipal, width, height, radioColision, radioVision, velocidad, aceleracion, scaleX) {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
         this.radioVision = radioVision;
-        this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
-        this.aceleracion = { x: aceleracion, y: aceleracion}; // Aceleración en píxeles/frame²
+        this.velocidad = { x: velocidad, y: velocidad }; // Velocidad en píxeles/frame
+        this.aceleracion = { x: aceleracion, y: aceleracion }; // Aceleración en píxeles/frame²
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
         this.fuerza = 1;
-
-        // this.tengoAlgunEnemigoAdelante = false;
-        // this.enemigoMasCerca = null;
 
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
 
-        //this.estoyMuerto = false
-
         this.generarNombreAleatorio();
         this.cargarSpriteAnimado();
-        //console.log(this.nombreCompleto, "se ha generado, siendo un " , this.constructor.name ," con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
     listaDeSpritessheetsDisponibles() {
@@ -35,7 +27,7 @@ class Aliado extends ObjetoDinamico {
     }
 
     mensajeDeMuerte() {
-        return console.log("El aliado ", this.nombreCompleto," ha muerto")
+        return console.log("El aliado ", this.nombreCompleto, " ha muerto")
     }
 
     direccionDeAvance() {
@@ -47,7 +39,7 @@ class Aliado extends ObjetoDinamico {
     }
 
     render() {
-        this.actualizarPosDelSpriteSegunPosDelObjeto()
+        this.actualizarPosDelContainerSegunPosDelObjeto()
     }
 
     tick() {

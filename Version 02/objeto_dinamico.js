@@ -5,7 +5,7 @@ class ObjetoDinamico extends GameObject {
     aceleracionMaxima = 0.2;
     vida;
     fuerza;
-    tengoAlgunEnemigoAdelante;
+    tengoAlgunEnemigoAdelante; 
     enemigoMasCerca;
 
     //CONSTRUCTOR/INICIADOR:
@@ -31,11 +31,12 @@ class ObjetoDinamico extends GameObject {
     async cargarSpriteAnimado() {
         if (this.constructor.name == "Enemigo") {
             this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
-        }else if (this.constructor.name == "Aliado"){
-            //this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json");
+        }
+        else if (this.constructor.name == "Aliado"){
             this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
-        } else if (this.constructor.name == "Jugador"){
-            this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Jugador/json/texture.json");
+        }
+        else if (this.constructor.name == "Jugador"){
+            this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
         }
         else {
             console.log("error: no existe spritesheet para este objeto")
@@ -157,7 +158,7 @@ class ObjetoDinamico extends GameObject {
     //ACTUALIZACION DE LA POSICION:
 
     //actualiza la posicion del contenedor segun la posicion del objeto dinamico
-    actualizarPosDelSpriteSegunPosDelObjeto() {
+    actualizarPosDelContainerSegunPosDelObjeto() {
         if (!this.container) return;
         this.container.x = this.posicion.x;
         this.container.y = this.posicion.y;

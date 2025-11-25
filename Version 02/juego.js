@@ -75,15 +75,21 @@ class Juego {
         await this.generarPoderEnemigos();
         await this.generarBarraSalud();
         await this.generarTextoEnemigosMuertos();
-        await this.generarJugador();
+        await this.startJugador();
+
         //await this.generarFondoMenu();
         this.poderActual = this.poderes[0];
         this.containerPrincipal = new PIXI.Container();
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
+        this.jugadorPuedeGenerarse = true;
 
         window.addEventListener("keydown", this.keysDown.bind(this));
         window.addEventListener("keyup", this.keysUp.bind(this));
+    }
+
+    async startJugador() {
+        await this.generarJugador();
     }
 
     //GENERADOR (AÚN EXPERIMENTAL):
@@ -178,8 +184,6 @@ class Juego {
             this.width / 2,
             this.height / 2,
             this,
-            700,
-            500
         );
         await this.menu.init();
 
@@ -434,11 +438,16 @@ class Juego {
             PIXI.Assets.load("imagenes/Enemigos/wasp/json/texture.json")
         ])
 
+        this.spritesheetsJugador = await Promise.all([
+            PIXI.Assets.load("imagenes/Jugador/json/texture.json")
+        ]);
+
         this.pantallas = await Promise.all([
             PIXI.Assets.load("imagenes/menu/menu_fondo_liberty.png"),
             PIXI.Assets.load("imagenes/menu/menu_opciones_liberty_1.png"),
             PIXI.Assets.load("imagenes/menu/menu_opciones_liberty_2.png"),
-            PIXI.Assets.load("imagenes/menu/menu_opciones_liberty_3.png")
+            PIXI.Assets.load("imagenes/menu/menu_opciones_liberty_3.png"),
+            PIXI.Assets.load("imagenes/menu/menu_pausa_liberty_v3.png")
         ])
 
         this.secuenciaBotonJugar = await Promise.all([
@@ -463,8 +472,8 @@ class Juego {
     }
 
     async generarJugador() {
-        const posX = 50;
-        const posY = this.height / 2;
+        const posX = 100;
+        const posY = 100;
         this.jugador = new Jugador(
             //posXRandom, //posición x
             posX, //posición x
@@ -478,14 +487,6 @@ class Juego {
             0.1, //aceleración
             2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
         )
-        if (this.puedeJugar) {
-            this.jugador.visible = true;
-            console.log("el jugador es visible ", this.jugador.visible)
-        }
-        else {
-            this.jugador.visible = false;
-            console.log("el jugador no se ha podido visibilizar ", this.jugador.visible)
-        }
         console.log("se genero el jugador: ", this.jugador, "en la posicion ", this.jugador.x, this.jugador.y)
     }
 
@@ -510,12 +511,6 @@ class Juego {
             )
             this.aliados.push(aliadoNuevo)
             this.personas.push(aliadoNuevo)
-        }
-    }
-
-    async generarJugadorSiCorresponde() {
-        if (this.puedeJugar) {
-            await this.generarJugador();
         }
     }
 
@@ -617,6 +612,9 @@ class Juego {
 
     keysDown(letra) {
         const key = letra.key.toLowerCase();
+
+        this.generarMenuDePausa(key, true)
+
         if (this.puedeJugar) {
             this.presionarHebillaCon_(key, true);
         }
@@ -667,6 +665,38 @@ class Juego {
             this.generarEnemigosSiCorresponde()
         }
     }
+
+    generarMenuDePausa(unaTecla, estaPresionada) {
+        if (unaTecla !== "escape" || !estaPresionada) return;
+
+        if (this.puedeJugar) {
+            this.menu.mostrarPantalla();
+            this.menu.cambiarPantalla(4);
+            this.menu.pantallaActual.zIndex = 5000;
+            this.puedeJugar = false;
+        } else {
+            this.menu.ocultarPantalla();
+            this.puedeJugar = true;
+        }
+    }
+
+
+    // generarMenuDePausa(unaTecla, estaPresionada) {
+    //     this.keys[unaTecla] = estaPresionada;
+
+    //     if(estaPresionada) {
+    //         if(unaTecla === "escape" && this.puedeJugar) {
+    //             this.menu.mostrarPantalla();
+    //             this.menu.cambiarPantalla(4);
+    //             this.menu.pantallaActual.zIndex = 5000;
+    //             this.puedeJugar = false;
+    //         }
+    //         else if(unaTecla === "escape" && !this.puedeJugar) {
+    //             this.menu.ocultarPantalla();
+    //             this.puedeJugar = true;
+    //         }
+    //     }
+    // }
 
     aparicionDeEnemigo() {
         setTimeout(() => {
@@ -744,11 +774,8 @@ class Juego {
 
     gameLoop() {
         //this.mouse.tick()
-        //this.menu.tick()
+        this.menu.tick()
         this.visibilidadDeBotonesSegunPantalla()
-        if (this.jugador) {
-            this.jugador.visible = this.puedeJugar;
-        }
         if (this.bateriaVida) {
             this.bateriaVida.sprite.visible = this.puedeJugar;
         }
