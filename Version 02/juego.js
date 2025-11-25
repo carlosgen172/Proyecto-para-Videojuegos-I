@@ -42,7 +42,7 @@ class Juego {
             antialias: true,
         }
 
-        this.pixiApp = new PIXI.Application(preconfiguraciones);
+        this.pixiApp = new PIXI.Application();
         await this.pixiApp.init(preconfiguraciones);
 
         document.body.style.display = "flex";
@@ -56,8 +56,7 @@ class Juego {
         document.body.appendChild(this.pixiApp.canvas);
 
         this.pixiApp.stage.eventMode = "static";
-        window.addEventListener("keydown", this.keysDown.bind(this));
-        window.addEventListener("keyup", this.keysUp.bind(this));
+
 
 
         await this.cargarBackground();
@@ -68,12 +67,12 @@ class Juego {
 
         //this.poderes = [];
         //await this.generarAvion();
+        await this.generarBotonesDelHUD();
         await this.generarFondoHUD();
         await this.generarMenu();
         await this.generarPoderAliados();
         await this.generarPoderBombas();
         await this.generarPoderEnemigos();
-        await this.generarBotonesDelHUD();
         await this.generarBarraSalud();
         await this.generarTextoEnemigosMuertos();
         //await this.generarFondoMenu();
@@ -81,6 +80,9 @@ class Juego {
         this.containerPrincipal = new PIXI.Container();
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
+
+        window.addEventListener("keydown", this.keysDown.bind(this));
+        window.addEventListener("keyup", this.keysUp.bind(this));
     }
 
     //GENERADOR (AÚN EXPERIMENTAL):
@@ -225,7 +227,6 @@ class Juego {
         await this.botonVolver.init();
 
         const listaBotonesMenu = [
-            this.botonJugar,
             this.botonSeguir,
             this.botonNueva,
             this.botonVolver
@@ -235,25 +236,17 @@ class Juego {
     }
 
     visibilidadDeBotonesSegunPantalla() {
-        if (this.menu.pantallaActual.texture == this.pantallas[1]) {
-            this.botonSeguir.sprite.visible = true;
-            this.botonNueva.sprite.visible = true;
-            this.botonVolver.sprite.visible = true;
+        if (this.menu.pantallaActual.texture == this.pantallas[0]) {
+            this.botonSeguir.ocultarTodosLosBotones(this.botones);
         }
-        else if (this.menu.pantallaActual.texture == this.pantallas[2]) {
-            this.botonSeguir.sprite.visible = true;
-            this.botonNueva.sprite.visible = true;
-            this.botonVolver.sprite.visible = true;
-        }
-        else if (this.menu.pantallaActual.texture == this.pantallas[3]) {
-            this.botonSeguir.sprite.visible = true;
-            this.botonNueva.sprite.visible = true;
-            this.botonVolver.sprite.visible = true;
+        // else if (this.menu.ocultarPantalla()){
+        //     this.botonSeguir.ocultarTodosLosBotones(this.botones);
+        // }
+        else if (!this.menu.pantallaActual.visible) {
+            this.botonSeguir.ocultarTodosLosBotones(this.botones);
         }
         else {
-            this.botonSeguir.sprite.visible = false;
-            this.botonNueva.sprite.visible = false;
-            this.botonVolver.sprite.visible = false;
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
         }
     }
 
@@ -608,11 +601,11 @@ class Juego {
 
         //Si se presiona
         if (estaPresionada) {
-            if (unaTecla === "e") {
+            if (unaTecla === "e" && this.botonDer) {
                 this.botonDer.rolarPoderHacia_(1);
                 this.botonDer.actualizarSpritesSegunDireccionHacia_(1, true);
             }
-            if (unaTecla === "q") {
+            if (unaTecla === "q" && this.botonIzq) {
                 this.botonIzq.rolarPoderHacia_(-1);
                 this.botonIzq.actualizarSpritesSegunDireccionHacia_(-1, true);
             }
@@ -620,8 +613,8 @@ class Juego {
 
         //Si se suelta
         else {
-            if (unaTecla === "e") this.botonDer.actualizarSpritesSegunDireccionHacia_(1, false);
-            if (unaTecla === "q") this.botonIzq.actualizarSpritesSegunDireccionHacia_(-1, false);
+            if (unaTecla === "e" && this.botonDer) this.botonDer.actualizarSpritesSegunDireccionHacia_(1, false);
+            if (unaTecla === "q" && this.botonIzq) this.botonIzq.actualizarSpritesSegunDireccionHacia_(-1, false);
         }
     }
 
@@ -720,11 +713,11 @@ class Juego {
         //this.mouse.tick()
         //this.menu.tick()
         this.visibilidadDeBotonesSegunPantalla()
-        if(this.bateriaVida) {
+        if (this.bateriaVida) {
             this.bateriaVida.sprite.visible = this.puedeJugar;
         }
 
-        if(this.hud) {
+        if (this.hud) {
             this.hud.visible = this.puedeJugar;
         }
 

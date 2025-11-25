@@ -26,6 +26,8 @@ class BotonMenu extends Boton {
         // CLICK
         this.botonActual.on("pointerdown", () => { this.onClick(); });
 
+        this.botonActual.on("pointerup", () => { this.onClickUp(); });
+
         // HOVER (significa pasar el mouse por encima)
         this.botonActual.on("pointerover", () => { this.onHover(); });
 
@@ -74,14 +76,26 @@ class BotonMenu extends Boton {
         else if (!this.pantallaDestino == 0 && this.pantallaDestino == 2) {
             setTimeout(() => {
                 this.juego.menu.ocultarPantalla();
-                this.ocultarBoton();
                 this.ocultarTodosLosBotones(this.juego.botones)
                 this.juego.puedeJugar = true;
+            }, 250)
+        }
+        else if (this.pantallaDestino == 3) {
+            setTimeout(() => {
+                this.juego.menu.cambiarPantalla(0);
+                this.juego.botonJugar.aparecerBoton();
+                // this.spritesDisponibles = this.juego.secuenciaBotonJugar;
+                // this.pantallaDestino = this.juego.botonJugar.pantallaDestino;
+                //this.juego.botonJugar.botonActual.texture = this.spritesDisponibles[0];
             }, 250)
         }
         // setTimeout(() => {
         //     this.juego.menu.ocultarPantalla();
         // }, 1000)
+    }
+
+    onClickUp() {
+        this.botonActual.texture = this.spritesDisponibles[0];
     }
 
     onHover() {
@@ -94,13 +108,28 @@ class BotonMenu extends Boton {
         this.sprite.tint = this.tintOriginal;
     }
 
+    cambiarDeEsteBotonA(unBoton) {
+        this.spritesDisponibles = unBoton.listaDeTexturas;
+        this.pantallaDestino = unBoton.pantallaDestino;
+    }
+
     ocultarBoton() {
         this.container.visible = false;
+    }
+
+    aparecerBoton() {
+        this.container.visible = true;
     }
 
     ocultarTodosLosBotones(listaDeBotones) {
         for (const boton of listaDeBotones) {
             boton.ocultarBoton();
+        }
+    }
+
+    aparecerTodosLosBotones(listaDeBotones) {
+        for (const boton of listaDeBotones) {
+            boton.aparecerBoton();
         }
     }
 }

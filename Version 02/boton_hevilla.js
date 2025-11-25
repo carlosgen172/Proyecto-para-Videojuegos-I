@@ -43,9 +43,6 @@ class BotonHevilla extends Boton {
                 this.juego.botonIzq.sprite.texture = this.juego.botonIzq.sprites[1];
             }
         }
-
-        this.botonDer.sprite.visible = !!this.puedeJugar;
-        this.botonIzq.sprite.visible = !!this.puedeJugar;
     }
 
 
