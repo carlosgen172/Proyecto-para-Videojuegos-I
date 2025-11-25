@@ -76,6 +76,7 @@ class BotonMenu extends Boton {
                 this.juego.menu.ocultarPantalla();
                 this.ocultarBoton();
                 this.ocultarTodosLosBotones(this.juego.botones)
+                this.juego.puedeJugar = true;
             }, 250)
         }
         // setTimeout(() => {

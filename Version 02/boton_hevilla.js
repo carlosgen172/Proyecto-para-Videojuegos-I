@@ -7,8 +7,8 @@ class BotonHevilla extends Boton {
             1: sprite,
             2: segundoSprite
         }
-        this.sprite = this.sprites[1];
-        this.generarSpriteDe(this.sprite);
+        this.textura = this.sprites[1];
+        this.generarSpriteDe(this.textura);
     }
 
     rolarPoderHacia_(direccion) {
@@ -43,6 +43,9 @@ class BotonHevilla extends Boton {
                 this.juego.botonIzq.sprite.texture = this.juego.botonIzq.sprites[1];
             }
         }
+
+        this.botonDer.sprite.visible = !!this.puedeJugar;
+        this.botonIzq.sprite.visible = !!this.puedeJugar;
     }
 
 

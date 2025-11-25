@@ -68,7 +68,7 @@ class Juego {
 
         //this.poderes = [];
         //await this.generarAvion();
-        await this.cargarFondoHUD();
+        await this.generarFondoHUD();
         await this.generarMenu();
         await this.generarPoderAliados();
         await this.generarPoderBombas();
@@ -235,17 +235,17 @@ class Juego {
     }
 
     visibilidadDeBotonesSegunPantalla() {
-        if(this.menu.pantallaActual.texture == this.pantallas[1]) {
+        if (this.menu.pantallaActual.texture == this.pantallas[1]) {
             this.botonSeguir.sprite.visible = true;
             this.botonNueva.sprite.visible = true;
             this.botonVolver.sprite.visible = true;
         }
-        else if(this.menu.pantallaActual.texture == this.pantallas[2]) {
+        else if (this.menu.pantallaActual.texture == this.pantallas[2]) {
             this.botonSeguir.sprite.visible = true;
             this.botonNueva.sprite.visible = true;
             this.botonVolver.sprite.visible = true;
         }
-        else if(this.menu.pantallaActual.texture == this.pantallas[3]) {
+        else if (this.menu.pantallaActual.texture == this.pantallas[3]) {
             this.botonSeguir.sprite.visible = true;
             this.botonNueva.sprite.visible = true;
             this.botonVolver.sprite.visible = true;
@@ -257,7 +257,7 @@ class Juego {
         }
     }
 
-    async cargarFondoHUD() {
+    async generarFondoHUD() {
         // Carga la imagen usando Assets.load()
         // Esto devuelve una Promise que resuelve la Textura de la imagen
         const texture = await PIXI.Assets.load('imagenes/hud_1.png'); // Reemplaza con la ruta de tu imagen
@@ -281,26 +281,10 @@ class Juego {
 
         // Añade el Sprite al escenario para que se muestre en pantalla
         this.pixiApp.stage.addChild(this.hud);
-
-        if (this.puedeJugar) {
-            this.hud.visible = true;
-        }
-        else {
-            this.hud.visible = false;
-        }
     }
 
     async generarPoderAliados() {
         const texturaPoderAliados = await PIXI.Assets.load("imagenes/aliados_power_up_hud_corregido.png");
-        // let configPoder = {
-        //     "alto": 50,
-        //     "ancho": 50,
-        //     "posicion en X": this.width,
-        //     "posicion en Y": 50,
-        //     "juego": this,
-        //     "sprite": texturaPoderAliados,
-        //     "estado": "aliados"
-        // }
 
         const poderAliados = new Poder(
             //configPoder
@@ -326,15 +310,6 @@ class Juego {
 
     async generarPoderBombas() {
         const texturaPoderBombas = await PIXI.Assets.load("imagenes/bombita_power_up_hud_corregido.png");
-        // let configPoder = {
-        //     "alto": 50,
-        //     "ancho": 50,
-        //     "posicion en X": this.width,
-        //     "posicion en Y": 50,
-        //     "juego": this,
-        //     "sprite": texturaPoderAliados,
-        //     "estado": "bombas"
-        // }
 
         const poderBombas = new Poder(
             // configPoder
@@ -406,14 +381,11 @@ class Juego {
             texturaIzqPres, //segundoSprite
             "izq", //direccion
         )
-        if (this.puedeJugar) {
-            this.botonDer.sprite.visible = true;
-            this.botonIzq.sprite.visible = true;
-        }
-        else {
-            this.botonDer.sprite.visible = false;
-            this.botonIzq.sprite.visible = false;
-        }
+
+        //estas lineas fuerzan el visible del boton a un booleano
+        //si hay algun bug, da null o lo que sea, termina dando false
+        this.botonDer.sprite.visible = !!this.puedeJugar;
+        this.botonIzq.sprite.visible = !!this.puedeJugar;
     }
 
     generarMenuYBotones() {
@@ -426,19 +398,22 @@ class Juego {
         const texturaSalud1Hit = await PIXI.Assets.load("imagenes/bateria_hud_1_hit_final.png")
         const texturaSaludVacia = await PIXI.Assets.load("imagenes/bateria_hud_vacia_final.png")
 
-        if (this.puedeJugar) {
-            this.bateriaVida = new BateriaVida(
-                50, //ancho
-                50, //alto
-                (this.width / 5) + 10, //x
-                25, //y
-                this, //Juego
-                texturaSaludFull, //sprite1
-                texturaSalud2Hit, //sprite2
-                texturaSalud1Hit, //sprite3
-                texturaSaludVacia //sprite4
-            )
-        }
+
+        this.bateriaVida = new BateriaVida(
+            50, //ancho
+            50, //alto
+            (this.width / 5) + 10, //x
+            25, //y
+            this, //Juego
+            texturaSaludFull, //sprite1
+            texturaSalud2Hit, //sprite2
+            texturaSalud1Hit, //sprite3
+            texturaSaludVacia //sprite4
+        )
+
+        //esta linea convierte el visible del boton en un booleano
+        //si hay algun bug, da null o lo que sea, termina dando false
+        this.bateriaVida.sprite.visible = !!this.puedeJugar;
     }
 
     async generarTextoEnemigosMuertos() {
@@ -671,7 +646,7 @@ class Juego {
             if (this.enemigos.length < this.cantEnemigosMinimaEnPantalla && this.puedeJugar) {
                 this.generarTropasEnemigas() * this.aliados.length;
             }
-        }, 3000);
+        }, 2000);
 
     }
 
@@ -745,6 +720,22 @@ class Juego {
         //this.mouse.tick()
         //this.menu.tick()
         this.visibilidadDeBotonesSegunPantalla()
+        if(this.bateriaVida) {
+            this.bateriaVida.sprite.visible = this.puedeJugar;
+        }
+
+        if(this.hud) {
+            this.hud.visible = this.puedeJugar;
+        }
+
+        if (this.botonDer && this.botonDer.sprite) {
+            this.botonDer.sprite.visible = this.puedeJugar;
+        }
+
+        if (this.botonIzq && this.botonIzq.sprite) {
+            this.botonIzq.sprite.visible = this.puedeJugar;
+        }
+
         if (this.puedeJugar) {
             this.realizarTickPorCadaAliado()
             this.realizarTickPorCadaEnemigo()
@@ -758,7 +749,7 @@ class Juego {
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
-        
+
 
     }
 }
