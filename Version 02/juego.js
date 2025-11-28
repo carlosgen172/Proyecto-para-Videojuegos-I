@@ -241,16 +241,22 @@ class Juego {
     }
 
     visibilidadDeBotonesSegunPantalla() {
-        if (this.menu.pantallaActual.texture == this.pantallas[0]) {
+        if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
         }
-        // else if (this.menu.ocultarPantalla()){
-        //     this.botonSeguir.ocultarTodosLosBotones(this.botones);
-        // }
-        else if (!this.menu.pantallaActual.visible) {
+        else if (!this.menu.pantallaActual.visible) {  //si el menu no es visible, ocultar
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
         }
-        else {
+        else if (this.menu.pantallaActual.texture == this.pantallas[4]) { //si la pantalla es el menu de PAUSA
+            //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            this.botones[1].ocultarBoton();
+            this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
+            this.botones[0].container.x = this.width / 2;
+            this.botones[2].container.x = this.width / 2;
+            this.botones[2].container.y = (this.height / 2) + 100;
+        }
+        else { //sino, aparecer todos los botones en las demas pantallas del menu
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
         }
     }
@@ -501,8 +507,8 @@ class Juego {
                 posX, //posición x
                 posYRandom, //posición y
                 this, //juego
-                32, //ancho
-                32, //alto
+                16, //ancho
+                16, //alto
                 15, //radio de colisión
                 20, //radio de visión
                 0.5, //velocidad

@@ -84,8 +84,8 @@ class Menu extends GameObject {
 
     cambiarPantalla(indiceDestino) {
         this.indiceActual = indiceDestino; // con esto vamos a la pantalla deseada
-        const nuevaPantalla = this.juego.pantallas[indiceDestino];
-        this.pantallaActual.texture = nuevaPantalla;
+        const nuevaPantalla = this.juego.pantallas[indiceDestino]; // guardamos la nueva pantalla a ir
+        this.pantallaActual.texture = nuevaPantalla; //cambiamos la textura de la pantalla actual
         console.log("Pantalla actual:", indiceDestino);
     }
 

@@ -6,7 +6,6 @@ class BotonMenu extends Boton {
         super(x, y, juego, width, height);
         this.spritesDisponibles = listaDeTexturas;
         this.pantallaDestino = pantallaDestino;
-
         this.container = new PIXI.Container();
         this.container.x = x;
         this.container.y = y;
@@ -73,20 +72,24 @@ class BotonMenu extends Boton {
             }, 250)
 
         }
-        else if (!this.pantallaDestino == 0 && this.pantallaDestino == 2) {
+        else if (this.pantallaDestino == 2) {
             setTimeout(() => {
                 this.juego.menu.ocultarPantalla();
                 this.ocultarTodosLosBotones(this.juego.botones)
                 this.juego.puedeJugar = true;
             }, 250)
         }
-        else if (this.pantallaDestino == 3) {
+        else if (this.pantallaDestino == 3 || this.pantallaDestino == 3 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[4]) {
             setTimeout(() => {
                 this.juego.menu.cambiarPantalla(0);
                 this.juego.botonJugar.aparecerBoton();
-                // this.spritesDisponibles = this.juego.secuenciaBotonJugar;
-                // this.pantallaDestino = this.juego.botonJugar.pantallaDestino;
-                //this.juego.botonJugar.botonActual.texture = this.spritesDisponibles[0];
+            }, 250)
+        }
+        else if (!this.puedeJugar && this.pantallaDestino == 1 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[4]) {
+            setTimeout(() => {
+                this.juego.menu.ocultarPantalla();
+                this.ocultarTodosLosBotones(this.juego.botones)
+                this.juego.puedeJugar = true;
             }, 250)
         }
         // setTimeout(() => {
@@ -101,7 +104,7 @@ class BotonMenu extends Boton {
     onHover() {
         this.sprite.tint = 0xBBBBBB;
         //cambiar solo a la pantalla asignada a este boton
-        if (!this.juego.menu.texturaDePantallaActual == this.juego.pantallas[4]) {
+        if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[4]) {
             this.juego.menu.cambiarPantalla(this.pantallaDestino);
         }
     }
