@@ -244,9 +244,23 @@ class Juego {
         if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
         }
+        else if (this.menu.pantallaActual.texture == this.pantallas[1]) {
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            this.botones[0].container.x = this.width - 515;
+            this.botones[2].container.x = this.width - 515;
+            this.botones[2].container.y = this.height - 90;
+        }
         else if (!this.menu.pantallaActual.visible) {  //si el menu no es visible, ocultar
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
+            console.log("botones ocultados");
         }
+        /*  NOTA IMPORTANTE: la jerarquia de los else if importa mucho
+            porque si no se verifica que la pantalla es visible
+            hay un bug con fijarse PRIMERO si la pantalla es la del
+            menu de pausa. Probar para verificar intercambiando de
+            lugar el else if de abajo con el de arriba de esta nota.
+            Para más explicación mejor hacer llamada.
+        */
         else if (this.menu.pantallaActual.texture == this.pantallas[4]) { //si la pantalla es el menu de PAUSA
             //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
@@ -256,6 +270,7 @@ class Juego {
             this.botones[2].container.x = this.width / 2;
             this.botones[2].container.y = (this.height / 2) + 100;
         }
+
         else { //sino, aparecer todos los botones en las demas pantallas del menu
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
         }
@@ -680,9 +695,6 @@ class Juego {
             this.menu.cambiarPantalla(4);
             this.menu.pantallaActual.zIndex = 5000;
             this.puedeJugar = false;
-        } else {
-            this.menu.ocultarPantalla();
-            this.puedeJugar = true;
         }
     }
 

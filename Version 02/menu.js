@@ -6,8 +6,6 @@ class Menu extends GameObject {
     height;
     sprite;
     pantallaActual;
-    texturaDePantallaActual;
-    botonEnPantalla;
 
     presentacionTextual = [
         'LIBERTY',
@@ -35,12 +33,11 @@ class Menu extends GameObject {
 
     async init() {
         //se hace textura para poder manejar la visibilidad de las pantallas
-        this.texturaDePantallaActual = this.juego.pantallas[0];
-        this.sprite = this.texturaDePantallaActual;
+
+        this.sprite = this.juego.pantallas[0];
         await this.generarSpriteDe(this.sprite);
 
         this.pantallaActual = this.sprite;
-        this.botonEnPantalla = this.juego.botonJugar;
 
         this.indiceActual = 0;
     }

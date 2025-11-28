@@ -103,7 +103,6 @@ class BotonMenu extends Boton {
                 this.juego.menu.cambiarPantalla(1);
                 this.ocultarBoton();
             }, 250)
-
         }
         else if (this.pantallaDestino == 2) {
             setTimeout(() => {
@@ -112,10 +111,11 @@ class BotonMenu extends Boton {
                 this.juego.puedeJugar = true;
             }, 250)
         }
-        else if (this.pantallaDestino == 3 || this.pantallaDestino == 3 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[4]) {
+        else if (this.pantallaDestino == 3) {
             setTimeout(() => {
-                this.juego.menu.cambiarPantalla(0);
                 this.juego.botonJugar.aparecerBoton();
+                this.juego.botonJugar.moverBotonAdelante();
+                this.juego.menu.cambiarPantalla(0);
             }, 250)
         }
         else if (this.pantallaDestino == 1 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[4]) {
@@ -125,9 +125,6 @@ class BotonMenu extends Boton {
                 this.juego.puedeJugar = true;
             }, 250)
         }
-        // setTimeout(() => {
-        //     this.juego.menu.ocultarPantalla();
-        // }, 1000)
     }
 
     onClickUp() {
