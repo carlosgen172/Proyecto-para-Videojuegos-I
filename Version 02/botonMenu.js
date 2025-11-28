@@ -63,6 +63,39 @@ class BotonMenu extends Boton {
 
     }
 
+    //IMPORTANTE: leer para entender
+
+    /*
+        La textura del boton cambiará dependiendo de la listaDeTexturas.
+        A ésta se la pasara como parametro una lista de sprites para
+        que éste pueda tener una animación de PRESIONADO.
+
+        this.spritesDisponibles[0] = boton NO está presionado.
+        this.spritesDisponibles[1] = el boton SI está presionado.
+
+        --------------------------------------------
+
+        La pantallaDestino es un parámetro que se le pasa un número y
+        ese número es la posición de una de las pantallas a la cual
+        se deberá dirigir con el cambiarPantalla(unNumero) de la clase
+        MENU. La lista de pantallas se verá reflejada en la clase JUEGO
+        con el atributo this.juego.pantallas.
+
+        Aca dejo una lista de posiciones, que representa cada una
+        tanto para this.juego.pantallas como para
+        this.juego.menu.cambiarPantalla(unNumero):
+
+        0 = menu SÓLO con boton JUGAR
+        1 = menu con botones NUEVA, SEGUIR, VOLVER
+        2 = menu con los 3 botones pero con CAMBIO DE MENSAJE
+        3 = menu con los 3 botones pero con CAMBIO DE MENSAJE
+        4 = menu de PAUSA con botones SEGUIR, VOLVER
+
+        CAMBIO DE MENSAJE: proporcionamos un mensaje en la esquina
+        inferior derecha que cambiará según el botón que el mouse
+        pase por encima.
+
+    */
     onClick() {
         this.botonActual.texture = this.spritesDisponibles[1];
         if (this.pantallaDestino == 0) {
@@ -85,7 +118,7 @@ class BotonMenu extends Boton {
                 this.juego.botonJugar.aparecerBoton();
             }, 250)
         }
-        else if (!this.puedeJugar && this.pantallaDestino == 1 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[4]) {
+        else if (this.pantallaDestino == 1 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[4]) {
             setTimeout(() => {
                 this.juego.menu.ocultarPantalla();
                 this.ocultarTodosLosBotones(this.juego.botones)
@@ -103,7 +136,7 @@ class BotonMenu extends Boton {
 
     onHover() {
         this.sprite.tint = 0xBBBBBB;
-        //cambiar solo a la pantalla asignada a este boton
+        //cambiar solo a la pantalla asignada a este boton (CAMBIO DE MENSAJE)
         if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[4]) {
             this.juego.menu.cambiarPantalla(this.pantallaDestino);
         }
