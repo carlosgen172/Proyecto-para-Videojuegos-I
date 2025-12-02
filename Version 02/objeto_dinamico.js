@@ -5,7 +5,7 @@ class ObjetoDinamico extends GameObject {
     aceleracionMaxima = 0.2;
     vida;
     fuerza;
-    tengoAlgunEnemigoAdelante; 
+    tengoAlgunEnemigoAdelante;
     enemigoMasCerca;
 
     //CONSTRUCTOR/INICIADOR:
@@ -25,19 +25,21 @@ class ObjetoDinamico extends GameObject {
         this.enemigoMasCerca = null;
         this.container = new PIXI.Container();
         this.juego.pixiApp.stage.addChild(this.container);
+        this.container.name = this.constructor.name;
     }
 
     //SISTEMA DE CARGA/GENERACIÓN DE SPRITESHEETS:
     async cargarSpriteAnimado() {
-        if (this.constructor.name == "Enemigo") {
+        if (this.constructor.name == "Jugador") {
+            this.animacionesPersonaje = await PIXI.Assets.load("imagenes/Jugador/json/texture.json")
+        }
+        else if (this.constructor.name == "Enemigo") {
             this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
         }
-        else if (this.constructor.name == "Aliado"){
+        else if (this.constructor.name == "Aliado") {
             this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
         }
-        else if (this.constructor.name == "Jugador"){
-            this.animacionesPersonaje = this.elegirSpritesheetAleatorio();
-        }
+
         else {
             console.log("error: no existe spritesheet para este objeto")
         }
@@ -134,7 +136,7 @@ class ObjetoDinamico extends GameObject {
                 break;
             }
         }
-        
+
         //este condicional sirve para decidir si avanzar o atacar
         if (!this.tengoAlgunEnemigoAdelante && !this.estoyMuerto) {
             this.aceleracion.x = this.direccionDeAvance();
@@ -178,6 +180,9 @@ class ObjetoDinamico extends GameObject {
         if (this.vida <= 0) {
             this.morir();
         }
+        else if (this.container.x < -50 && this.constructor.name == "Enemigo") {
+            this.morir();
+        }
     }
 
     mensajeDeMuerte() {
@@ -189,7 +194,22 @@ class ObjetoDinamico extends GameObject {
         if (this.estoyMuerto) return;
 
         //este condicional maneja la muerte según el tipo de entidad
-        if (this.constructor.name == "Enemigo") {
+        if (this.container.x < - 50 && this.constructor.name == "Enemigo") {
+            this.juego.enemigosMuertos.push(this);
+            this.cambiarAnimacion("morir", false);
+            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
+
+            //aca no pasan dos segundos porque sino hay un error en la animacion de la bateria
+            this.container.visible = false;
+            this.container.parent.removeChild(this.container);
+            //console.log("se ha removido el contenedor", this.container);
+            this.container.destroy({
+                texture: false,
+                baseTexture: false
+            });
+            this.container = null;
+        }
+        else if (this.constructor.name == "Enemigo") {
             this.juego.enemigosMuertos.push(this);
             this.cambiarAnimacion("morir", false);
             this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigos);

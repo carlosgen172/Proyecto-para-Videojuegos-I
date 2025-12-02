@@ -16,7 +16,7 @@ class Juego {
     pantallas = [];
     botones = [];
     puedeJugar = false;
-    cantEnemigosMinimaEnPantalla = 20;
+    cantEnemigosMinimaEnPantalla = 60;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
@@ -43,6 +43,7 @@ class Juego {
         }
 
         this.pixiApp = new PIXI.Application();
+        globalThis.__PIXI_APP__ = this.pixiApp;
         await this.pixiApp.init(preconfiguraciones);
 
         document.body.style.display = "flex";
@@ -57,13 +58,13 @@ class Juego {
 
         this.pixiApp.stage.eventMode = "static";
 
-
-
         await this.cargarBackground();
         await this.crearGenerador();
         //await this.generarMouse();
 
         await this.cargarSprites();
+
+
 
         //this.poderes = [];
         //await this.generarAvion();
@@ -75,21 +76,24 @@ class Juego {
         await this.generarPoderEnemigos();
         await this.generarBarraSalud();
         await this.generarTextoEnemigosMuertos();
-        await this.startJugador();
+
 
         //await this.generarFondoMenu();
         this.poderActual = this.poderes[0];
         this.containerPrincipal = new PIXI.Container();
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
-        this.jugadorPuedeGenerarse = true;
 
         window.addEventListener("keydown", this.keysDown.bind(this));
         window.addEventListener("keyup", this.keysUp.bind(this));
     }
 
-    async startJugador() {
+    async start() {
         await this.generarJugador();
+        if (this.jugador !== null) {
+            await this.jugador.start();
+        }
+
     }
 
     //GENERADOR (AÚN EXPERIMENTAL):
@@ -241,18 +245,8 @@ class Juego {
     }
 
     visibilidadDeBotonesSegunPantalla() {
-        if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
+        if (!this.menu.pantallaActual.visible) {  //si el menu no es visible, ocultar
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
-        }
-        else if (this.menu.pantallaActual.texture == this.pantallas[1]) {
-            this.botonSeguir.aparecerTodosLosBotones(this.botones);
-            this.botones[0].container.x = this.width - 515;
-            this.botones[2].container.x = this.width - 515;
-            this.botones[2].container.y = this.height - 90;
-        }
-        else if (!this.menu.pantallaActual.visible) {  //si el menu no es visible, ocultar
-            this.botonSeguir.ocultarTodosLosBotones(this.botones);
-            console.log("botones ocultados");
         }
         /*  NOTA IMPORTANTE: la jerarquia de los else if importa mucho
             porque si no se verifica que la pantalla es visible
@@ -261,7 +255,17 @@ class Juego {
             lugar el else if de abajo con el de arriba de esta nota.
             Para más explicación mejor hacer llamada.
         */
+        else if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
+            this.botonSeguir.ocultarTodosLosBotones(this.botones);
+        }
+        else if (this.menu.pantallaActual.texture == this.pantallas[1]) {
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            this.botones[0].container.x = this.width - 515;
+            this.botones[2].container.x = this.width - 515;
+            this.botones[2].container.y = this.height - 90;
+        }
         else if (this.menu.pantallaActual.texture == this.pantallas[4]) { //si la pantalla es el menu de PAUSA
+
             //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[1].ocultarBoton();
@@ -269,8 +273,31 @@ class Juego {
             this.botones[0].container.x = this.width / 2;
             this.botones[2].container.x = this.width / 2;
             this.botones[2].container.y = (this.height / 2) + 100;
-        }
 
+            //llevar al fondo a todos los enemigos
+            for (const enemigo of this.enemigos) {
+                enemigo.llevarAlFondo();
+            }
+        }
+        else if (this.menu.pantallaActual.texture == this.pantallas[5]) { //si la pantalla es GAME OVER
+
+            //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            this.botones[0].ocultarBoton();
+            this.botones[1].ocultarBoton();
+
+            //se configura el único botón a aparecer
+            this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
+            
+            this.botones[2].moverBotonAdelante();
+            this.botones[2].container.x = this.width / 2;
+            this.botones[2].container.y = (this.height / 2) + 100;
+
+            //llevar al fondo a todos los enemigos
+            for (const enemigo of this.enemigos) {
+                enemigo.llevarAlFondo();
+            }
+        }
         else { //sino, aparecer todos los botones en las demas pantallas del menu
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
         }
@@ -407,16 +434,11 @@ class Juego {
         this.botonIzq.sprite.visible = !!this.puedeJugar;
     }
 
-    generarMenuYBotones() {
-
-    }
-
     async generarBarraSalud() { //funcional!
         const texturaSaludFull = await PIXI.Assets.load("imagenes/bateria_hud_3_hit_final.png")
         const texturaSalud2Hit = await PIXI.Assets.load("imagenes/bateria_hud_2_hit_final.png")
         const texturaSalud1Hit = await PIXI.Assets.load("imagenes/bateria_hud_1_hit_final.png")
         const texturaSaludVacia = await PIXI.Assets.load("imagenes/bateria_hud_vacia_final.png")
-
 
         this.bateriaVida = new BateriaVida(
             50, //ancho
@@ -429,6 +451,7 @@ class Juego {
             texturaSalud1Hit, //sprite3
             texturaSaludVacia //sprite4
         )
+        await this.bateriaVida.init();
 
         //esta linea convierte el visible del boton en un booleano
         //si hay algun bug, da null o lo que sea, termina dando false
@@ -440,7 +463,6 @@ class Juego {
             this
         )
     }
-
 
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
 
@@ -468,7 +490,8 @@ class Juego {
             PIXI.Assets.load("imagenes/menu/menu_opciones_liberty_1.png"),
             PIXI.Assets.load("imagenes/menu/menu_opciones_liberty_2.png"),
             PIXI.Assets.load("imagenes/menu/menu_opciones_liberty_3.png"),
-            PIXI.Assets.load("imagenes/menu/menu_pausa_liberty_v3.png")
+            PIXI.Assets.load("imagenes/menu/menu_pausa_liberty_v3.png"),
+            PIXI.Assets.load("imagenes/menu/menu_game_over_liberty_1.png")
         ])
 
         this.secuenciaBotonJugar = await Promise.all([
@@ -493,8 +516,9 @@ class Juego {
     }
 
     async generarJugador() {
-        const posX = 100;
-        const posY = 100;
+        //const spriteJugador = await PIXI.Assets.load("imagenes/posible_puntero.png")
+        const posX = this.width / 2;
+        const posY = this.height / 2;
         this.jugador = new Jugador(
             //posXRandom, //posición x
             posX, //posición x
@@ -506,9 +530,11 @@ class Juego {
             20, //radio de visión
             0.5, //velocidad
             0.1, //aceleración
-            2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+            2, //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
         )
-        console.log("se genero el jugador: ", this.jugador, "en la posicion ", this.jugador.x, this.jugador.y)
+        this.jugador.container.zIndex = 7000;
+        this.jugador.container.x = posX;
+        console.log("el jugador es visible ", this.jugador.container.visible, "tiene su zIndex en ", this.jugador.container.zIndex)
     }
 
     async generarTropas() {
@@ -746,6 +772,10 @@ class Juego {
         }
     }
 
+    realizarTickDelJugador() {
+        this.jugador.tick();
+    }
+
     realizarTickPorCadaEnemigo() {
         for (let unEnemigo of this.enemigos) {
             unEnemigo.tick();
@@ -755,6 +785,16 @@ class Juego {
     realizarTickPorCadaPoder() {
         for (let unPoder of this.poderes) {
             unPoder.tick();
+        }
+    }
+
+    //PANTALLA DERROTA
+    gameOver() {
+        if (this.bateriaVida.bateriaActual.texture == this.bateriaVida.sprites[4]) {
+            this.puedeJugar = false;
+            this.menu.cambiarPantalla(5);
+            this.menu.mostrarPantalla();
+            this.menu.moverPantallaAdelante();
         }
     }
 
@@ -811,6 +851,7 @@ class Juego {
         }
 
         if (this.puedeJugar) {
+            this.realizarTickDelJugador()
             this.realizarTickPorCadaAliado()
             this.realizarTickPorCadaEnemigo()
             this.realizarTickPorCadaAvion()
@@ -823,8 +864,6 @@ class Juego {
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
         //this.botonIzq.tick();
-
-
     }
 }
 

@@ -15,8 +15,32 @@ class Jugador extends ObjetoDinamico {
         //this.container.label = "aliado" + this.id;
 
         this.generarNombreAleatorio();
-        this.cargarSpriteAnimado();
     }
+
+    async start() {
+        await this.cargarSpriteAnimado();
+    }
+
+    // generarSpriteDe(unSprite) {
+    //     //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
+    //     //console.log("Stage children antes:", this.juego.pixiApp.stage.children.length);
+    //     this.sprite = new PIXI.Sprite(unSprite);
+
+    //     this.sprite.anchor.set(0.5);
+
+    //     //Ajuste de ubicacion
+    //     this.sprite.x = this.x;
+    //     this.sprite.y = this.y;
+
+    //     //Ajuste de tamaño
+    //     this.sprite.width = this.width;
+    //     this.sprite.height = this.height;
+
+    //     this.sprite.zIndex = 1100;
+    //     this.juego.pixiApp.stage.addChild(this.sprite);
+    //     //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
+    //     //console.log("Stage children después:", this.juego.pixiApp.stage.children.length);
+    // }
 
     listaDeSpritessheetsDisponibles() {
         return this.juego.spritesheetsJugador;
@@ -27,6 +51,9 @@ class Jugador extends ObjetoDinamico {
     }
 
     tick() {
+        if(this.juego.keys["w"]) {
+            this.aceleracion.x 
+        }
         this.aplicarFisica();
         this.render();
     }

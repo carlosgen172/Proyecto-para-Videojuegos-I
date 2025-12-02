@@ -94,6 +94,10 @@ class Menu extends GameObject {
         this.pantallaActual.visible = true;
     }
 
+    moverPantallaAdelante() {
+        this.pantallaActual.zIndex = 5500;
+    }
+
     realizarPresentacion() {
         //if(this.juegoPrincipal.mouse.apretado == false) {
         if (!this.textoActual) return;

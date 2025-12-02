@@ -6,7 +6,10 @@ class BateriaVida extends GameObject {
     juego;
     sprite;
     estado;
-    spriteActual; 
+    texturaActual;
+    bateriaActual;
+    limiteDeEnemigos = 100;
+    contadorEnemigos = 0;
 
     constructor(width, height, x, y, juego, sprite, segundoSprite, tercerSprite, cuartoSprite) {
         super(x, y, juego);
@@ -16,23 +19,28 @@ class BateriaVida extends GameObject {
         this.width = width;
         this.height = height;
         this.juego = juego;
-        
+
         this.sprites = {
-            1 : sprite, //full vida
-            2 : segundoSprite,
-            3 : tercerSprite,
-            4 : cuartoSprite //vida vacía
+            1: sprite, //full vida
+            2: segundoSprite,
+            3: tercerSprite,
+            4: cuartoSprite //vida vacía
         }
-        this.spriteActual = this.sprites[1];
-        this.generarSpriteDe(this.spriteActual);
     }
 
-    generarSpriteDe(unSprite) {
+    async init() {
+        this.texturaActual = this.sprites[1];
+        await this.generarSpriteDe(this.bateriaActual);
+
+        this.bateriaActual = this.sprite;
+    }
+
+    async generarSpriteDe(unSprite) {
         this.sprite = new PIXI.Sprite(unSprite);
-        
+
         //Ajustes de anchura
         this.sprite.anchor.set(0.5);
-        
+
         //Ajuste de ubicacion
         this.sprite.x = this.x;
         this.sprite.y = this.y;
@@ -42,32 +50,36 @@ class BateriaVida extends GameObject {
         this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
-    actualizarSpriteSegunSaludDelJugador() { //modificar esta lógica según la vida del jugador (no del último aliado)
-        if (!this.juego.aliados) return;
-        this.jugadorActual = this.juego.aliados[this.juego.aliados.length - 1]
-        // console.log(this.juego.aliados)
-        // console.log("jugador Actual: ", this.jugadorActual)
-        //La salud del jugador debe poder dividirse por 3 (o 9 o algún otro valor relativamente alto)
-        if (!this.jugadorActual) return; //si el jugador llega a ser vacío (No queda jugador) no va a tirar error, simplemente se quedará con el último sprite que haya conseguido agregar
-        
-        if (this.jugadorActual.vida >= 7) {
-            this.spriteActual = this.sprites[1]
+    actualizarSpriteSegunSaludDelJugador() {
+
+        this.verificacionDeCantidadDeEnemigosInvasores();
+
+        if (this.contadorEnemigos < 33) {
+            this.bateriaActual.texture = this.sprites[1];
         }
-        else if (esEntre(this.jugadorActual.vida, 4, 6)) {
-            this.spriteActual = this.sprites[2]
-        } 
-        else if(esEntre(this.jugadorActual.vida, 1, 3)) {
-            this.spriteActual = this.sprites[3]
-        } 
-        else {
-            this.spriteActual = this.sprites[4]
+        else if (this.contadorEnemigos < 66) {
+            this.bateriaActual.texture = this.sprites[2];
         }
-        this.generarSpriteDe(this.spriteActual)
-        //console.log("la bateria ha cambiado a: ", this.spriteActual)
+        else if (this.contadorEnemigos < 99) {
+            this.bateriaActual.texture = this.sprites[3];
+        }
+        else if (this.contadorEnemigos >= this.limiteDeEnemigos){
+            this.bateriaActual.texture = this.sprites[4];
+        }
+    }
+
+    verificacionDeCantidadDeEnemigosInvasores() {
         
+        for (const enemigo of this.juego.enemigos) {
+            if (enemigo.container.x < - 50 && !enemigo.yaContado) {
+                this.contadorEnemigos++;
+                enemigo.yaContado = true;
+            }
+        }
     }
 
     tick() {
+        this.juego.gameOver();
         this.actualizarSpriteSegunSaludDelJugador();
     }
 }

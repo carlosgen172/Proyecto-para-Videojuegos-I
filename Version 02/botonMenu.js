@@ -40,7 +40,7 @@ class BotonMenu extends Boton {
         //this.cambioRealizado = false;
     }
 
-    generarSpriteDe(unSprite) {
+    async generarSpriteDe(unSprite) {
         //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
         //console.log("Stage children antes:", this.juego.pixiApp.stage.children.length);
         this.sprite = new PIXI.Sprite(unSprite);
@@ -63,7 +63,7 @@ class BotonMenu extends Boton {
 
     }
 
-    //IMPORTANTE: leer para entender
+    //IMPORTANTE: leer para entender el funcionamiento de los botones
 
     /*
         La textura del boton cambiará dependiendo de la listaDeTexturas.
@@ -81,14 +81,14 @@ class BotonMenu extends Boton {
         MENU. La lista de pantallas se verá reflejada en la clase JUEGO
         con el atributo this.juego.pantallas.
 
-        Aca dejo una lista de posiciones, que representa cada una
+        Acá dejo una lista de posiciones manejadas de la misma forma
         tanto para this.juego.pantallas como para
         this.juego.menu.cambiarPantalla(unNumero):
 
         0 = menu SÓLO con boton JUGAR
-        1 = menu con botones NUEVA, SEGUIR, VOLVER
-        2 = menu con los 3 botones pero con CAMBIO DE MENSAJE
-        3 = menu con los 3 botones pero con CAMBIO DE MENSAJE
+        1 = menu con botones SEGUIR, NUEVA, VOLVER con CAMBIO DE MENSAJE refiriendo a SEGUIR
+        2 = menu con los 3 botones pero con CAMBIO DE MENSAJE refiriendo a NUEVA
+        3 = menu con los 3 botones pero con CAMBIO DE MENSAJE refiriendo a VOLVER
         4 = menu de PAUSA con botones SEGUIR, VOLVER
 
         CAMBIO DE MENSAJE: proporcionamos un mensaje en la esquina
@@ -109,6 +109,7 @@ class BotonMenu extends Boton {
                 this.juego.menu.ocultarPantalla();
                 this.ocultarTodosLosBotones(this.juego.botones)
                 this.juego.puedeJugar = true;
+                this.juego.start();
             }, 250)
         }
         else if (this.pantallaDestino == 3) {
@@ -123,7 +124,13 @@ class BotonMenu extends Boton {
                 this.juego.menu.ocultarPantalla();
                 this.ocultarTodosLosBotones(this.juego.botones)
                 this.juego.puedeJugar = true;
+                this.juego.start();
             }, 250)
+        }
+        else if (this.pantallaDestino == 3 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[5]) {
+            this.juego.botonJugar.aparecerBoton();
+            this.juego.botonJugar.moverBotonAdelante();
+            this.juego.menu.cambiarPantalla(0);
         }
     }
 
@@ -134,7 +141,7 @@ class BotonMenu extends Boton {
     onHover() {
         this.sprite.tint = 0xBBBBBB;
         //cambiar solo a la pantalla asignada a este boton (CAMBIO DE MENSAJE)
-        if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[4]) {
+        if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[5]) {
             this.juego.menu.cambiarPantalla(this.pantallaDestino);
         }
     }

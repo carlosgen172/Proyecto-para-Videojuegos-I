@@ -2,6 +2,7 @@ class Enemigo extends ObjetoDinamico {
     sprite;
     enemigoDeBandoContrario;
     distanciaParaLlegar = 300;
+    yaContado;
     // tengoAlgunEnemigoAdelante;
     // enemigoMasCerca;
     constructor(x, y, juegoPrincipal, width, height, radioColision, radioVision, velocidad, aceleracion, scaleX) {
@@ -50,6 +51,10 @@ class Enemigo extends ObjetoDinamico {
 
     obtenerLista() {
         return this.juego.aliados;
+    }
+
+    llevarAlFondo() {
+        this.container.zIndex = 1;
     }
 
     render() {
