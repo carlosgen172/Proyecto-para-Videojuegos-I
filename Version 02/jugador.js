@@ -1,4 +1,6 @@
 class Jugador extends ObjetoDinamico {
+    velocidadMaxima = 1.5;
+    aceleracionMaxima = 0.5;
     sprite;
     enemigo;
     distanciaParaLlegar = 300;
@@ -21,26 +23,22 @@ class Jugador extends ObjetoDinamico {
         await this.cargarSpriteAnimado();
     }
 
-    // generarSpriteDe(unSprite) {
-    //     //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
-    //     //console.log("Stage children antes:", this.juego.pixiApp.stage.children.length);
-    //     this.sprite = new PIXI.Sprite(unSprite);
-
-    //     this.sprite.anchor.set(0.5);
-
-    //     //Ajuste de ubicacion
-    //     this.sprite.x = this.x;
-    //     this.sprite.y = this.y;
-
-    //     //Ajuste de tamaño
-    //     this.sprite.width = this.width;
-    //     this.sprite.height = this.height;
-
-    //     this.sprite.zIndex = 1100;
-    //     this.juego.pixiApp.stage.addChild(this.sprite);
-    //     //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
-    //     //console.log("Stage children después:", this.juego.pixiApp.stage.children.length);
-    // }
+    //-----------------------------------
+    //MOVIMIENTO
+    movimiento() {
+        if (this.juego.keys["w"]) {
+            this.aceleracion.y --;
+        }
+        if (this.juego.keys["a"]) {
+            this.aceleracion.x --;
+        }
+        if (this.juego.keys["s"]) {
+            this.aceleracion.y ++;
+        }
+        if (this.juego.keys["d"]) {
+            this.aceleracion.x ++;
+        }
+    }
 
     listaDeSpritessheetsDisponibles() {
         return this.juego.spritesheetsJugador;
@@ -51,9 +49,7 @@ class Jugador extends ObjetoDinamico {
     }
 
     tick() {
-        if(this.juego.keys["w"]) {
-            this.aceleracion.x 
-        }
+        this.movimiento();
         this.aplicarFisica();
         this.render();
     }

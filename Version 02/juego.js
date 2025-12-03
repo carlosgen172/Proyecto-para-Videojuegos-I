@@ -43,7 +43,7 @@ class Juego {
         }
 
         this.pixiApp = new PIXI.Application();
-        globalThis.__PIXI_APP__ = this.pixiApp;
+        globalThis.__PIXI_APP__ = this.pixiApp; //para extension de navegador
         await this.pixiApp.init(preconfiguraciones);
 
         document.body.style.display = "flex";
@@ -516,7 +516,6 @@ class Juego {
     }
 
     async generarJugador() {
-        //const spriteJugador = await PIXI.Assets.load("imagenes/posible_puntero.png")
         const posX = this.width / 2;
         const posY = this.height / 2;
         this.jugador = new Jugador(
@@ -532,8 +531,7 @@ class Juego {
             0.1, //aceleración
             2, //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
         )
-        this.jugador.container.zIndex = 7000;
-        this.jugador.container.x = posX;
+        this.jugador.container.zIndex = 1;
         console.log("el jugador es visible ", this.jugador.container.visible, "tiene su zIndex en ", this.jugador.container.zIndex)
     }
 
