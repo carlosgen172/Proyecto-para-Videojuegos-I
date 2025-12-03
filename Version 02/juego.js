@@ -536,9 +536,8 @@ class Juego {
     }
 
     async generarTropas() {
-        //const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesheetsAliados());
         for (let i = 0; i < 5; i++) {
-            //const posXRandom = Math.floor(Math.random() * this.width)
+            const visionRandom = Math.floor(Math.random() * 200 + 100)
             const posX = -10
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const aliadoNuevo = new Aliado(
@@ -549,7 +548,7 @@ class Juego {
                 16, //ancho
                 16, //alto
                 15, //radio de colisión
-                20, //radio de visión
+                visionRandom, //radio de visión
                 0.5, //velocidad
                 0.1, //aceleración
                 2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
@@ -569,9 +568,9 @@ class Juego {
     }
 
     async generarTropasEnemigas() {
-        //const texture = this.seleccionarElementoAleatorioDe_(this.listaDeSpritesheetsEnemigos());
         for (let i = 0; i < 1; i++) {
-            //const posXRandom = Math.floor(Math.random() * this.width)
+            //se suma +100  
+            const visionRandom = Math.floor(Math.random() * 200 + 100)
             const posX = this.width - 10
             //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
@@ -582,7 +581,7 @@ class Juego {
                 32, //ancho
                 32, //alto
                 15, //radio de colisión
-                20, //radio de visión
+                visionRandom, //radio de visión
                 0.5, //velocidad
                 0.1, //aceleración
                 2.25 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)

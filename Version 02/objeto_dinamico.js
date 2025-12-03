@@ -130,7 +130,7 @@ class ObjetoDinamico extends GameObject {
         for (const objetoDeLista of this.obtenerLista()) {
             const distanciaDeEnemigoEnX = calcularDistanciaEnX(this.posicion, objetoDeLista.posicion)
             const distanciaDeEnemigoEnY = calcularDistanciaEnY(this.posicion, objetoDeLista.posicion)
-            if (distanciaDeEnemigoEnX < Math.random() * 300 && distanciaDeEnemigoEnY < 50) {
+            if (distanciaDeEnemigoEnX < this.radioVision && distanciaDeEnemigoEnY < 50) {
                 this.tengoAlgunEnemigoAdelante = true;
                 this.enemigoMasCerca = objetoDeLista;
                 break;
