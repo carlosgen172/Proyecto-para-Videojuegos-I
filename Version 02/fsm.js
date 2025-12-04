@@ -28,10 +28,10 @@ class Fsm {
         }
     }
 
-    update(dt) { //se actualiza el estado según el estado actual nuevo que contenga el pj
+    update() { //se actualiza el estado según el estado actual nuevo que contenga el pj
         const estado = this.estados[this.estadoActual]
         if (estado && typeof estado.update === "function") {
-            estado.update(dt);
+            estado.update();
         }
     }
 }

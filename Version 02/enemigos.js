@@ -20,14 +20,23 @@ class Enemigo extends ObjetoDinamico {
         // this.tengoAlgunEnemigoAdelante = false;
         // this.enemigoMasCerca = null;
         
-        //PARA LO DEL FSM:
-        this.fsm = new Fsm(this)
-        this.fsm.anadir('Jugador_Agresivo', new personajeEnojado());
-        //this.fsm.anadir('Jugador_Chill', new personajeTranquilo());
-        //this.fsm.setear('IDLE');
-
-        this.generarNombreAleatorio();
+        //Cargo todos sus sprites animados:
         this.cargarSpriteAnimado();
+        
+        //PARA LO DEL FSM:
+
+        //Añado su FSM (máquina de estados finita, siendo ésta una lista vacía - inicialmente - donde se guardan todos sus posibles estados):
+        this.fsm = new Fsm(this);
+
+        //A dicha lista le añado sus posibles estados:
+        this.fsm.anadir('Jugador_Marchante', new PjMarchante());
+        this.fsm.anadir('Jugador_Alerta', new PjAlerta());
+        this.fsm.anadir('Jugador_Agresivo', new PjEnojado());
+
+        //Y seteo su estado inicial:
+        this.fsm.setear('Jugador_Marchante');
+        this.generarNombreAleatorio();
+        // this.cargarSpriteAnimado();
         // console.log(this.nombreCompleto, "se ha generado.")
         //console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
     }
@@ -61,14 +70,17 @@ class Enemigo extends ObjetoDinamico {
         this.actualizarPosDelContainerSegunPosDelObjeto();
     }
 
-    update(dt) {
+    update() {
         this.fsm.update()
     }
 
     tick() {
         this.verificarSiMori();
-        this.decidirAtacarOAvanzar();
-        //this.update(dt);
+        // this.decidirAtacarOAvanzar();
+        // for (let bala in this.balas) {
+        //     bala.tick();
+        // }
+        this.update();
         this.aplicarFisica();
         this.render();
     }

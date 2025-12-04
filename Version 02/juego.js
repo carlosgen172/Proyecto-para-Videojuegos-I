@@ -16,7 +16,7 @@ class Juego {
     pantallas = [];
     botones = [];
     puedeJugar = false;
-    cantEnemigosMinimaEnPantalla = 60;
+    cantEnemigosMinimaEnPantalla = 10;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
@@ -591,6 +591,33 @@ class Juego {
         }
     }
 
+
+    async eliminarEnemigosEnPantallaOGenerarMas() {
+        if (this.poderActual.estado == "enemigos") {
+            //Planteo las 2 posibles opciones a ejecutarse
+            const posiblesOpciones = ["suerte", "desgracia"];
+
+            //Espero a que se elija una de forma aleatoria:
+            let opcionElegida = await seleccionarElementoAleatorioDe_(posiblesOpciones);
+            
+            //Y según esto, ejecuto la correspondiente:
+            if(opcionElegida == "suerte") {
+                this.eliminarATodosLosEnemigosEnPantalla()
+            } else {
+                this.generarTropasEnemigas();
+            }
+        }
+        
+    }
+
+    async eliminarATodosLosEnemigosEnPantalla() {
+        if(!this.enemigos) return;
+        console.log("SKIDUSH Bj");
+        for(let enemigoEnPantalla of this.enemigos) {
+            enemigoEnPantalla.morir()
+        }
+    }
+
     async generarEnemigosSiCorresponde() {
         if (this.poderActual.estado == "enemigos") {
             this.generarTropasEnemigas();
@@ -706,7 +733,8 @@ class Juego {
             }
         }
         if (unaTecla == "f" && this.poderActual.estado == "enemigos") {
-            this.generarEnemigosSiCorresponde()
+            // this.generarEnemigosSiCorresponde()
+            this.eliminarEnemigosEnPantallaOGenerarMas();
         }
     }
 
@@ -793,30 +821,6 @@ class Juego {
             this.menu.mostrarPantalla();
             this.menu.moverPantallaAdelante();
         }
-    }
-
-    //FUNCIONES DE BÚSQUEDA Y ELIMINACIÓN DE ELEMENTOS (NO funciona correctamente):
-    existeElElemento_EnLaLista_(unElemento, unaLista) {
-        return (unaLista.includes(unElemento))
-    }
-
-    indiceDeElemento_EnLaLista_(unElemento, unaLista) {
-        let indice = null;
-        if (this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
-            indice = unaLista.indexOf(unElemento);
-        }
-        return indice;
-    }
-
-    eliminarElElemento_DeLaLista_(unElemento, unaLista) {
-        if (this.existeElElemento_EnLaLista_(unElemento, unaLista)) {
-            unaLista.splice(this.indiceDeElemento_EnLaLista_(unElemento, unaLista), 1)
-        }
-    }
-
-    seleccionarElementoAleatorioDe_(unaLista) {
-        const indiceAleatorio = Math.floor(Math.random() * unaLista.length);
-        return unaLista[indiceAleatorio];
     }
 
     actualizarVisibilidadDePoderActual() {

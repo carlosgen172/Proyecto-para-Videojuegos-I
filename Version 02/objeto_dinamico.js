@@ -7,6 +7,7 @@ class ObjetoDinamico extends GameObject {
     fuerza;
     tengoAlgunEnemigoAdelante;
     enemigoMasCerca;
+    balas = [];
 
     //CONSTRUCTOR/INICIADOR:
 
@@ -18,7 +19,7 @@ class ObjetoDinamico extends GameObject {
         //this.fuerza = 10;
         this.delayAtaque = 100;
         this.nivelesDeIra = [1, 2, 3, 4, 5]
-        this.nivelDeIraReal = this.juego.seleccionarElementoAleatorioDe_(this.nivelesDeIra)
+        this.nivelDeIraReal = seleccionarElementoAleatorioDe_(this.nivelesDeIra)
         this.estoyMuerto = false;
         this.ultimoGolpe = 0;
         this.tengoAlgunEnemigoAdelante = false;
@@ -79,7 +80,7 @@ class ObjetoDinamico extends GameObject {
     }
 
     elegirSpritesheetAleatorio() {
-        const sheet = juego.seleccionarElementoAleatorioDe_(this.listaDeSpritessheetsDisponibles());
+        const sheet = seleccionarElementoAleatorioDe_(this.listaDeSpritessheetsDisponibles());
         return sheet;
     }
 
@@ -103,7 +104,7 @@ class ObjetoDinamico extends GameObject {
     }
 
     verCuantaFuerzaTengo() {
-        return this.fuerza * this.nivelDeIraReal
+        return this.fuerza * this.nivelDeIraReal;
     }
 
     recibirDañoDe(unEnemigo) {
@@ -114,6 +115,39 @@ class ObjetoDinamico extends GameObject {
         //this.vida = (this.vida - unEnemigo.verCuantaFuerzaTengo()).max(0)
         this.vida = Math.max(this.vida - unEnemigo.verCuantaFuerzaTengo(), 0)
         //}
+    }
+
+    puedoDisparar() {
+        return (performance.now() > this.delayAtaque + this.ultimoDisparo);
+    }
+
+    dispararA(unEnemigo) {
+        if (!this.puedoDisparar) return;
+        this.cambiarAnimacion("atacar",  true);
+        
+        this.realizarDisparo();
+        if (this.balaActual.haColisionadoConAlguien()) {
+            unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
+            this.ultimoDisparo = performance.now();
+        }
+    }
+
+    realizarDisparo(){
+        this.balaActual = new BalaMejorada(
+            this.posicion.x,
+            this.posicion.y,
+            this.juego,
+            8, 4,
+            0.7,
+            0.2,
+            1,
+            this
+        );
+        console.log(this.balaActual)
+        this.balas.push(this.balaActual);
+        for (let bala in this.balas) {
+            bala.tick();
+        }
     }
 
     direccionDeAvance() {
@@ -147,6 +181,7 @@ class ObjetoDinamico extends GameObject {
 
             this.aceleracion.x = 0;
             this.pegar(this.enemigoMasCerca);
+            //this.dispararA(this.enemigoMasCerca);
 
             this.cambiarAnimacion("atacar", false)
             this.cambiarAnimacion("correr", true);
@@ -169,8 +204,8 @@ class ObjetoDinamico extends GameObject {
     //GENERACION DE NOMBRE ALEATORIO:   
 
     generarNombreAleatorio() {
-        const nombreAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.nombres)
-        const apellidoAleatorio = this.juego.seleccionarElementoAleatorioDe_(this.juego.apellidos)
+        const nombreAleatorio = seleccionarElementoAleatorioDe_(this.juego.nombres)
+        const apellidoAleatorio = seleccionarElementoAleatorioDe_(this.juego.apellidos)
         this.nombreCompleto = nombreAleatorio.toString() + " " + apellidoAleatorio.toString()
     }
 
@@ -197,7 +232,7 @@ class ObjetoDinamico extends GameObject {
         if (this.container.x < - 50 && this.constructor.name == "Enemigo") {
             this.juego.enemigosMuertos.push(this);
             this.cambiarAnimacion("morir", false);
-            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
+            eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
 
             //aca no pasan dos segundos porque sino hay un error en la animacion de la bateria
             this.container.visible = false;
@@ -212,7 +247,7 @@ class ObjetoDinamico extends GameObject {
         else if (this.constructor.name == "Enemigo") {
             this.juego.enemigosMuertos.push(this);
             this.cambiarAnimacion("morir", false);
-            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
+            eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
 
             //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
             setTimeout(() => {
@@ -228,7 +263,7 @@ class ObjetoDinamico extends GameObject {
         }
         else if (this.constructor.name == "Aliado") {
             this.cambiarAnimacion("morir", false);
-            this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
+            eliminarElElemento_DeLaLista_(this, this.juego.aliados);
 
             //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
             setTimeout(() => {

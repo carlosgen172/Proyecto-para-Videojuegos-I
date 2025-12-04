@@ -1,0 +1,99 @@
+class PjEnojado extends Estado {
+    enter() { //setea la animación de ataque.
+        //Obtengo al dueño:
+        const dueño = this.dueño;
+        // debugger; // frena la ejecución del código.
+        
+        //Guardo su tinte original:
+        this.tintOriginal = 0xFFFFFF;
+
+        //Y cambio su animación a la de "atacar":
+        if (dueño?.cambiarAnimacion) dueño.cambiarAnimacion("atacar", true)
+        
+        //Extra: Le cambio cualquier tinte que tenga a su tinte original:
+        // dueño.container.tint = dueño.tintOriginal;
+        
+        //Le agrego un tinte rojo al pj:
+        // dueño.container.tint = 'red';
+
+        // console.log("Estoy enojado!");
+
+        //Y le reseteo el cooldown:
+        // dueño.delayAtaque = 0;
+    }
+
+
+    evaluarCambioDeEstado() {
+        const dueño = this.dueño;
+        //este for busca el enemigo más cercano y lo asigna como target (si es que existe):
+        for (const objetoDeLista of dueño.obtenerLista()) {
+            dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
+            dueño.distanciaDeEnemigoEnY = calcularDistanciaEnY(dueño.posicion, objetoDeLista.posicion)
+            if (dueño.distanciaDeEnemigoEnX < dueño.radioVision && dueño.distanciaDeEnemigoEnY < 50) {
+                dueño.tengoAlgunEnemigoAdelante = true;
+                dueño.enemigoMasCerca = objetoDeLista;
+                break;
+            }
+        }
+
+        //Si tengo un enemigo, y este se encuentra cerca (pero no tanto para atacarlo), cambio de estado a "Alerta":
+        if (dueño.distanciaDeEnemigoEnX < dueño.radioVision + 50 && dueño.distanciaDeEnemigoEnY < 75) {
+            this.fsm.setear('Jugador_Alerta');
+            return;
+        }
+
+        //Si no tengo uno, el estado pasa a ser el de enemigo marchante: 
+        if (!this.tengoAlgunEnemigoAdelante && !this.estoyMuerto) {
+            dueño.fsm.setear("Jugador_Marchante");
+            return;
+            //dueño.spritesActivo = dueño.tintOriginal;
+            // dueño.container.tint = dueño.tintOriginal;
+        }
+
+    }
+
+    update() { //actualiza el estado del pj
+        //obtengo al pj
+        const dueño = this.dueño;
+        if (!dueño) return;
+        
+        this.evaluarCambioDeEstado();
+
+        // for (const objetoDeLista of dueño.obtenerLista()) {
+        //     dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
+        //     dueño.distanciaDeEnemigoEnY = calcularDistanciaEnY(dueño.posicion, objetoDeLista.posicion)
+        //     //if (dueño.distanciaDeEnemigoEnX < Math.random() * 300 && dueño.distanciaDeEnemigoEnY < 50) {
+        //     if (dueño.distanciaDeEnemigoEnX < dueño.radioVision && dueño.distanciaDeEnemigoEnY < 50) {
+        //         dueño.tengoAlgunEnemigoAdelante = true;
+        //         dueño.enemigoMasCerca = objetoDeLista;
+        //         break;
+        //     }
+        // }
+
+        //En caso de tener un enemigo cerca, entonces lo ataca, aumentando su nivel de ira:
+        // if (dueño.tengoAlgunEnemigoAdelante && !dueño.estoyMuerto) {
+            //Primero se detiene:
+            dueño.aceleracion.x = 0;
+
+            //Aumenta su nivel de ira constantemente:
+            dueño.nivelDeIraReal + 1
+            
+            //Cambia su color de spriteshets:
+            // dueño.container.tint = 'red';
+            
+            //Anuncia que está enojado:
+            // console.log("el personaje", dueño, "ahora esta enojado!")
+            
+            //Y efectúa un ataque a su enemigo:
+            dueño.pegar(dueño.enemigoMasCerca);
+
+            // this.cambiarAnimacion("atacar", false)
+            // this.cambiarAnimacion("correr", true);
+
+            //La misma golpea hasta que el enemigo muere, luego vuelve a avanzar:
+            dueño.tengoAlgunEnemigoAdelante = false;
+            dueño.enemigoMasCerca = null;
+        // }
+        
+    }
+}
