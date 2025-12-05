@@ -50,8 +50,6 @@ class PjEnojado extends Estado {
         if (!this.tengoAlgunEnemigoAdelante && !this.estoyMuerto) {
             dueño.fsm.setear("Jugador_Marchante");
             return;
-            //dueño.spritesActivo = dueño.tintOriginal;
-            // dueño.container.tint = dueño.tintOriginal;
         }
 
     }
@@ -64,37 +62,13 @@ class PjEnojado extends Estado {
         
         this.evaluarCambioDeEstado();
 
-        // for (const objetoDeLista of dueño.obtenerLista()) {
-        //     dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
-        //     dueño.distanciaDeEnemigoEnY = calcularDistanciaEnY(dueño.posicion, objetoDeLista.posicion)
-        //     //if (dueño.distanciaDeEnemigoEnX < Math.random() * 300 && dueño.distanciaDeEnemigoEnY < 50) {
-        //     if (dueño.distanciaDeEnemigoEnX < dueño.radioVision && dueño.distanciaDeEnemigoEnY < 50) {
-        //         dueño.tengoAlgunEnemigoAdelante = true;
-        //         dueño.enemigoMasCerca = objetoDeLista;
-        //         break;
-        //     }
-        // }
-
-        //En caso de tener un enemigo cerca, entonces lo ataca, aumentando su nivel de ira:
-        // if (dueño.tengoAlgunEnemigoAdelante && !dueño.estoyMuerto) {
-            //Primero se detiene:
-            // dueño.velocidad.x = 0;
             dueño.aceleracion.x = 0;
 
             //Aumenta su nivel de ira constantemente:
             dueño.nivelDeIraReal + 1
             
-            //Cambia su color de spriteshets:
-            // dueño.container.tint = 'red';
-            
-            //Anuncia que está enojado:
-            // console.log("el personaje", dueño, "ahora esta enojado!")
-            
             //Y efectúa un ataque a su enemigo:
             dueño.pegar(dueño.enemigoMasCerca);
-
-            // this.cambiarAnimacion("atacar", false)
-            // this.cambiarAnimacion("correr", true);
 
             //La misma golpea hasta que el enemigo muere, luego vuelve a avanzar:
             if (dueño.puedeGolpear()) { //Este condicional sirve para que el delay entre ataques funcione y no se "resetee" al eliminar al objetivo actual.

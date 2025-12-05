@@ -1,6 +1,6 @@
 class Fsm {
     constructor(dueño) {
-        this.dueño = dueño; //se le pasa el dueño de esta desición de estados.
+        this.dueño = dueño; //se le pasa el dueño de esta decisión de estados.
         this.estados = {};
         this.estadoActual = null;
     }

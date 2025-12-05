@@ -2,19 +2,19 @@ class PjMarchante extends Estado {
     enter() { //setea la animación de ataque y resetea el cooldown
         if (!this.dueño) return;
         if (this.dueño.estoyMuerto) return;
-        
+
         //Obtengo al dueño
         const dueño = this.dueño;
 
         //Guardo su tinte original:
         this.tintOriginal = 0xFFFFFF;
 
-        //Y seteo su animación actual a la de "correr":
+        //Al verificar que existe dueño y la funcion de cambiar animacion, seteo su animación actual a la de "correr":
         if (dueño?.cambiarAnimacion) dueño.cambiarAnimacion("correr", true)
-        
+
         //Extra: Le cambio cualquier tinte que tenga a su tinte original:
         dueño.container.tint = this.tintOriginal;
-        
+
         // console.log("Estoy marchante!");
         // dueño.delayAtaque = 0;
         // this.velocidadOriginal = dueño.velocidad.x
@@ -39,7 +39,7 @@ class PjMarchante extends Estado {
             this.fsm.setear('Jugador_Alerta');
             return;
         }
-        
+
         //Si esta en su rango de ataque, calcula el cooldown.
         if (dueño.tengoAlgunEnemigoAdelante && !dueño.estoyMuerto) {
             dueño.fsm.setear('Jugador_Agresivo');
@@ -48,7 +48,7 @@ class PjMarchante extends Estado {
     }
 
     update() { //actualiza el estado del pj
-        
+
         //obtengo al pj
         const dueño = this.dueño;
         if (!dueño) return;
@@ -56,25 +56,7 @@ class PjMarchante extends Estado {
 
         this.evaluarCambioDeEstado();
 
-        //este for busca el enemigo más cercano y lo asigna como target
-        // for (const objetoDeLista of dueño.obtenerLista()) {
-        //     dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
-        //     dueño.distanciaDeEnemigoEnY = calcularDistanciaEnY(dueño.posicion, objetoDeLista.posicion)
-        //     //if (dueño.distanciaDeEnemigoEnX < Math.random() * 300 && dueño.distanciaDeEnemigoEnY < 50) {
-        //     if (dueño.distanciaDeEnemigoEnX < dueño.radioVision && dueño.distanciaDeEnemigoEnY < 50) {
-        //         dueño.tengoAlgunEnemigoAdelante = true;
-        //         dueño.enemigoMasCerca = objetoDeLista;
-        //         break;
-        //     }
-        // }
-        
-        //Estos condicionales sirve para decidir si avanzar o atacar:
-
-        //Si no tengo a ningún enemigo cerca, actúo normal.
-        // if (!dueño.tengoAlgunEnemigoAdelante && !dueño.estoyMuerto) {
-            //Su aceleración será igual a su dirección de avance:
-            dueño.aceleracion.x = dueño.direccionDeAvance();
-        // }
+        dueño.aceleracion.x = dueño.direccionDeAvance();
 
     }
 }
