@@ -1,8 +1,8 @@
 class ObjetoDinamico extends GameObject {
     radioColision;
     radioVision;
-    velocidadMaxima = 4;
-    aceleracionMaxima = 2;
+    velocidadMaxima = 0.8;
+    aceleracionMaxima = 0.2;
     vida;
     fuerza;
     tengoAlgunEnemigoAdelante;
