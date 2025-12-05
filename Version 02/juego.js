@@ -16,7 +16,7 @@ class Juego {
     pantallas = [];
     botones = [];
     puedeJugar = false;
-    cantEnemigosMinimaEnPantalla = 10;
+    cantEnemigosMinimaEnPantalla = 100;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
@@ -76,6 +76,7 @@ class Juego {
         await this.generarPoderEnemigos();
         await this.generarBarraSalud();
         await this.generarTextoEnemigosMuertos();
+        // await this.generarTextoPuntajeMasAltoAlcanzado();
 
 
         //await this.generarFondoMenu();
@@ -288,7 +289,7 @@ class Juego {
 
             //se configura el único botón a aparecer
             this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
-            
+
             this.botones[2].moverBotonAdelante();
             this.botones[2].container.x = this.width / 2;
             this.botones[2].container.y = (this.height / 2) + 100;
@@ -459,10 +460,26 @@ class Juego {
     }
 
     async generarTextoEnemigosMuertos() {
+        const posX = this.width - 50;
+        const posY = this.height - 475;
         this.textoEnemigosMuertos = new HUD(
-            this
-        )
+            this,
+            posX,
+            posY
+        );
+        await this.textoEnemigosMuertos.crearTextoEnemigosAbatidos();
     }
+
+    // async generarTextoPuntajeMasAltoAlcanzado() {
+    //     const posX = this.width - 100;
+    //     const posY = this.height - 475;
+    //     this.textoEnemigosMuertos = new HUD(
+    //         this,
+    //         posX,
+    //         posY
+    //     );
+    //     await this.textoPuntajeMasAlto.crearTextoDePuntajeMasAlto();
+    // }
 
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
 
@@ -537,7 +554,7 @@ class Juego {
 
     async generarTropas() {
         for (let i = 0; i < 5; i++) {
-            const visionRandom = Math.floor(Math.random() * 200 + 100)
+            const visionRandom = Math.floor(Math.random() * 100 + 150)
             const posX = -10
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const aliadoNuevo = new Aliado(
@@ -570,7 +587,7 @@ class Juego {
     async generarTropasEnemigas() {
         for (let i = 0; i < 1; i++) {
             //se suma +100  
-            const visionRandom = Math.floor(Math.random() * 200 + 100)
+            const visionRandom = Math.floor(Math.random() * 100 + 150)
             const posX = this.width - 10
             //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
@@ -599,21 +616,21 @@ class Juego {
 
             //Espero a que se elija una de forma aleatoria:
             let opcionElegida = await seleccionarElementoAleatorioDe_(posiblesOpciones);
-            
+
             //Y según esto, ejecuto la correspondiente:
-            if(opcionElegida == "suerte") {
+            if (opcionElegida == "suerte") {
                 this.eliminarATodosLosEnemigosEnPantalla()
             } else {
                 this.generarTropasEnemigas();
             }
         }
-        
+
     }
 
     async eliminarATodosLosEnemigosEnPantalla() {
-        if(!this.enemigos) return;
+        if (!this.enemigos) return;
         console.log("SKIDUSH Bj");
-        for(let enemigoEnPantalla of this.enemigos) {
+        for (let enemigoEnPantalla of this.enemigos) {
             enemigoEnPantalla.morir()
         }
     }
