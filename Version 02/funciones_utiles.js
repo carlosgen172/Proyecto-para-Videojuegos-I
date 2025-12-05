@@ -1,11 +1,11 @@
 //Funciones de Listas:
 
-//Serciorarse de que existe un elemento en una lista:
+//Función para serciorarse de que existe un elemento en una lista:
 function existeElElemento_EnLaLista_(unElemento, unaLista) {
     return (unaLista.includes(unElemento))
 }
 
-//Encontrar el índice de un elemento en una lista:
+//Función para Encontrar el índice de un elemento en una lista:
 function indiceDeElemento_EnLaLista_(unElemento, unaLista) {
     let indice = null;
     if (this.existeElElemento_EnLaLista_(unElemento, unaLista)) {

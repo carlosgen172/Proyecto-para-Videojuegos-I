@@ -1,5 +1,8 @@
 class PjEnojado extends Estado {
     enter() { //setea la animación de ataque.
+        if (!this.dueño) return;
+        if (this.dueño.estoyMuerto) return;
+        
         //Obtengo al dueño:
         const dueño = this.dueño;
         // debugger; // frena la ejecución del código.
@@ -8,18 +11,19 @@ class PjEnojado extends Estado {
         this.tintOriginal = 0xFFFFFF;
 
         //Y cambio su animación a la de "atacar":
-        if (dueño?.cambiarAnimacion) dueño.cambiarAnimacion("atacar", true)
+        if (dueño?.cambiarAnimacion) dueño.cambiarAnimacion("atacar", true);
         
         //Extra: Le cambio cualquier tinte que tenga a su tinte original:
-        // dueño.container.tint = dueño.tintOriginal;
+        dueño.container.tint = dueño.tintOriginal;
         
         //Le agrego un tinte rojo al pj:
-        // dueño.container.tint = 'red';
+        dueño.container.tint = 'red';
 
         // console.log("Estoy enojado!");
 
         //Y le reseteo el cooldown:
         // dueño.delayAtaque = 0;
+        // dueño.ultimoGolpe = performance.now();
     }
 
 
@@ -29,7 +33,7 @@ class PjEnojado extends Estado {
         for (const objetoDeLista of dueño.obtenerLista()) {
             dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
             dueño.distanciaDeEnemigoEnY = calcularDistanciaEnY(dueño.posicion, objetoDeLista.posicion)
-            if (dueño.distanciaDeEnemigoEnX < dueño.radioVision && dueño.distanciaDeEnemigoEnY < 50) {
+            if (dueño.distanciaDeEnemigoEnX < dueño.radioVisionX && dueño.distanciaDeEnemigoEnY < dueño.radioVisionY) {
                 dueño.tengoAlgunEnemigoAdelante = true;
                 dueño.enemigoMasCerca = objetoDeLista;
                 break;
@@ -37,7 +41,7 @@ class PjEnojado extends Estado {
         }
 
         //Si tengo un enemigo, y este se encuentra cerca (pero no tanto para atacarlo), cambio de estado a "Alerta":
-        if (dueño.distanciaDeEnemigoEnX < dueño.radioVision + 50 && dueño.distanciaDeEnemigoEnY < 75) {
+        if (dueño.distanciaDeEnemigoEnX < dueño.radioDeteccionLejanaX && dueño.distanciaDeEnemigoEnY < dueño.radioDeteccionLejanaY) {
             this.fsm.setear('Jugador_Alerta');
             return;
         }
@@ -56,6 +60,7 @@ class PjEnojado extends Estado {
         //obtengo al pj
         const dueño = this.dueño;
         if (!dueño) return;
+        if (this.dueño.estoyMuerto) return;
         
         this.evaluarCambioDeEstado();
 
@@ -73,6 +78,7 @@ class PjEnojado extends Estado {
         //En caso de tener un enemigo cerca, entonces lo ataca, aumentando su nivel de ira:
         // if (dueño.tengoAlgunEnemigoAdelante && !dueño.estoyMuerto) {
             //Primero se detiene:
+            // dueño.velocidad.x = 0;
             dueño.aceleracion.x = 0;
 
             //Aumenta su nivel de ira constantemente:
@@ -91,8 +97,10 @@ class PjEnojado extends Estado {
             // this.cambiarAnimacion("correr", true);
 
             //La misma golpea hasta que el enemigo muere, luego vuelve a avanzar:
-            dueño.tengoAlgunEnemigoAdelante = false;
-            dueño.enemigoMasCerca = null;
+            if (dueño.puedeGolpear()) { //Este condicional sirve para que el delay entre ataques funcione y no se "resetee" al eliminar al objetivo actual.
+                dueño.tengoAlgunEnemigoAdelante = false;
+                dueño.enemigoMasCerca = null;
+            }
         // }
         
     }

@@ -58,6 +58,9 @@ class ObjetoDinamico extends GameObject {
         //y despues hacemos visible el q queremos
         this.spritesAnimados[cual].visible = true;
         this.spritesAnimados[cual].loop = loop;
+
+        this.animacionActual = cual; //para debuggin, te dice el nombre de la animación actual del pj que selecciones
+        this.spritesheetsActuales = this.spritesAnimados[cual]; //En caso de querer referirse más fácilmente a la animación actual.
     }
 
     cargarSpritesAnimados(textureData) {
@@ -98,7 +101,7 @@ class ObjetoDinamico extends GameObject {
 
     pegar(unEnemigo) {
         if (!this.puedeGolpear()) return;
-        this.cambiarAnimacion("atacar", true);
+        // this.cambiarAnimacion("atacar", true);
         unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
         this.ultimoGolpe = performance.now();
     }
@@ -227,6 +230,7 @@ class ObjetoDinamico extends GameObject {
     morir() {
         //este condicional previene que se ejecute más de una vez el código de muerte
         if (this.estoyMuerto) return;
+        this.container.tint = 0xFFFFFF;
 
         //este condicional maneja la muerte según el tipo de entidad
         if (this.container.x < - 50 && this.constructor.name == "Enemigo") {

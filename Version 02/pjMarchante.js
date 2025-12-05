@@ -1,6 +1,8 @@
 class PjMarchante extends Estado {
     enter() { //setea la animación de ataque y resetea el cooldown
         if (!this.dueño) return;
+        if (this.dueño.estoyMuerto) return;
+        
         //Obtengo al dueño
         const dueño = this.dueño;
 
@@ -11,7 +13,7 @@ class PjMarchante extends Estado {
         if (dueño?.cambiarAnimacion) dueño.cambiarAnimacion("correr", true)
         
         //Extra: Le cambio cualquier tinte que tenga a su tinte original:
-        //dueño.container.tint = this.tintOriginal;
+        dueño.container.tint = this.tintOriginal;
         
         // console.log("Estoy marchante!");
         // dueño.delayAtaque = 0;
@@ -25,7 +27,7 @@ class PjMarchante extends Estado {
         for (const objetoDeLista of dueño.obtenerLista()) {
             dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
             dueño.distanciaDeEnemigoEnY = calcularDistanciaEnY(dueño.posicion, objetoDeLista.posicion)
-            if (dueño.distanciaDeEnemigoEnX < dueño.radioVision && dueño.distanciaDeEnemigoEnY < 75) {
+            if (dueño.distanciaDeEnemigoEnX < dueño.radioVisionX && dueño.distanciaDeEnemigoEnY < dueño.radioVisionY) {
                 dueño.tengoAlgunEnemigoAdelante = true;
                 dueño.enemigoMasCerca = objetoDeLista;
                 break;
@@ -33,7 +35,7 @@ class PjMarchante extends Estado {
         }
 
         //Si está cerca (pero no tanto para atacarlo):
-        if (dueño.distanciaDeEnemigoEnX < dueño.radioVision + 50 && dueño.distanciaDeEnemigoEnY < 75) {
+        if (dueño.distanciaDeEnemigoEnX < dueño.radioDeteccionLejanaX && dueño.distanciaDeEnemigoEnY < dueño.radioDeteccionLejanaY) {
             this.fsm.setear('Jugador_Alerta');
             return;
         }
@@ -50,7 +52,8 @@ class PjMarchante extends Estado {
         //obtengo al pj
         const dueño = this.dueño;
         if (!dueño) return;
-        
+        if (this.dueño.estoyMuerto) return;
+
         this.evaluarCambioDeEstado();
 
         //este for busca el enemigo más cercano y lo asigna como target
