@@ -21,6 +21,11 @@ class Poder extends GameObject{
         // this.puedeGenerarEnemigos = false;
         //console.log(this);
         //console.log("el ancho del boton:", this.width);
+
+        // this.container = new PIXI.Container();
+        // this.container.name = this.constructor.name;
+        // this.juego.pixiApp.stage.addChild(this.container);
+
         this.generarSpriteDe(sprite);
     }
 
@@ -40,6 +45,8 @@ class Poder extends GameObject{
         this.sprite.zIndex = 1100;
         //console.log(this.juego)
         this.juego.pixiApp.stage.addChild(this.sprite);
+        // this.container.addChild(this.sprite);
+        // this.juego.containerPrincipal.stage.addChild(this.container);
     }
 
     // activarPoder() { el nombre se puede usar para hacer un sistema de cooldown para los poderes. 

@@ -12,11 +12,12 @@ class HUD {
             align: "center"
         }
         this.container = new PIXI.Container();
-        this.juego.pixiApp.stage.addChild(this.container);
         this.container.name = this.constructor.name;
 
         this.container.x = x;
         this.container.y = y;
+
+        this.juego.pixiApp.stage.addChild(this.container);
 
         this.resize();
     }
@@ -38,7 +39,8 @@ class HUD {
         this.sprite.scale.x = 1;
 
         //Añadir el sprite dentro del stage:
-        this.juego.pixiApp.stage.addChild(this.sprite);
+        this.container.addChild(this.sprite);
+        // this.juego.pixiApp.stage.addChild(this.sprite);
     }
 
     //CREACION DE TEXTOS

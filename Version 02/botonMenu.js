@@ -7,6 +7,7 @@ class BotonMenu extends Boton {
         this.spritesDisponibles = listaDeTexturas;
         this.pantallaDestino = pantallaDestino;
         this.container = new PIXI.Container();
+        this.container.name = this.constructor.name;
         this.container.x = x;
         this.container.y = y;
     }

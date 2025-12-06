@@ -29,6 +29,13 @@ class Menu extends GameObject {
         //this.generarTexto();
         //this.textoActual.interactive = true
         //this.textoActual.zIndex = 2900
+
+        // this.container = new PIXI.Container();
+        // this.container.name = this.container.name;
+        // this.container.x = x;
+        // this.container.y = y;
+        
+        // this.juego.pixiApp.stage.addChild(this.container);
     }
 
     async init() {
@@ -77,6 +84,8 @@ class Menu extends GameObject {
         this.sprite.y = this.y;
 
         this.juego.pixiApp.stage.addChild(this.sprite);
+        // this.container.addChild(this.sprite);
+        // this.juego.pixiApp.stage.addChild(this.container);
     }
 
     cambiarPantalla(indiceDestino) {

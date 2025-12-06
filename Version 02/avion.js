@@ -9,6 +9,11 @@ class Avion extends ObjetoDinamico {
         this.acelMaxima = acelMaxima;
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
 
+        this.container = new PIXI.Container();
+        this.container.name = this.constructor.name;
+        this.container.x = x;
+        this.container.y = y;
+
         //this.tipo = tipo || Math.floor(Math.random() * 2) + 1; por si tenemos imagenes en donde sólo varien el nombre 
         //this.container.label = "aliado" + this.id;
 
@@ -31,13 +36,25 @@ class Avion extends ObjetoDinamico {
         this.sprite.scale.x = this.scaleX;
 
         //Añadir el sprite dentro del stage:
-        this.juego.pixiApp.stage.addChild(this.sprite);
+        // this.juego.containerPrincipal.addChild(this.sprite);
+        // this.juego.pixiApp.stage.addChild(this.sprite);
+        this.container.addChild(this.sprite);
+        this.juego.containerPrincipal.addChild(this.container);
     }
 
-    actualizarPosDelSpriteSegunPosDelObjeto(){
-        this.sprite.x = this.posicion.x;
-        this.sprite.y = this.posicion.y;
+    //ACTUALIZACION DE LA POSICION:
+
+    //actualiza la posicion del contenedor segun la posicion del objeto dinamico
+    actualizarPosDelContainerSegunPosDelObjeto() {
+        if (!this.container) return;
+        this.container.x = this.posicion.x;
+        this.container.y = this.posicion.y;
     }
+
+    // actualizarPosDelSpriteSegunPosDelObjeto(){
+    //     this.sprite.x = this.posicion.x;
+    //     this.sprite.y = this.posicion.y;
+    // }
 
     terminoViaje() {
         //if(this.posicion.x >= this.screen.width) {
@@ -69,7 +86,8 @@ class Avion extends ObjetoDinamico {
     }
 
     render() {
-        this.actualizarPosDelSpriteSegunPosDelObjeto();
+        // this.actualizarPosDelSpriteSegunPosDelObjeto();
+        this.actualizarPosDelContainerSegunPosDelObjeto();
         //this.actualizarZindex();
     }
 

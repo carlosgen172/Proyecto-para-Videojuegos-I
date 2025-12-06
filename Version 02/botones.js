@@ -15,6 +15,9 @@ class Boton extends GameObject {
         this.height = height;
         this.juego = juego;
         this.posicion = { x: x, y: y };
+        // this.container = new PIXI.Container();
+        // this.container.name = this.constructor.name;
+        // this.juego.pixiApp.stage.addChild(this.container);
         //console.log(this);
         //console.log("el ancho del boton:", this.width);
         //this.generarSpriteDe(sprite);
@@ -36,7 +39,10 @@ class Boton extends GameObject {
         this.sprite.height = this.height;
         
         this.sprite.zIndex = 1100;
+
+        // this.container.addChild(this.sprite);
         this.juego.pixiApp.stage.addChild(this.sprite);
+        // this.juego.pixiApp.stage.addChild(this.container);
         //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
         //console.log("Stage children después:", this.juego.pixiApp.stage.children.length);
     }

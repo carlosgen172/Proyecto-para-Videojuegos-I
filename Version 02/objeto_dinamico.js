@@ -25,8 +25,9 @@ class ObjetoDinamico extends GameObject {
         this.tengoAlgunEnemigoAdelante = false;
         this.enemigoMasCerca = null;
         this.container = new PIXI.Container();
-        this.juego.pixiApp.stage.addChild(this.container);
         this.container.name = this.constructor.name;
+        // this.juego.pixiApp.stage.addChild(this.container);
+        this.juego.containerPrincipal.addChild(this.container);
     }
 
     //SISTEMA DE CARGA/GENERACIÓN DE SPRITESHEETS:

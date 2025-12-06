@@ -22,6 +22,8 @@ class Juego {
     //poderes = [1, 2, 3];
     nombres = ["Angel", "Arturo", "Ariel", "Elian", "Federico", "Juan", "Jose", "Joseías", "Marcos", "Mauricio", "Lionel", "Omar"]
     apellidos = ["Aguiar", "Bautista", "Jose", "Potter", "Rodriguez", "Villalva", "Zapata"]
+    anchoFondo = 5000;
+    altoFondo = 2000;
 
     constructor() {
         this.width = 700;
@@ -58,6 +60,12 @@ class Juego {
 
         this.pixiApp.stage.eventMode = "static";
 
+
+        //Generación de container:
+        this.containerPrincipal = new PIXI.Container();
+        this.containerPrincipal.name = this.constructor.name;
+        this.pixiApp.stage.addChild(this.containerPrincipal);
+
         await this.cargarBackground();
         await this.crearGenerador();
         //await this.generarMouse();
@@ -81,7 +89,7 @@ class Juego {
 
         //await this.generarFondoMenu();
         this.poderActual = this.poderes[0];
-        this.containerPrincipal = new PIXI.Container();
+        
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
 
@@ -91,8 +99,10 @@ class Juego {
 
     async start() {
         await this.generarJugador();
+        // this.asignarJugadorComoTargetDeCamara();
         if (this.jugador !== null) {
             await this.jugador.start();
+            // this.asignarJugadorComoTargetDeCamara();
         }
 
     }
@@ -165,18 +175,37 @@ class Juego {
         //Ajuste de punto central
         this.fondo.anchor.set(0.5);
 
-
         //Ajuste de ubicacion
-        this.fondo.x = this.width / 2
-        this.fondo.y = this.height / 2
+        // this.fondo.x = this.width / 2
+        // this.fondo.y = this.height / 2
 
         //Ajuste de tamaño
-        this.fondo.width = this.width;
-        this.fondo.height = this.height;
+        // this.fondo.width = this.width;
+        // this.fondo.height = this.height;
+        this.fondo.width = this.anchoFondo;
+        this.fondo.height = this.altoFondo;
+        this.fondo.tileScale.set(1);
 
         // Añade el Sprite al escenario para que se muestre en pantalla
-        this.pixiApp.stage.addChild(this.fondo);
+        // this.pixiApp.stage.addChild(this.fondo);
 
+        /*
+            MUY IMPORTANTE:
+            ¿Cómo saber si tengo que añadir la instancia al stage o al containerPrincipal?:
+
+            Simple, cuando uno requiere que un objeto sea estático, osease, que este mismo 
+            se quede fijo en pantalla sin sufrir movimiento por la cámara, entonces ahí el 
+            mismo será añaddido al stage (elementos del HUD irán acá seguramente); En cambio, 
+            cuando uno quiera que el objeto se vea influenciado por el movimiento de la cámara, 
+            haciendo capaz de, si es que el jugador se mueve a una distancia muy lejana del 
+            mismo, no se vea en pantalla, entonces se le agregará al containerPrincipal (en 
+            este caso son los elementos in game, como por ejemplo los npcs, los objetos estáticos, 
+            el tilemap, etc.)
+
+            Gracias por leer (by sebas :P)
+        */
+        this.containerPrincipal.addChild(this.fondo);
+        
     }
 
     async generarMenu() {
@@ -481,6 +510,61 @@ class Juego {
     //     await this.textoPuntajeMasAlto.crearTextoDePuntajeMasAlto();
     // }
 
+    //FUNCIONES RESPECTIVAS A LA CÁMARA:
+
+    asignarJugadorComoTargetDeCamara() {
+	    if (!this.jugador) return;
+        // if (!this.fondo) return;
+	    this.targetCamara = this.jugador;
+    }
+
+    hacerQueLaCamaraSigaAlTarget() {
+        //Consultamos la existencia del target de la cámara. (Para evitar posibles errores de carga).
+        if (!this.targetCamara) return;
+        if (!this.puedeJugar) return; //Condicional extra para que la cámara no se pueda mover cuando se pone pausa o se sale de la partida.
+        
+        //constantes para delimitar los límites de la cámara:
+        const maxPosCamaraXDer = (this.anchoFondo / 2 - this.width / 2);
+        const maxPosCamaraXIzq = this.width / 2;
+
+        //En caso de ser una u otra, la cámara se detiene:
+        if (this.targetCamara.posicion.x > maxPosCamaraXDer || this.targetCamara.posicion.x < maxPosCamaraXIzq) return;
+
+        //Ajustamos la cámara según la posición de la cámara según la del jugador:
+        let posTargetX = -this.targetCamara.posicion.x + this.width / 2; //esto traduce la ubicación del jugador a la misma (en negativo para que inicie que esta misma  siempre se encontrará más atras de la mitad de la posición central) según la posición total de la pantalla más la mitad de la misma, dejándolo justo en el centro de la misma.
+        // let posTargetY = -this.targetCamara.posicion.x + this.width / 2; //lo mismo, pero en el punto y, eso si, ya que la cámara no se podrá mover de arriba a abajo se ve innceserario esta adición.
+        
+        //Por último, se iguala y pasa la posición recabada del target a la del container principal/cámara:
+        const x = (posTargetX - this.containerPrincipal.x) * 0.1;
+        // const y = (posTargetY - this.containerPrincipal.y) * 0.1;
+
+
+        //Pasa dichos valores para el container principal, el cual pregunta su valor actual más la suma de este en x, mientras que en y no lo hace (siempre va a ser el mismo).
+   	    this.moverContainerPrincipalA(
+      	    this.containerPrincipal.x + x,
+      	 	this.containerPrincipal.y //se pone el mismo valor del container ya que este no va a ser modificado por ningún factor externo (pos del jugador, variable, etc.) excepto por sí mismo (osease, nunca va a cambiar.
+    	);
+
+        //Función resumida (funciona igual que la de arriba, si se quiere se puede probar para ver cambios/diferencias más detalladas):
+        // this.containerPrincipal.x = -this.targetCamara.posicion.x + this.width / 2;
+        // this.containerPrincipal.y = -this.targetCamara.posicion.y + this.height / 2;
+        
+        // console.log(this.containerPrincipal.x);
+        // console.log(this.containerPrincipal.y);
+    }
+
+    moverContainerPrincipalA(x, y) {
+        this.containerPrincipal.x = x;
+        this.containerPrincipal.y = y;
+        //this.fondo.x = x;
+        //this.fondo.y = y;
+        // this.fondo.x = x; //para que el tilemap tmb se mueva (a verificar) 
+        // this.fondo.y = y; //x2.
+    }
+
+
+
+
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
 
     async cargarSprites() {
@@ -556,6 +640,7 @@ class Juego {
         for (let i = 0; i < 5; i++) {
             const visionRandom = Math.floor(Math.random() * 100 + 150)
             const posX = -10
+            // const posX = this.containerPrincipal.x - (10 + (this.width / 2));
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const aliadoNuevo = new Aliado(
                 //posXRandom, //posición x
@@ -878,6 +963,8 @@ class Juego {
             this.bateriaVida.tick()
             this.textoEnemigosMuertos.tick()
             this.actualizarVisibilidadDePoderActual()
+            this.asignarJugadorComoTargetDeCamara();
+            this.hacerQueLaCamaraSigaAlTarget();
         }
         //Acciones a repetirse cada frame.
         //this.botonDer.tick();
