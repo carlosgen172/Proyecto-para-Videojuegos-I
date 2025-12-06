@@ -1,7 +1,6 @@
 class HUD {
 
-    constructor(juego, x, y) {
-        this.margen = 8
+    constructor(juego) {
         this.juego = juego
         this.fuenteTexto = {
             fontSize: 30,
@@ -13,9 +12,6 @@ class HUD {
         }
         this.container = new PIXI.Container();
         this.container.name = this.constructor.name;
-
-        this.container.x = x;
-        this.container.y = y;
 
         this.juego.pixiApp.stage.addChild(this.container);
 
@@ -44,68 +40,60 @@ class HUD {
     }
 
     //CREACION DE TEXTOS
-    //---------------------------------------
-    async crearTextoEnemigosAbatidos() {
+    async crearTextos() {
+        //TEXTO ENEMIGOS ABATIDOS
+        //--------------------------------------------
         this.textoEnemigosAbatidos = new PIXI.Text({ text: "", style: this.fuenteTexto });
+
+        //posicionamos el pivot en el centro
         this.textoEnemigosAbatidos.anchor.set(0.5);
+
+        //posicionamos en pantalla
+        this.textoEnemigosAbatidos.x = this.juego.width - 50;
+        this.textoEnemigosAbatidos.y = this.juego.height - 475;
+
         this.container.addChild(this.textoEnemigosAbatidos);
+        //--------------------------------------------
+        
+        //TEXTO PUNTAJE MAS ALTO
+        //--------------------------------------------
+        this.textoPuntajeMasAlto = new PIXI.Text({ text: "", style: this.fuenteTexto });
+
+        //achicamos el texto para que tenga tamaño decente en GAME OVER
+        this.textoPuntajeMasAlto.style.fontSize = 18;
+
+        //posicionamos el pivot en el centro
+        this.textoPuntajeMasAlto.anchor.set(0.5);
+
+        //posicionamos en pantalla
+        this.textoPuntajeMasAlto.x = this.juego.width - 290;
+        this.textoPuntajeMasAlto.y = this.juego.height - 395;
+
+        this.container.addChild(this.textoPuntajeMasAlto);
+        //--------------------------------------------
     }
-
-    // async crearTextoDePuntajeMasAlto() {
-    //     this.textoPuntajeMasAlto = new PIXI.Text({ text: "", style: this.fuenteTexto });
-    //     this.textoPuntajeMasAlto.style.fontSize = 18;
-    //     this.textoPuntajeMasAlto.anchor.set(0.5);
-
-    //     this.container.x = this.juego.width - 300;
-    //     this.container.y = this.juego.height - 415;
-    //     this.container.zIndex = 6000;
-
-    //     this.container.addChild(this.textoPuntajeMasAlto);
-    // }
-    //---------------------------------------
 
     resize() {
         this.container.zIndex = 1100;
     }
 
-    actualizarContadorDeEnemigosMuertos() {
+    actualizarTextosDuranteLaPartida() {
+        //Actualizacion del contador de enemigos muertos (texto, posicion, zIndex)
+        //-------------------------------------------------
         this.textoEnemigosAbatidos.text = this.juego.enemigosMuertos.length.toString();
-        this.actualizarTamPosYZindexSiPerdio();
-    }
-
-    // actualizarPuntajeMasAlto() {
-    //     this.textoPuntajeMasAlto.text = this.juego.enemigosMuertos.length.toString(); //para probar
-    // }
-
-    //actualizar tamaño, posicion y zindex del texto enemigos muertos.
-    actualizarTamPosYZindexSiPerdio() {
         if (this.juego.menu.pantallaActual.texture == this.juego.pantallas[5]) {
             this.textoEnemigosAbatidos.style.fontSize = 18;
 
-            this.container.x = this.juego.width - 300;
-            this.container.y = this.juego.height - 415;
-            this.container.zIndex = 6000;
-        }
-        else {
-            this.fuenteTexto = {
-                fontSize: 30,
-                fontFamily: "PixelifySans",
-                fill: 0xffffff,
-                fontWeight: "bold",
-                stroke: { color: 0x444444, width: 3 },
-                align: "center"
-            }
+            this.textoEnemigosAbatidos.x = this.juego.width - 300;
+            this.textoEnemigosAbatidos.y = this.juego.height - 415;
 
-            this.container.x = this.juego.width - 50;
-            this.container.y = this.juego.height - 475;
-            this.container.zIndex = 1100;
+            this.container.zIndex = 6000;
         }
     }
 
     tick() {
         if (!this.textoEnemigosAbatidos) return;
-        // this.actualizarPuntajeMasAlto();
-        this.actualizarContadorDeEnemigosMuertos();
-        
+        if (!this.textoPuntajeMasAlto) return;
+        this.actualizarTextosDuranteLaPartida();
     }
 }

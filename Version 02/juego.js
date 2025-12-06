@@ -83,13 +83,12 @@ class Juego {
         await this.generarPoderBombas();
         await this.generarPoderEnemigos();
         await this.generarBarraSalud();
-        await this.generarTextoEnemigosMuertos();
-        // await this.generarTextoPuntajeMasAltoAlcanzado();
+        await this.generarTextoEnemigosMuertosYPuntaje();
 
 
         //await this.generarFondoMenu();
         this.poderActual = this.poderes[0];
-        
+
         this.agregarInteractividadDelMouse();
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
 
@@ -205,7 +204,7 @@ class Juego {
             Gracias por leer (by sebas :P)
         */
         this.containerPrincipal.addChild(this.fondo);
-        
+
     }
 
     async generarMenu() {
@@ -295,7 +294,6 @@ class Juego {
             this.botones[2].container.y = this.height - 90;
         }
         else if (this.menu.pantallaActual.texture == this.pantallas[4]) { //si la pantalla es el menu de PAUSA
-
             //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[1].ocultarBoton();
@@ -310,15 +308,15 @@ class Juego {
             }
         }
         else if (this.menu.pantallaActual.texture == this.pantallas[5]) { //si la pantalla es GAME OVER
-
-            //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
+            //se configuran los botones a aparecer
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[0].ocultarBoton();
             this.botones[1].ocultarBoton();
 
-            //se configura el único botón a aparecer
+            //para mover adelante todos los botones, fijarse lógica de ésto cuando sea posible
             this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
 
+            //se configura el único botón a aparecer
             this.botones[2].moverBotonAdelante();
             this.botones[2].container.x = this.width / 2;
             this.botones[2].container.y = (this.height / 2) + 100;
@@ -487,42 +485,24 @@ class Juego {
         //si hay algun bug, da null o lo que sea, termina dando false
         this.bateriaVida.sprite.visible = !!this.puedeJugar;
     }
-
-    async generarTextoEnemigosMuertos() {
-        const posX = this.width - 50;
-        const posY = this.height - 475;
-        this.textoEnemigosMuertos = new HUD(
-            this,
-            posX,
-            posY
-        );
-        await this.textoEnemigosMuertos.crearTextoEnemigosAbatidos();
+    async generarTextoEnemigosMuertosYPuntaje() {
+        this.textos = new HUD(this);
+        await this.textos.crearTextos();
     }
-
-    // async generarTextoPuntajeMasAltoAlcanzado() {
-    //     const posX = this.width - 100;
-    //     const posY = this.height - 475;
-    //     this.textoEnemigosMuertos = new HUD(
-    //         this,
-    //         posX,
-    //         posY
-    //     );
-    //     await this.textoPuntajeMasAlto.crearTextoDePuntajeMasAlto();
-    // }
 
     //FUNCIONES RESPECTIVAS A LA CÁMARA:
 
     asignarJugadorComoTargetDeCamara() {
-	    if (!this.jugador) return;
+        if (!this.jugador) return;
         // if (!this.fondo) return;
-	    this.targetCamara = this.jugador;
+        this.targetCamara = this.jugador;
     }
 
     hacerQueLaCamaraSigaAlTarget() {
         //Consultamos la existencia del target de la cámara. (Para evitar posibles errores de carga).
         if (!this.targetCamara) return;
         if (!this.puedeJugar) return; //Condicional extra para que la cámara no se pueda mover cuando se pone pausa o se sale de la partida.
-        
+
         //constantes para delimitar los límites de la cámara:
         const maxPosCamaraXDer = (this.anchoFondo / 2 - this.width / 2);
         const maxPosCamaraXIzq = this.width / 2;
@@ -533,22 +513,22 @@ class Juego {
         //Ajustamos la cámara según la posición de la cámara según la del jugador:
         let posTargetX = -this.targetCamara.posicion.x + this.width / 2; //esto traduce la ubicación del jugador a la misma (en negativo para que inicie que esta misma  siempre se encontrará más atras de la mitad de la posición central) según la posición total de la pantalla más la mitad de la misma, dejándolo justo en el centro de la misma.
         // let posTargetY = -this.targetCamara.posicion.x + this.width / 2; //lo mismo, pero en el punto y, eso si, ya que la cámara no se podrá mover de arriba a abajo se ve innceserario esta adición.
-        
+
         //Por último, se iguala y pasa la posición recabada del target a la del container principal/cámara:
         const x = (posTargetX - this.containerPrincipal.x) * 0.1;
         // const y = (posTargetY - this.containerPrincipal.y) * 0.1;
 
 
         //Pasa dichos valores para el container principal, el cual pregunta su valor actual más la suma de este en x, mientras que en y no lo hace (siempre va a ser el mismo).
-   	    this.moverContainerPrincipalA(
-      	    this.containerPrincipal.x + x,
-      	 	this.containerPrincipal.y //se pone el mismo valor del container ya que este no va a ser modificado por ningún factor externo (pos del jugador, variable, etc.) excepto por sí mismo (osease, nunca va a cambiar.
-    	);
+        this.moverContainerPrincipalA(
+            this.containerPrincipal.x + x,
+            this.containerPrincipal.y //se pone el mismo valor del container ya que este no va a ser modificado por ningún factor externo (pos del jugador, variable, etc.) excepto por sí mismo (osease, nunca va a cambiar.
+        );
 
         //Función resumida (funciona igual que la de arriba, si se quiere se puede probar para ver cambios/diferencias más detalladas):
         // this.containerPrincipal.x = -this.targetCamara.posicion.x + this.width / 2;
         // this.containerPrincipal.y = -this.targetCamara.posicion.y + this.height / 2;
-        
+
         // console.log(this.containerPrincipal.x);
         // console.log(this.containerPrincipal.y);
     }
@@ -916,14 +896,25 @@ class Juego {
     }
 
     //PANTALLA DERROTA
+    //------------------------------------------------------
     gameOver() {
+        guardarPuntajeMasAlto(this.enemigosMuertos.length);
         if (this.bateriaVida.bateriaActual.texture == this.bateriaVida.sprites[4]) {
             this.puedeJugar = false;
             this.menu.cambiarPantalla(5);
             this.menu.mostrarPantalla();
             this.menu.moverPantallaAdelante();
+            this.textos.textoPuntajeMasAlto.text = traerPuntajeMasAlto().toString();
         }
     }
+
+    actualizarPuntajeSiEsPosible() {
+        let actualizarEsPosible = false;
+        if (actualizarEsPosible) {
+            compararPuntajeYGuardarSiEsMayor(this.enemigosMuertos.length);
+        }
+    }
+    //------------------------------------------------------
 
     actualizarVisibilidadDePoderActual() {
         this.poderesNoActuales = this.poderes.filter((p) => p != this.poderActual)
@@ -954,21 +945,19 @@ class Juego {
         }
 
         if (this.puedeJugar) {
-            this.realizarTickDelJugador()
-            this.realizarTickPorCadaAliado()
-            this.realizarTickPorCadaEnemigo()
-            this.realizarTickPorCadaAvion()
-            this.realizarTickPorCadaPoder()
-            this.aparicionDeEnemigo()
-            this.bateriaVida.tick()
-            this.textoEnemigosMuertos.tick()
-            this.actualizarVisibilidadDePoderActual()
+            this.actualizarPuntajeSiEsPosible()
+            this.realizarTickDelJugador();
+            this.realizarTickPorCadaAliado();
+            this.realizarTickPorCadaEnemigo();
+            this.realizarTickPorCadaAvion();
+            this.realizarTickPorCadaPoder();
+            this.aparicionDeEnemigo();
+            this.bateriaVida.tick();
+            this.textos.tick();
+            this.actualizarVisibilidadDePoderActual();
             this.asignarJugadorComoTargetDeCamara();
             this.hacerQueLaCamaraSigaAlTarget();
         }
-        //Acciones a repetirse cada frame.
-        //this.botonDer.tick();
-        //this.botonIzq.tick();
     }
 }
 

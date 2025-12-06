@@ -24,21 +24,21 @@ function calcularDistanciaEnY(obj1, obj2) {
 
 // Funciones para manejar el puntaje más alto usando localStorage
 //-------------------------------
+function guardarPuntajeMasAlto(puntajeMasAlto) {
+  localStorage.puntajeAlto = puntajeMasAlto;
+}
+
 function traerPuntajeMasAlto() {
   const puntajeAlto = localStorage.getItem("puntajeAlto");
-  if(puntajeAlto) {
+  if (puntajeAlto) {
     return parseInt(puntajeAlto);
   } else {
     return 0;
   }
 }
 
-function guardarPuntajeMasAlto(puntajeMasAlto) {
-  localStorage.puntajeAlto = puntajeMasAlto;
-}
-
 function compararPuntajeYGuardarSiEsMayor(puntajeActual) {
-  if(puntajeActual > traerPuntajeMasAlto()) {
+  if (puntajeActual > traerPuntajeMasAlto()) {
     guardarPuntajeMasAlto(puntajeActual);
     return true;
   }
