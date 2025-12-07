@@ -16,6 +16,7 @@ class Juego {
     pantallas = [];
     botones = [];
     puedeJugar = false;
+    juegoPerdido = false;
     cantEnemigosMinimaEnPantalla = 100;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
@@ -273,63 +274,7 @@ class Juego {
         this.botones = listaBotonesMenu;
     }
 
-    visibilidadDeBotonesSegunPantalla() {
-        if (!this.menu.pantallaActual.visible) {  //si el menu no es visible, ocultar
-            this.botonSeguir.ocultarTodosLosBotones(this.botones);
-        }
-        /*  NOTA IMPORTANTE: la jerarquia de los else if importa mucho
-            porque si no se verifica que la pantalla es visible
-            hay un bug con fijarse PRIMERO si la pantalla es la del
-            menu de pausa. Probar para verificar intercambiando de
-            lugar el else if de abajo con el de arriba de esta nota.
-            Para más explicación mejor hacer llamada.
-        */
-        else if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
-            this.botonSeguir.ocultarTodosLosBotones(this.botones);
-        }
-        else if (this.menu.pantallaActual.texture == this.pantallas[1]) {
-            this.botonSeguir.aparecerTodosLosBotones(this.botones);
-            this.botones[0].container.x = this.width - 515;
-            this.botones[2].container.x = this.width - 515;
-            this.botones[2].container.y = this.height - 90;
-        }
-        else if (this.menu.pantallaActual.texture == this.pantallas[4]) { //si la pantalla es el menu de PAUSA
-            //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
-            this.botonSeguir.aparecerTodosLosBotones(this.botones);
-            this.botones[1].ocultarBoton();
-            this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
-            this.botones[0].container.x = this.width / 2;
-            this.botones[2].container.x = this.width / 2;
-            this.botones[2].container.y = (this.height / 2) + 100;
 
-            //llevar al fondo a todos los enemigos
-            for (const enemigo of this.enemigos) {
-                enemigo.llevarAlFondo();
-            }
-        }
-        else if (this.menu.pantallaActual.texture == this.pantallas[5]) { //si la pantalla es GAME OVER
-            //se configuran los botones a aparecer
-            this.botonSeguir.aparecerTodosLosBotones(this.botones);
-            this.botones[0].ocultarBoton();
-            this.botones[1].ocultarBoton();
-
-            //para mover adelante todos los botones, fijarse lógica de ésto cuando sea posible
-            this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
-
-            //se configura el único botón a aparecer
-            this.botones[2].moverBotonAdelante();
-            this.botones[2].container.x = this.width / 2;
-            this.botones[2].container.y = (this.height / 2) + 100;
-
-            //llevar al fondo a todos los enemigos
-            for (const enemigo of this.enemigos) {
-                enemigo.llevarAlFondo();
-            }
-        }
-        else { //sino, aparecer todos los botones en las demas pantallas del menu
-            this.botonSeguir.aparecerTodosLosBotones(this.botones);
-        }
-    }
 
     async generarFondoHUD() {
         // Carga la imagen usando Assets.load()
@@ -351,7 +296,7 @@ class Juego {
         this.hud.width = 700;
         this.hud.height = 50;
 
-        this.hud.zIndex = 1000;
+        this.hud.zIndex = 1;
 
         // Añade el Sprite al escenario para que se muestre en pantalla
         this.pixiApp.stage.addChild(this.hud);
@@ -468,22 +413,22 @@ class Juego {
         const texturaSalud1Hit = await PIXI.Assets.load("imagenes/bateria_hud_1_hit_final.png")
         const texturaSaludVacia = await PIXI.Assets.load("imagenes/bateria_hud_vacia_final.png")
 
+        const posX = this.width - 600;
+        const posY = this.height - 475;
+
         this.bateriaVida = new BateriaVida(
             50, //ancho
             50, //alto
-            (this.width / 5) + 10, //x
-            25, //y
+            posX, //x
+            posY, //y
             this, //Juego
             texturaSaludFull, //sprite1
             texturaSalud2Hit, //sprite2
             texturaSalud1Hit, //sprite3
             texturaSaludVacia //sprite4
         )
+        this.bateriaVida.zIndex = 2;
         await this.bateriaVida.init();
-
-        //esta linea convierte el visible del boton en un booleano
-        //si hay algun bug, da null o lo que sea, termina dando false
-        this.bateriaVida.sprite.visible = !!this.puedeJugar;
     }
     async generarTextoEnemigosMuertosYPuntaje() {
         this.textos = new HUD(this);
@@ -895,24 +840,111 @@ class Juego {
         }
     }
 
+
+
+
+    //VISIBILIDAD SEGUN PANTALLA ACTUAL
+    //------------------------------------------------------------
+    //se cambia la visibilidad o se eliminan los elementos necesarios segun la pantalla que se muestre al jugador
+    visibilidadDeElementosSegunPantalla() {
+        if (!this.menu.pantallaActual.visible) {  //si el menu no es visible, ocultar
+            this.botonSeguir.ocultarTodosLosBotones(this.botones);
+        }
+        /*  NOTA IMPORTANTE: la jerarquia de los else if importa mucho
+            porque si no se verifica que la pantalla es visible
+            hay un bug con fijarse PRIMERO si la pantalla es la del
+            menu de pausa. Probar para verificar intercambiando de
+            lugar el else if de abajo con el de arriba de esta nota.
+        */
+        else if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
+            this.botonSeguir.ocultarTodosLosBotones(this.botones);
+            this.matarATodosLosAliadosYEnemigos();
+            this.resetearPuntaje();
+            this.textos.moverAtras();
+            this.textos.acomodarPosicionYTamañoDeTextoEnemigosAbatidos();
+        }
+        else if (this.menu.pantallaActual.texture == this.pantallas[1]) {
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            this.botones[0].container.x = this.width - 515;
+            this.botones[2].container.x = this.width - 515;
+            this.botones[2].container.y = this.height - 90;
+        }
+        else if (this.menu.pantallaActual.texture == this.pantallas[4]) { //si la pantalla es el menu de PAUSA
+            //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            this.botones[1].ocultarBoton();
+            this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
+            this.botones[0].container.x = this.width / 2;
+            this.botones[2].container.x = this.width / 2;
+            this.botones[2].container.y = (this.height / 2) + 100;
+
+            //llevar al fondo a todos los enemigos
+            for (const enemigo of this.enemigos) {
+                enemigo.llevarAlFondo();
+            }
+        }
+        else if (this.menu.pantallaActual.texture == this.pantallas[5]) { //si la pantalla es GAME OVER
+            //se configuran los botones a aparecer
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            this.botones[0].ocultarBoton();
+            this.botones[1].ocultarBoton();
+
+            //para mover adelante todos los botones, fijarse lógica de ésto cuando sea posible
+            this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
+
+            //se configura el único botón a aparecer
+            this.botones[2].moverBotonAdelante();
+            this.botones[2].container.x = this.width / 2;
+            this.botones[2].container.y = (this.height / 2) + 100;
+
+            //llevar al fondo a todos los enemigos
+            for (const enemigo of this.enemigos) {
+                enemigo.llevarAlFondo();
+            }
+        }
+        else { //sino, aparecer todos los botones en las demas pantallas del menu
+            this.botonSeguir.aparecerTodosLosBotones(this.botones);
+        }
+    }
+
+    matarATodosLosAliadosYEnemigos() {
+        for (const aliado of this.aliados) {
+            aliado.morir();
+        }
+
+        for (const enemigo of this.enemigos) {
+            enemigo.morir();
+        }
+    }
+
+    resetearPuntaje() {
+        this.bateriaVida.contadorEnemigos = 0;
+        for (const enemigo of this.enemigosMuertos) {
+            eliminarElElemento_DeLaLista_(enemigo, this.enemigosMuertos);
+        }
+    }
+    //------------------------------------------------------------
+
+
+
+
     //PANTALLA DERROTA
     //------------------------------------------------------
     gameOver() {
-        guardarPuntajeMasAlto(this.enemigosMuertos.length);
-        if (this.bateriaVida.bateriaActual.texture == this.bateriaVida.sprites[4]) {
+        this.actualizarPuntaje();
+        //si perdio el juego, éste se detiene y se cambia a la pantalla GAME OVER
+        if (this.juegoPerdido) {
             this.puedeJugar = false;
             this.menu.cambiarPantalla(5);
             this.menu.mostrarPantalla();
             this.menu.moverPantallaAdelante();
-            this.textos.textoPuntajeMasAlto.text = traerPuntajeMasAlto().toString();
         }
+        this.juegoPerdido = false;
     }
 
-    actualizarPuntajeSiEsPosible() {
-        let actualizarEsPosible = false;
-        if (actualizarEsPosible) {
-            compararPuntajeYGuardarSiEsMayor(this.enemigosMuertos.length);
-        }
+    actualizarPuntaje() {
+        this.textos.textoPuntajeMasAlto.text = traerPuntajeMasAlto().toString();
+        compararPuntajeYGuardarSiEsMayor(this.enemigosMuertos.length);
     }
     //------------------------------------------------------
 
@@ -927,10 +959,7 @@ class Juego {
     gameLoop() {
         //this.mouse.tick()
         this.menu.tick()
-        this.visibilidadDeBotonesSegunPantalla()
-        if (this.bateriaVida) {
-            this.bateriaVida.sprite.visible = this.puedeJugar;
-        }
+        this.visibilidadDeElementosSegunPantalla()
 
         if (this.hud) {
             this.hud.visible = this.puedeJugar;
@@ -945,7 +974,6 @@ class Juego {
         }
 
         if (this.puedeJugar) {
-            this.actualizarPuntajeSiEsPosible()
             this.realizarTickDelJugador();
             this.realizarTickPorCadaAliado();
             this.realizarTickPorCadaEnemigo();

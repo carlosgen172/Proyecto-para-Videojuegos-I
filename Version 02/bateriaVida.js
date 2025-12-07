@@ -63,13 +63,14 @@ class BateriaVida extends GameObject {
         else if (this.contadorEnemigos < 99) {
             this.bateriaActual.texture = this.sprites[3];
         }
-        else if (this.contadorEnemigos >= this.limiteDeEnemigos){
+        else if (this.contadorEnemigos >= this.limiteDeEnemigos) {
             this.bateriaActual.texture = this.sprites[4];
+            this.juego.juegoPerdido = true;
+            this.juego.gameOver();
         }
     }
 
     verificacionDeCantidadDeEnemigosInvasores() {
-        
         for (const enemigo of this.juego.enemigos) {
             if (enemigo.container.x < - 50 && !enemigo.yaContado) {
                 this.contadorEnemigos++;
@@ -79,7 +80,6 @@ class BateriaVida extends GameObject {
     }
 
     tick() {
-        this.juego.gameOver();
         this.actualizarSpriteSegunSaludDelJugador();
     }
 }

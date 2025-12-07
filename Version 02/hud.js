@@ -15,7 +15,7 @@ class HUD {
 
         this.juego.pixiApp.stage.addChild(this.container);
 
-        this.resize();
+        this.container.zIndex = 2;
     }
 
     async generarIcono() {
@@ -54,7 +54,8 @@ class HUD {
 
         this.container.addChild(this.textoEnemigosAbatidos);
         //--------------------------------------------
-        
+
+
         //TEXTO PUNTAJE MAS ALTO
         //--------------------------------------------
         this.textoPuntajeMasAlto = new PIXI.Text({ text: "", style: this.fuenteTexto });
@@ -73,8 +74,20 @@ class HUD {
         //--------------------------------------------
     }
 
-    resize() {
-        this.container.zIndex = 1100;
+    moverAtras() {
+        this.container.zIndex = 2;
+        this.textoPuntajeMasAlto.visible = false;
+    }
+
+    moverAdelante() {
+        this.container.zIndex = 6000;
+        this.textoPuntajeMasAlto.visible = true;
+    }
+
+    acomodarPosicionYTamañoDeTextoEnemigosAbatidos() {
+        this.textoEnemigosAbatidos.style.fontSize = 30;
+        this.textoEnemigosAbatidos.x = this.juego.width - 50;
+        this.textoEnemigosAbatidos.y = this.juego.height - 475;
     }
 
     actualizarTextosDuranteLaPartida() {
@@ -87,7 +100,7 @@ class HUD {
             this.textoEnemigosAbatidos.x = this.juego.width - 300;
             this.textoEnemigosAbatidos.y = this.juego.height - 415;
 
-            this.container.zIndex = 6000;
+            this.moverAdelante();
         }
     }
 

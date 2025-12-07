@@ -128,7 +128,7 @@ class BotonMenu extends Boton {
                 this.juego.start();
             }, 250)
         }
-        else if (this.pantallaDestino == 3 && this.juego.menu.pantallaActual.texture == this.juego.pantallas[5]) {
+        else if (this.juego.menu.pantallaActual.texture == this.juego.pantallas[5] && this.pantallaDestino == 3) {
             this.juego.botonJugar.aparecerBoton();
             this.juego.botonJugar.moverBotonAdelante();
             this.juego.menu.cambiarPantalla(0);

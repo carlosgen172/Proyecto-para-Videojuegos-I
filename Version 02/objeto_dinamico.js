@@ -235,7 +235,6 @@ class ObjetoDinamico extends GameObject {
 
         //este condicional maneja la muerte según el tipo de entidad
         if (this.container.x < - 50 && this.constructor.name == "Enemigo") {
-            this.juego.enemigosMuertos.push(this);
             this.cambiarAnimacion("morir", false);
             eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
 
