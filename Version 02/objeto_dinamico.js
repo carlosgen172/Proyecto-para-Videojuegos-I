@@ -13,6 +13,7 @@ class ObjetoDinamico extends GameObject {
 
     constructor(x, y, juegoPrincipal, width, height) {
         super(x, y, juegoPrincipal);
+        this.posicion = {x: x, y: y};
         this.width = width;
         this.height = height;
         this.vida = 100;
@@ -94,6 +95,14 @@ class ObjetoDinamico extends GameObject {
     }
     */
 
+    // generarAreaDeColision() {
+    //     //Aun no se genera nada.
+    // }
+
+    separacion() {
+        //Aún no se genera ninguna lógica.
+    }
+
     //SISTEMA DE PELEA:
 
     puedeGolpear() {
@@ -127,13 +136,17 @@ class ObjetoDinamico extends GameObject {
 
     dispararA(unEnemigo) {
         if (!this.puedoDisparar) return;
-        this.cambiarAnimacion("atacar",  true);
+        // this.cambiarAnimacion("atacar",  true);
         
         this.realizarDisparo();
         if (this.balaActual.haColisionadoConAlguien()) {
             unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
             this.ultimoDisparo = performance.now();
         }
+    }
+
+    obtenerPosicionXParaBala() {
+        console.log("Hay que poner esto dentro de las subclases.");
     }
 
     realizarDisparo(){
@@ -147,9 +160,15 @@ class ObjetoDinamico extends GameObject {
             1,
             this
         );
-        console.log(this.balaActual)
+        // console.log("la bala actual: ", this.balaActual);
         this.balas.push(this.balaActual);
-        for (let bala in this.balas) {
+        // for (let bala in this.balas) {
+        //     bala.tick();
+        // }
+    }
+
+    realizarTickPorCadaBala() {
+        for (let bala of this.balas) {
             bala.tick();
         }
     }

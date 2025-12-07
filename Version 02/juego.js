@@ -103,6 +103,7 @@ class Juego {
         if (this.jugador !== null) {
             await this.jugador.start();
             // this.asignarJugadorComoTargetDeCamara();
+            this.personas.push(this.jugador);
         }
 
     }
@@ -572,9 +573,9 @@ class Juego {
                 posX, //posición x
                 posYRandom, //posición y
                 this, //juego
-                16, //ancho
-                16, //alto
-                15, //radio de colisión
+                32, //ancho
+                32, //alto
+                10, //radio de colisión
                 visionRandom, //radio de visión
                 0.5, //velocidad
                 0.1, //aceleración
@@ -607,7 +608,7 @@ class Juego {
                 this, //juego Principal
                 32, //ancho
                 32, //alto
-                15, //radio de colisión
+                10, //radio de colisión
                 visionRandom, //radio de visión
                 0.5, //velocidad
                 0.1, //aceleración

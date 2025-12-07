@@ -141,6 +141,7 @@ class BotonMenu extends Boton {
 
     onHover() {
         this.sprite.tint = 0xBBBBBB;
+        // this.style.cursor = 'pointer';
         //cambiar solo a la pantalla asignada a este boton (CAMBIO DE MENSAJE)
         if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[5]) {
             this.juego.menu.cambiarPantalla(this.pantallaDestino);
@@ -149,6 +150,7 @@ class BotonMenu extends Boton {
 
     onOut() {
         this.sprite.tint = this.tintOriginal;
+        // this.style.cursor = 'auto';
     }
 
     cambiarDeEsteBotonA(unBoton) {

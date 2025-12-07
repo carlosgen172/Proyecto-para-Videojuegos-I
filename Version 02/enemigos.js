@@ -8,6 +8,7 @@ class Enemigo extends ObjetoDinamico {
     constructor(x, y, juegoPrincipal, width, height, radioColision, radioVisionX, velocidad, aceleracion, scaleX) {
         super(x, y, juegoPrincipal, width, height);
         this.radioColision = radioColision;
+        this.factorSeparacion = 0.5;
 
         //Seteo de visión y detección visual lejana del Enemigo (tanto en x como en y):
         // this.radioVision = radioVision;
@@ -61,6 +62,84 @@ class Enemigo extends ObjetoDinamico {
         return this.juego.spritesheetsEnemigos;
     }
 
+    // generarAreaDeColision() {
+        
+    //     this.areaDeColision = new PIXI.Graphics();
+
+    //     //se crea un area invisible:
+    //     this.areaColision = new PIXI.Graphics();
+
+    //     //linea de color negro
+    //     this.areaColision.lineStyle(1, 0x000000);
+
+    //     // color rojo transparente
+    //     this.areaColision.beginFill(0xFF0000, 0.0);
+
+    //     // Dibujar un círculo en la posición (100, 100) con un radio de 50
+    //     this.areaColision.drawCircle(this.x, this.y - 2, this.radioColision);
+
+    //     // Finalizar el relleno
+    //     this.areaColision.endFill();
+
+    //     //Y lo añade al container:
+    //     //this.juegoPrincipal.pixiApp.stage.addChild(this.areaColision);
+    //     this.container.addChild(this.areaColision);
+    //     this.areaColision.visible = false;
+    // }
+
+    separacion() {
+        /**
+         * ALGORITMO DE SEPARACIÓN (BOIDS - Craig Reynolds)
+         *
+         * Objetivo: Evitar colisiones manteniendo distancia mínima entre agentes
+         *
+         * Proceso:
+         * 1. Detectar TODAS las personas (amigos y enemigos) muy cercanas
+         * 2. Zona crítica: radio * 1.5 (zona de colisión inminente)
+         * 3. Calcular centro de masa de los agentes cercanos
+         * 4. Generar fuerza de repulsión: fuerza = posición_actual - CM_cercanos
+         *
+         * Características:
+         * - Prioridad máxima (se ejecuta primero en tick())
+         * - Afecta a todos los agentes sin distinción de bando
+         * - Previene superposición y aglomeración excesiva
+        
+         */
+
+        let cont = 0; //Contador de personas que se encuentran demasiado cerca.
+        let vectorPromedioDePosiciones = { x: 0, y: 0 }; //Se inicializa un vector el cual nos servirá para indicar a la entidad en que sentido evitar a su/s allegado/s.
+
+        // Detectar TODOS los agentes cercanos (sin importar equipo)
+        for (const persona of this.juego.personas) {
+            if (persona !== this) {
+            const distanciaEntrePersona = calcularDistancia(this.posicion, persona.posicion); //Se calcula la distancia de la instancia contra la allegada, para ver si es necesario repelerla.
+            // Zona crítica de separación
+            if (distanciaEntrePersona < this.radioColision * 1.5) {
+                cont++; //Suma 1 al contador de gente cercana.
+                vectorPromedioDePosiciones.x += persona.posicion.x; //Hace que dicho vector sume la posición de la persona
+                vectorPromedioDePosiciones.y += persona.posicion.y; //Lo mismo, pero en este caso para el eje y.
+            }
+            }
+        }
+        if (cont == 0) return; // No hay agentes demasiado cerca, entonces corta el código.
+
+        // Centro de masa de los agentes cercanos (se divide según la cantidad de personas, para sacar un promedial entre ellas)
+        vectorPromedioDePosiciones.x /= cont;
+        vectorPromedioDePosiciones.y /= cont;
+
+        // Vector de repulsión (vector que ayuda a repeler el centro de masa de cada objeto)
+        let vectorRepulsivo = { //Inicializado en base a la posición de la instancia menos el punto promedial de las entidades cercanas.
+            x: this.posicion.x - vectorPromedioDePosiciones.x,
+            y: this.posicion.y - vectorPromedioDePosiciones.y,
+        };
+
+        // Normalizar y aplicar factor de separación
+        vectorRepulsivo = limitarVector(vectorRepulsivo, 1);
+        this.aceleracion.x += this.factorSeparacion * vectorRepulsivo.x;
+        this.aceleracion.y += this.factorSeparacion * vectorRepulsivo.y;
+        
+    }
+
 
     asignarTargetA(alguien) {
         this.enemigo = alguien
@@ -76,6 +155,10 @@ class Enemigo extends ObjetoDinamico {
 
     obtenerLista() {
         return this.juego.aliados;
+    }
+
+    obtenerPosicionXParaBala() {
+        return this.x - 20;
     }
 
     llevarAlFondo() {
@@ -96,6 +179,8 @@ class Enemigo extends ObjetoDinamico {
         // for (let bala in this.balas) {
         //     bala.tick();
         // }
+        this.separacion();
+        this.realizarTickPorCadaBala();
         this.update();
         this.aplicarFisica();
         this.render();

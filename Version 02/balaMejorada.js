@@ -1,10 +1,19 @@
 class BalaMejorada extends GameObject {
     radioColision;
     radioVision;
-    velocidadMaxima = 3;
-    aceleracionMaxima = 1.5;
+    velocidadMaxima = 0.9;
+    aceleracionMaxima = 0.2;
     constructor (x, y, juego, width, height, velocidad, aceleracion, scaleX, personaQueEfectuoDisparo) {
         super(x, y, juego, width, height);
+        
+        //Idea para reposicionamiento descartada:
+        // this.x = x;
+        // this.y = y;
+        // this.reposicionarElementoSegunDisparador();
+        // this.posicion = {x: this.x, y: this.y};
+
+        this.posicion = {x: x, y: y};
+
         this.width = width;
         this.height = height;
         this.vida = 1;
@@ -22,11 +31,14 @@ class BalaMejorada extends GameObject {
         this.container.name = this.constructor.name;
         this.generarAreaDeColision();
 
-        this.nombreDelDisparador = this.personaQueEfectuoDisparo.container.name
+        this.nombreDelDisparador = this.personaQueEfectuoDisparo.constructor.name
         this.seleccionarColorSegunEquipo();
         this.generarSprite();
-        this.juego.pixiApp.stage.addChild(this.container);
+        // this.juego.pixiApp.stage.addChild(this.container);
+        // this.juego.containerPrincipal.addChild(this.container);
         // console.log(this.container);
+        this.salirPropulsado();
+        this.juego.containerPrincipal.addChild(this.container);
     } 
 
     seleccionarColorSegunEquipo() {
@@ -38,6 +50,22 @@ class BalaMejorada extends GameObject {
             this.color = "red";
         }
     }
+
+    // reposicionarElementoSegunDisparador() {
+    //     /*
+    //         REPOSICIONAMIENTO: Debido al hecho de que la función se encuentra en un nivel de abstracción alto 
+    //         para seleccionar correctamnte su posición (y para evitar la reiteración de código innecesario). 
+    //         se ejecuta en el constructor esta función que delega al mismo objeto para que decida a donde tiene 
+    //         que ir ubicado según el "nombre" (la clase) de la persona que lo disparo.
+    //     */
+    //     if (this.nombreDelDisparador == "Aliado" || this.nombreDelDisparador == "Jugador") {
+    //         this.x = this.nombreDelDisparador.x + 20;
+    //     } else {
+    //         this.x = this.nombreDelDisparador.x - 20;
+    //     }
+
+    //     this.y = this.nombreDelDisparador;
+    // }
 
     // seleccionarDireccionDeAvance() {
         // if(nombreDelDisparador == "Aliado" || "Jugador") {
@@ -75,16 +103,18 @@ class BalaMejorada extends GameObject {
     }
 
     haColisionadoConAlguien() {
+        if (this.estoyMuerto) return ;
+        this.tengoAlgunEnemigoAdelante = false;
         const listaObjetivos = this.personaQueEfectuoDisparo.obtenerLista();
-        // console.log(this.personaQueEfectuoDisparo.obtenerLista());
+        // console.log("la bala pertenece a: ", this.personaQueEfectuoDisparo)
+        // console.log("y la misma tiene a estos posibles objetivos", this.personaQueEfectuoDisparo.obtenerLista());
         // console.log("posicion actual en x", this.x);
         //debugger;
         for (let posibleObjetivo of listaObjetivos) {
             const distanciaDeEnemigoEnX = calcularDistanciaEnX(this.posicion, posibleObjetivo.posicion)
             const distanciaDeEnemigoEnY = calcularDistanciaEnY(this.posicion, posibleObjetivo.posicion)
-            if (distanciaDeEnemigoEnX < this.areaColision && distanciaDeEnemigoEnY < this.height) {
+            if (distanciaDeEnemigoEnX < this.areaColision.x && distanciaDeEnemigoEnY < this.areaColision.y) {
                 this.tengoAlgunEnemigoAdelante = true;
-                //this.enemigoMasCerca = posibleObjetivo;
                 break;
             }
         }
@@ -92,20 +122,25 @@ class BalaMejorada extends GameObject {
     }
 
     seFueDePantalla() { //condición para que se vea también de eliminar el objeto al llegarse a salir de pantalla.
-        return(this.posicion.x >= (this.juego.width + 10) || this.posicion.x <= (this.juego.width - 10))
+        return( ( (this.posicion.x >= (this.juego.width + 10) ) && (this.nombreDelDisparador == "Aliado") ) 
+        || 
+        ( (this.posicion.x <= (this.juego.width - 10) ) && (this.nombreDelDisparador == "Enemigo") ) );
     }
 
     salirPropulsado() {
         // if (!this.estoyMuerto) {
-            // this.aceleracion.x = this.personaQueEfectuoDisparo.direccionDeAvance();
-            if (this.nombreDelDisparador == "Aliado" || this.nombreDelDisparador == "Jugador") {
-                this.aceleracion.x = 1
-                // this.container.posicion.x += 1
-            } else {
-                this.aceleracion.x = -1
-                // this.container.posicion.x -= 1
-            }
-            console.log("la aceleracion del objeto", this.aceleracion.x);
+        if (this.estoyMuerto) return ;
+        // this.aceleracion.x = this.personaQueEfectuoDisparo.direccionDeAvance();
+        if (this.nombreDelDisparador == "Aliado") {
+            this.aceleracion.x = 1
+            // this.container.x += 1
+            // this.posicion.x += 1
+        } else {
+            this.aceleracion.x = -1
+            // this.container.x -= 1
+            // this.posicion.x -= 1
+        }
+        // console.log("la aceleracion del objeto", this.aceleracion.x);
         // }
     }
 
@@ -155,8 +190,8 @@ class BalaMejorada extends GameObject {
 
     //se actualiza la posición del contenedor según la posición del objeto (se usa en el render)
     actualizarPosDelContainerSegunPosDelObjeto(){
-        this.container.x = this.x;
-        this.container.y = this.y;
+        this.container.x = this.posicion.x;
+        this.container.y = this.posicion.y;
     }
 
     render() {
@@ -166,7 +201,13 @@ class BalaMejorada extends GameObject {
     //SISTEMA DE MUERTE:
 
     verificarSiMori() {
-        if (this.vida <= 0 || this.seFueDePantalla() || this.personaQueEfectuoDisparo.puedeDisparar()) {
+        // if (this.vida <= 0 || this.seFueDePantalla() || this.personaQueEfectuoDisparo.puedeDisparar() || this.haColisionadoConAlguien()) {
+        // if (this.vida <= 0 || this.seFueDePantalla() || this.haColisionadoConAlguien()) {
+        // if (this.haColisionadoConAlguien()) {
+        //     console.log("he impactado con alguien");
+        // }
+        // if (this.vida <= 0 || this.seFueDePantalla() || this.haColisionadoConAlguien()) {
+        if (this.seFueDePantalla() || this.haColisionadoConAlguien()) {
             this.morir();
         }
     }
@@ -176,23 +217,31 @@ class BalaMejorada extends GameObject {
     }
 
     morir() {
-        //este condicional previene que se ejecute más de una vez el código de muerte
-        if (this.estoyMuerto) return;
-
-        //este condicional maneja la muerte según el tipo de entidad
+        //PARA ELIMINAR CORRECTAMENTE UN ELEMENTO EN PANTALLA:
+        
+        //Haces la vida igual a 0;
+        // this.vida = 0;
+        
+        //1. hacer invisible el sprite:
         this.sprite.visible = false;
-        //remover el sprite del contenedor
+        
+        //2. remover el sprite del contenedor:
         this.sprite.parent.removeChild(this.sprite);
 
-        //destruir el sprite para liberar memoria
-        // this.sprite.destroy({
-        //     texture: false,
-        //     baseTexture: false
-        // });
+        //3. destruir el sprite para liberar memoria:
+        this.sprite.destroy({
+            texture: false,
+            baseTexture: false
+        });
 
-        //eliminar la referencia al sprite
+        //4. eliminar la referencia al sprite:
         this.sprite = null;
-        this.estoyMuerto = true
+        eliminarElElemento_DeLaLista_(this, this.personaQueEfectuoDisparo.balas);
+
+        //5. Cambia su estado a "muerto", para que ya no responda a ninguna acción del ticker:
+        this.estoyMuerto = true;
+
+        // console.log("la bala ha dejado de existir.")
     }
 
     //SISTEMA DE FÍSICA:
@@ -282,10 +331,11 @@ class BalaMejorada extends GameObject {
     
 
     //cada tick se efectua en la clase juego en el método realizarTickPorCadaBala()
-    // llamado desde el tick principal del juego
+    // llamado desde el tick principal del objeto.
     tick() {
         this.verificarSiMori();
         this.salirPropulsado();
+        
         this.aplicarFisica();
         this.render();
     }
