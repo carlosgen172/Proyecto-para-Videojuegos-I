@@ -124,7 +124,7 @@ class BalaMejorada extends GameObject {
     seFueDePantalla() { //condición para que se vea también de eliminar el objeto al llegarse a salir de pantalla.
         return( ( (this.posicion.x >= (this.juego.width + 10) ) && (this.nombreDelDisparador == "Aliado") ) 
         || 
-        ( (this.posicion.x <= (this.juego.width - 10) ) && (this.nombreDelDisparador == "Enemigo") ) );
+        ( (this.posicion.x <= (this.juego.width - 710) ) && (this.nombreDelDisparador == "Enemigo") ) );
     }
 
     salirPropulsado() {

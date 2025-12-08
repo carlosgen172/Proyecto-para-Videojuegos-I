@@ -2,20 +2,20 @@ class PjEnojado extends Estado {
     enter() { //setea la animación de ataque.
         if (!this.dueño) return;
         if (this.dueño.estoyMuerto) return;
-        
+
         //Obtengo al dueño:
         const dueño = this.dueño;
         // debugger; // frena la ejecución del código.
-        
+
         //Guardo su tinte original:
         this.tintOriginal = 0xFFFFFF;
 
         //Y cambio su animación a la de "atacar":
         if (dueño?.cambiarAnimacion) dueño.cambiarAnimacion("atacar", true);
-        
+
         //Extra: Le cambio cualquier tinte que tenga a su tinte original:
         dueño.container.tint = dueño.tintOriginal;
-        
+
         //Le agrego un tinte rojo al pj:
         dueño.container.tint = 'red';
 
@@ -59,25 +59,25 @@ class PjEnojado extends Estado {
         const dueño = this.dueño;
         if (!dueño) return;
         if (this.dueño.estoyMuerto) return;
-        
+
         this.evaluarCambioDeEstado();
 
-            dueño.aceleracion.x = 0;
+        dueño.aceleracion.x = 0;
 
-            //Aumenta su nivel de ira constantemente:
-            dueño.nivelDeIraReal + 1
-            
-            //Y efectúa un ataque a su enemigo:
-            dueño.pegar(dueño.enemigoMasCerca);
-            // dueño.dispararA(dueño.enemigoMasCerca);
+        //Aumenta su nivel de ira constantemente:
+        dueño.nivelDeIraReal + 1
 
-            //La misma golpea hasta que el enemigo muere, luego vuelve a avanzar:
-            if (dueño.puedeGolpear()) { //Este condicional sirve para que el delay entre ataques funcione y no se "resetee" al eliminar al objetivo actual.
-            // if (dueño.puedoDisparar()) {
+        //Y efectúa un ataque a su enemigo:
+        //dueño.pegar(dueño.enemigoMasCerca);
+        dueño.dispararA(dueño.enemigoMasCerca);
+
+        //La misma golpea hasta que el enemigo muere, luego vuelve a avanzar:
+        //if (dueño.puedeGolpear()) { //Este condicional sirve para que el delay entre ataques funcione y no se "resetee" al eliminar al objetivo actual.
+            if (dueño.puedoDisparar()) {
                 dueño.tengoAlgunEnemigoAdelante = false;
                 dueño.enemigoMasCerca = null;
             }
-        // }
-        
+        //}
+
     }
 }

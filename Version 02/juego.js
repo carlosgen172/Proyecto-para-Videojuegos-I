@@ -17,7 +17,7 @@ class Juego {
     botones = [];
     puedeJugar = false;
     juegoPerdido = false;
-    cantEnemigosMinimaEnPantalla = 100;
+    cantEnemigosMinimaEnPantalla = 20;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
@@ -575,7 +575,7 @@ class Juego {
                 this, //juego
                 32, //ancho
                 32, //alto
-                10, //radio de colisión
+                18, //radio de colisión
                 visionRandom, //radio de visión
                 0.5, //velocidad
                 0.1, //aceleración
@@ -608,7 +608,7 @@ class Juego {
                 this, //juego Principal
                 32, //ancho
                 32, //alto
-                10, //radio de colisión
+                18, //radio de colisión
                 visionRandom, //radio de visión
                 0.5, //velocidad
                 0.1, //aceleración

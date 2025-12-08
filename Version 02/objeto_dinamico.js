@@ -1,4 +1,6 @@
 class ObjetoDinamico extends GameObject {
+    limiteSuperior = this.juego.height - 300;
+    limiteInferior = this.juego.height - 100;
     radioColision;
     radioVision;
     velocidadMaxima = 0.8;
@@ -13,7 +15,7 @@ class ObjetoDinamico extends GameObject {
 
     constructor(x, y, juegoPrincipal, width, height) {
         super(x, y, juegoPrincipal);
-        this.posicion = {x: x, y: y};
+        this.posicion = { x: x, y: y };
         this.width = width;
         this.height = height;
         this.vida = 100;
@@ -25,6 +27,7 @@ class ObjetoDinamico extends GameObject {
         this.ultimoGolpe = 0;
         this.tengoAlgunEnemigoAdelante = false;
         this.enemigoMasCerca = null;
+
         this.container = new PIXI.Container();
         this.container.name = this.constructor.name;
         // this.juego.pixiApp.stage.addChild(this.container);
@@ -137,19 +140,19 @@ class ObjetoDinamico extends GameObject {
     dispararA(unEnemigo) {
         if (!this.puedoDisparar) return;
         // this.cambiarAnimacion("atacar",  true);
-        
+
         this.realizarDisparo();
-        if (this.balaActual.haColisionadoConAlguien()) {
-            unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
-            this.ultimoDisparo = performance.now();
-        }
+        // if (this.balaActual.haColisionadoConAlguien()) {
+        //     unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
+        // }
+        this.ultimoDisparo = performance.now();
     }
 
     obtenerPosicionXParaBala() {
         console.log("Hay que poner esto dentro de las subclases.");
     }
 
-    realizarDisparo(){
+    realizarDisparo() {
         this.balaActual = new BalaMejorada(
             this.posicion.x,
             this.posicion.y,
@@ -204,7 +207,7 @@ class ObjetoDinamico extends GameObject {
 
             this.aceleracion.x = 0;
             this.pegar(this.enemigoMasCerca);
-            //this.dispararA(this.enemigoMasCerca);
+            this.dispararA(this.enemigoMasCerca);
 
             this.cambiarAnimacion("atacar", false)
             this.cambiarAnimacion("correr", true);
@@ -423,6 +426,22 @@ class ObjetoDinamico extends GameObject {
 
         this.velocidad.x *= friccionAplicada;
         this.velocidad.y *= friccionAplicada;
+    }
+
+    //LIMITES DE PANTALLA
+    verificacionDeLimites() {
+        if (this.estoyMuerto) return;
+    
+        let puedeSepararse = false;
+
+        if(esEntre(this.posicion.y, this.limiteSuperior, this.limiteInferior)) {
+            puedeSepararse = true;
+        }
+        else {
+            puedeSepararse = false;
+        }
+
+        return puedeSepararse;
     }
 
     //SISTEMA DE RENDERIZADO:

@@ -175,11 +175,9 @@ class Enemigo extends ObjetoDinamico {
 
     tick() {
         this.verificarSiMori();
-        // this.decidirAtacarOAvanzar();
-        // for (let bala in this.balas) {
-        //     bala.tick();
-        // }
-        this.separacion();
+        if (this.verificacionDeLimites()) {
+            this.separacion();
+        }
         this.realizarTickPorCadaBala();
         this.update();
         this.aplicarFisica();

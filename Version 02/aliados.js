@@ -86,13 +86,13 @@ class Aliado extends ObjetoDinamico {
         // Detectar TODOS los agentes cercanos (sin importar equipo)
         for (const persona of this.juego.personas) {
             if (persona !== this) {
-            const distanciaEntrePersona = calcularDistancia(this.posicion, persona.posicion); //Se calcula la distancia de la instancia contra la allegada, para ver si es necesario repelerla.
-            // Zona crítica de separación
-            if (distanciaEntrePersona < this.radioColision * 1.5) {
-                cont++; //Suma 1 al contador de gente cercana.
-                vectorPromedioDePosiciones.x += persona.posicion.x; //Hace que dicho vector sume la posición de la persona
-                vectorPromedioDePosiciones.y += persona.posicion.y; //Lo mismo, pero en este caso para el eje y.
-            }
+                const distanciaEntrePersona = calcularDistancia(this.posicion, persona.posicion); //Se calcula la distancia de la instancia contra la allegada, para ver si es necesario repelerla.
+                // Zona crítica de separación
+                if (distanciaEntrePersona < this.radioColision * 1.5) {
+                    cont++; //Suma 1 al contador de gente cercana.
+                    vectorPromedioDePosiciones.x += persona.posicion.x; //Hace que dicho vector sume la posición de la persona
+                    vectorPromedioDePosiciones.y += persona.posicion.y; //Lo mismo, pero en este caso para el eje y.
+                }
             }
         }
         if (cont == 0) return; // No hay agentes demasiado cerca, entonces corta el código.
@@ -141,15 +141,15 @@ class Aliado extends ObjetoDinamico {
             clase extra que, cuando tenga poca vida el pj, sume 0.1 factor extra, osease, que cuando tenga 
             menos vida, quiera estar más al lado del jugador/líder).
         */
-        if(!this.juego.jugador) return;
+        if (!this.juego.jugador) return;
 
         const distanciaParaLlegarAlLider = calcularDistancia(this.posicion, this.juego.jugador.posicion);
 
         if (distanciaParaLlegarAlLider > this.radioPromedialDeVisionCercana) return; //en caso de estar demasiado lejos, no lo siguen.
-        
+
         const difX = this.juego.jugador.posicion.x - this.posicion.x;
         const difY = this.juego.jugador.posicion.y - this.posicion.y;
-        
+
         let vectorDeEspacioPersonalConLider = {
             x: difX,
             y: difY
@@ -157,7 +157,7 @@ class Aliado extends ObjetoDinamico {
 
         vectorDeEspacioPersonalConLider = limitarVector(vectorDeEspacioPersonalConLider, 1);
 
-        if(distanciaParaLlegarAlLider < this.radioDeLlegadaAlLider) {
+        if (distanciaParaLlegarAlLider < this.radioDeLlegadaAlLider) {
             //esta muy cerca, se aleja
             vectorDeEspacioPersonalConLider.x *= -this.radioDeLlegadaAlLider / distanciaParaLlegarAlLider;
             vectorDeEspacioPersonalConLider.y *= -this.radioDeLlegadaAlLider / distanciaParaLlegarAlLider;
@@ -208,12 +208,10 @@ class Aliado extends ObjetoDinamico {
 
     tick() {
         this.verificarSiMori();
-        // this.decidirAtacarOAvanzar();
-        // for (let bala in this.balas) {
-        //     bala.tick();
-        // }
+        if (this.verificacionDeLimites()) {
+            this.separacion();
+        }
         this.seguirAlLider();
-        this.separacion();
         this.realizarTickPorCadaBala();
         this.update();
         this.aplicarFisica();
