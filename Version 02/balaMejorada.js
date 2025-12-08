@@ -11,34 +11,50 @@ class BalaMejorada extends GameObject {
         // this.y = y;
         // this.reposicionarElementoSegunDisparador();
         // this.posicion = {x: this.x, y: this.y};
-
+        
+        // console.log("Posición en X de la bala:", this.x);
+        // console.log("Posición en Y de la bala:", this.y)
         this.posicion = {x: x, y: y};
+        // console.log("Posición general", this.posicion);
 
         this.width = width;
         this.height = height;
         this.vida = 1;
         this.estoyMuerto = false;
 
-        //this.radioColision = radioColision;
-        //this.radioVision = radioVision;
+        //Radio de colision para el sistema de colisiones y de daño:
+        this.radioColision = this.width / 2;
+
+        //Velocidad y aceleración:
         this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
         this.aceleracion = { x: aceleracion, y: aceleracion}; // Aceleración en píxeles/frame²
-        this.scaleX = scaleX || 1; //para hacer más ancho al pj
-        this.personaQueEfectuoDisparo = personaQueEfectuoDisparo;
 
-        //se crea el contenedor del sprite
+        //sistema de escala:
+        this.scaleX = scaleX || 1; //para hacer más ancho al pj
+        
+        //Valores que se les pasa a la bala para saber que persona efectuó el disparo:
+        this.personaQueEfectuoDisparo = personaQueEfectuoDisparo;
+        this.dañoAInflingir = this.personaQueEfectuoDisparo.verCuantaFuerzaTengo();
+
+        //se crea el contenedor del sprite:
         this.container = new PIXI.Container();
         this.container.name = this.constructor.name;
-        this.generarAreaDeColision();
 
+        //Nombre del disparador y condicionales en base a la misma:
         this.nombreDelDisparador = this.personaQueEfectuoDisparo.constructor.name
         this.seleccionarColorSegunEquipo();
+
+        //Generación del sprite:
         this.generarSprite();
         // this.juego.pixiApp.stage.addChild(this.container);
         // this.juego.containerPrincipal.addChild(this.container);
         // console.log(this.container);
-        this.salirPropulsado();
+
+        //Y agregado del container al escenario:
         this.juego.containerPrincipal.addChild(this.container);
+
+        //Selección de dirección de propulsión:
+        this.salirPropulsado();
     } 
 
     seleccionarColorSegunEquipo() {
@@ -76,35 +92,37 @@ class BalaMejorada extends GameObject {
         // }
     // }
 
-    generarAreaDeColision() {
-        //se le asigna el radio de colisión según el ancho indicado 
-        //debugger;
-        this.radioColision = this.width / 2;
+    // generarAreaDeColision() { DESCARTADO (E INNECESARIO):
+    //     //se le asigna el radio de colisión según el ancho indicado 
+    //     //debugger;
+    //     this.radioColision = this.width / 2;
 
-        //se crea un area invisible:
-        this.areaColision = new PIXI.Graphics();
+    //     //se crea un area invisible:
+    //     this.areaColision = new PIXI.Graphics();
 
-        //linea de color negro
-        this.areaColision.lineStyle(1, 0x000000);
+    //     //linea de color negro
+    //     this.areaColision.lineStyle(1, 0x000000);
 
-        // color rojo transparente
-        this.areaColision.beginFill(0xFF0000, 0.0);
+    //     // color rojo transparente
+    //     this.areaColision.beginFill(0xFF0000, 0.0);
 
-        // Dibujar un círculo en la posición (100, 100) con un radio de 50
-        this.areaColision.drawCircle(this.x, this.y, this.radioColision);
+    //     // Dibujar un círculo en la posición (100, 100) con un radio de 50
+    //     this.areaColision.drawCircle(this.x, this.y, this.radioColision);
 
-        // Finalizar el relleno
-        this.areaColision.endFill();
+    //     // Finalizar el relleno
+    //     this.areaColision.endFill();
 
-        //Y lo añade al container:
-        //this.juegoPrincipal.pixiApp.stage.addChild(this.areaColision);
-        this.container.addChild(this.areaColision);
-        this.areaColision.visible = false;
-    }
+    //     //Y lo añade al container:
+    //     //this.juegoPrincipal.pixiApp.stage.addChild(this.areaColision);
+    //     this.container.addChild(this.areaColision);
+    //     this.areaColision.visible = false;
+    // }
 
     haColisionadoConAlguien() {
-        if (this.estoyMuerto) return ;
-        this.tengoAlgunEnemigoAdelante = false;
+        if (this.estoyMuerto) return;
+
+        // this.tengoAlgunEnemigoAdelante = false;
+        
         const listaObjetivos = this.personaQueEfectuoDisparo.obtenerLista();
         // console.log("la bala pertenece a: ", this.personaQueEfectuoDisparo)
         // console.log("y la misma tiene a estos posibles objetivos", this.personaQueEfectuoDisparo.obtenerLista());
@@ -113,25 +131,34 @@ class BalaMejorada extends GameObject {
         for (let posibleObjetivo of listaObjetivos) {
             const distanciaDeEnemigoEnX = calcularDistanciaEnX(this.posicion, posibleObjetivo.posicion)
             const distanciaDeEnemigoEnY = calcularDistanciaEnY(this.posicion, posibleObjetivo.posicion)
-            if (distanciaDeEnemigoEnX < this.areaColision.x && distanciaDeEnemigoEnY < this.areaColision.y) {
+            if (distanciaDeEnemigoEnX < this.radioColision && distanciaDeEnemigoEnY < this.radioColision) {
                 this.tengoAlgunEnemigoAdelante = true;
+                this.objetivoColisionado = posibleObjetivo;
                 break;
             }
         }
         return this.tengoAlgunEnemigoAdelante;
     }
 
+    pegarAlObjetivoColisionado() {
+        if(this.estoyMuerto) return;
+        // if(!this.objetivoColisionado) return;
+        if(this.haColisionadoConAlguien()) {
+            this.objetivoColisionado.vida = Math.max(this.objetivoColisionado.vida - this.dañoAInflingir, 0);
+        }
+    }
+
     seFueDePantalla() { //condición para que se vea también de eliminar el objeto al llegarse a salir de pantalla.
-        return( ( (this.posicion.x >= (this.juego.width + 10) ) && (this.nombreDelDisparador == "Aliado") ) 
+        return( ( (this.posicion.x >= (this.juego.width + 5) ) && (this.nombreDelDisparador == "Aliado") ) 
         || 
-        ( (this.posicion.x <= (this.juego.width - 710) ) && (this.nombreDelDisparador == "Enemigo") ) );
+        ( (this.posicion.x <= (this.juego.width - (this.juego.width + 5)) ) && (this.nombreDelDisparador == "Enemigo") ) );
     }
 
     salirPropulsado() {
         // if (!this.estoyMuerto) {
         if (this.estoyMuerto) return ;
         // this.aceleracion.x = this.personaQueEfectuoDisparo.direccionDeAvance();
-        if (this.nombreDelDisparador == "Aliado") {
+        if (this.nombreDelDisparador == "Aliado" || this.nombreDelDisparador == "Jugador") {
             this.aceleracion.x = 1
             // this.container.x += 1
             // this.posicion.x += 1
@@ -171,14 +198,15 @@ class BalaMejorada extends GameObject {
         //se crea un area invisible:
         this.sprite = new PIXI.Graphics();
 
-        //linea de color negro
-        this.sprite.lineStyle(1, 0x000000);
+        //linea de color negro:
+        this.sprite.lineStyle(2, 0x000000);
 
-        // color rojo transparente
-        this.sprite.beginFill(this.color, 0.5);
+        //color sólido según equipo:
+        this.sprite.beginFill(this.color, 1.0);
 
-        // Dibujar un círculo en la 
-        this.sprite.drawCircle(this.x, this.y, this.radioColision);
+        // Dibujar un círculo con punto central en la posición x e y de nuestro pj, 
+        // con un radio general según el radio de colisión:
+        this.sprite.drawCircle(this.posicion.x, this.posicion.y, this.radioColision);
 
         // Finalizar el relleno
         this.sprite.endFill();
@@ -207,6 +235,8 @@ class BalaMejorada extends GameObject {
         //     console.log("he impactado con alguien");
         // }
         // if (this.vida <= 0 || this.seFueDePantalla() || this.haColisionadoConAlguien()) {
+        if(this.estoyMuerto) return;
+
         if (this.seFueDePantalla() || this.haColisionadoConAlguien()) {
             this.morir();
         }
@@ -221,6 +251,9 @@ class BalaMejorada extends GameObject {
         
         //Haces la vida igual a 0;
         // this.vida = 0;
+
+        //0. Le haces daño al objetivo colisionado (en caso de existir):
+        this.pegarAlObjetivoColisionado();
         
         //1. hacer invisible el sprite:
         this.sprite.visible = false;
@@ -335,7 +368,6 @@ class BalaMejorada extends GameObject {
     tick() {
         this.verificarSiMori();
         this.salirPropulsado();
-        
         this.aplicarFisica();
         this.render();
     }

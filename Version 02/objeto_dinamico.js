@@ -20,11 +20,13 @@ class ObjetoDinamico extends GameObject {
         this.height = height;
         this.vida = 100;
         //this.fuerza = 10;
-        this.delayAtaque = 100;
+        // this.delayAtaque = 100;
+        this.delayAtaque = 1000;
         this.nivelesDeIra = [1, 2, 3, 4, 5]
         this.nivelDeIraReal = seleccionarElementoAleatorioDe_(this.nivelesDeIra)
         this.estoyMuerto = false;
-        this.ultimoGolpe = 0;
+        // this.ultimoGolpe = 0;
+        this.ultimoDisparo = 0;
         this.tengoAlgunEnemigoAdelante = false;
         this.enemigoMasCerca = null;
 
@@ -137,8 +139,9 @@ class ObjetoDinamico extends GameObject {
         return (performance.now() > this.delayAtaque + this.ultimoDisparo);
     }
 
-    dispararA(unEnemigo) {
-        if (!this.puedoDisparar) return;
+    // dispararA(unEnemigo) {
+    dispararAEnemigo() {
+        if (!this.puedoDisparar()) return;
         // this.cambiarAnimacion("atacar",  true);
 
         this.realizarDisparo();
@@ -153,21 +156,20 @@ class ObjetoDinamico extends GameObject {
     }
 
     realizarDisparo() {
-        this.balaActual = new BalaMejorada(
-            this.posicion.x,
-            this.posicion.y,
-            this.juego,
-            8, 4,
-            0.7,
-            0.2,
-            1,
-            this
+        // this.balaActual = new BalaMejorada(
+        let balaActual = new BalaMejorada(
+            (this.posicion.x /2), //posición en x
+            (this.posicion.y /2) - (this.width/2), //posición en y
+            this.juego, //juego.
+            8, //ancho.
+            8, //alto.
+            0.7, //velocidad.
+            0.2, //aceleración.
+            1, //escala en x.
+            this //persona que efectuo el disparo.
         );
-        // console.log("la bala actual: ", this.balaActual);
-        this.balas.push(this.balaActual);
-        // for (let bala in this.balas) {
-        //     bala.tick();
-        // }
+        // this.balas.push(this.balaActual);
+        this.balas.push(balaActual);
     }
 
     realizarTickPorCadaBala() {

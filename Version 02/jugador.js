@@ -34,12 +34,14 @@ class Jugador extends ObjetoDinamico {
         }
         if (this.juego.keys["a"]) {
             this.aceleracion.x --;
+            this.spritesheetsActuales.scale.x = -this.scaleX 
         }
         if (this.juego.keys["s"]) {
             this.aceleracion.y ++;
         }
         if (this.juego.keys["d"]) {
             this.aceleracion.x ++;
+            this.spritesheetsActuales.scale.x = this.scaleX;
         }
     }
 

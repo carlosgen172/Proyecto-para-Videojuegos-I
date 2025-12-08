@@ -69,14 +69,15 @@ class PjEnojado extends Estado {
 
         //Y efectúa un ataque a su enemigo:
         //dueño.pegar(dueño.enemigoMasCerca);
-        dueño.dispararA(dueño.enemigoMasCerca);
+        // dueño.dispararA(dueño.enemigoMasCerca);
+        dueño.dispararAEnemigo();
 
         //La misma golpea hasta que el enemigo muere, luego vuelve a avanzar:
         //if (dueño.puedeGolpear()) { //Este condicional sirve para que el delay entre ataques funcione y no se "resetee" al eliminar al objetivo actual.
-            if (dueño.puedoDisparar()) {
-                dueño.tengoAlgunEnemigoAdelante = false;
-                dueño.enemigoMasCerca = null;
-            }
+        if (dueño.puedoDisparar()) {
+            dueño.tengoAlgunEnemigoAdelante = false;
+            dueño.enemigoMasCerca = null;
+        }
         //}
 
     }

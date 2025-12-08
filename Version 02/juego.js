@@ -32,6 +32,12 @@ class Juego {
 
         this.mouse = { posicion: { x: 0, y: 0 } };
 
+        // Variables para el zoom in-game:
+	    this.zoom = 1; //zoom base
+	    this.minZoom = 0.1; //valor mínimo de zoom
+	    this.maxZoom = 1; //valor máximo de zoom
+	    this.zoomStep = 0.01; //cambio de zoom progresivo
+
         this.initPIXI();
     }
 
@@ -136,7 +142,7 @@ class Juego {
     }
 
     agregarInteractividadDelMouse() {
-        // Escuchar el evento mousemove
+        // Escuchar los eventos generales del mouse:
         this.pixiApp.canvas.onmousemove = (event) => {
             this.mouse.posicion = this.convertirCoordenadaDelMouse(event.x, event.y);
         };
@@ -150,6 +156,36 @@ class Juego {
             this.mouse.apretado = false;
             //this.menu.realizarPresentacion()
         }
+
+        // Event listener para la rueda del mouse (SISTEMA DE ZOOM):
+        this.pixiApp.canvas.addEventListener("wheel", (event) => {
+      		event.preventDefault(); // Prevenir el scroll de la página (esto es una función predefinida, como el keysdown o el gameloop).
+
+      		const zoomDelta = event.deltaY > 0 ? -this.zoomStep : this.zoomStep; //si el delta en Y es mayor a 0, entonces los pasos de zoom negativos son los que ya han sido seteados.
+            const nuevoZoom = Math.max(
+                this.minZoom,
+                Math.min(this.maxZoom, this.zoom + zoomDelta)
+      		); //el nuevo zoom devuelve el valor máximo entre el valor más pequeño al que puede llegar el zoom y el mínimo entre el valor más alto del zoom y el zoom actual sumado al zoom delta.
+
+                if (nuevoZoom !== this.zoom) { 
+                // Si este nuevo zoom no devuelve el mismo valor, entonces:
+        		// Obtienes la posición del mouse antes del zoom
+                const mouseX = event.x;
+                const mouseY = event.y;
+
+        		// Se calcula el punto en coordenadas del mundo antes del zoom:
+                const worldPosX = (mouseX - this.containerPrincipal.x) / this.zoom;
+                const worldPosY = (mouseY - this.containerPrincipal.y) / this.zoom;
+
+        		// Se aplica el nuevo zoom:
+                this.zoom = nuevoZoom;
+                this.containerPrincipal.scale.set(this.zoom);
+
+        		// Y se ajustar la posición del contenedor para mantener el mouse en el mismo punto del mundo.
+        		this.containerPrincipal.x = mouseX - worldPosX * this.zoom;
+        		this.containerPrincipal.y = mouseY - worldPosY * this.zoom;
+            }
+        });
     }
 
     convertirCoordenadaDelMouse(mouseX, mouseY) {
@@ -161,6 +197,13 @@ class Juego {
             x: (mouseX - this.containerPrincipal.x) / this.zoom,
             y: (mouseY - this.containerPrincipal.y) / this.zoom,
         };
+    }
+
+    cambiarZoom(zoom) {
+	    //El zoom se modifica según el valor que se le pase por parámetro:
+        this.zoom = zoom;
+	    //Y este cambio se pasa a la escala general del mapa:
+        this.containerPrincipal.scale.set(this.zoom);
     }
 
     //FUNCIONES GENERADORAS DE LA INTERFAZ DE USUARIO:
@@ -482,13 +525,44 @@ class Juego {
     moverContainerPrincipalA(x, y) {
         this.containerPrincipal.x = x;
         this.containerPrincipal.y = y;
-        //this.fondo.x = x;
-        //this.fondo.y = y;
-        // this.fondo.x = x; //para que el tilemap tmb se mueva (a verificar) 
-        // this.fondo.y = y; //x2.
     }
 
+    hacerQueLaCamaraSigaAlTargetConZOOM() { //NO SIGUE AL TARGET, PERO SI FUNCIONA EL ZOOM
+        //Revisar condiciones vitales para su correcto funcionamiento:
+        if (!this.targetCamara) return;
+        if (!this.puedeJugar) return;
 
+        //Setear las posiciones máximas para la cámara:
+        
+        //Máximas posiciones de la cámara en X:
+        const maxPosCamaraXDer = (this.anchoFondo/2) - (this.width/2); 
+        const maxPosCamaraXIzq = this.width / 2;
+        
+        //Máxima posición de la cámara en Y (sirve tanto para arriba como para abajo:
+        const maxPosCamaraY = this.height / 2;
+
+        //Consultar sus límites y cortar el flujo de dicha función en caso de cumplirlas:
+        
+        //Si supera el máximo en x:
+        if(this.targetCamara.posicion.x < maxPosCamaraXIzq || this.targetCamara.posicion.x > maxPosCamaraXDer) return;
+        
+        //Si supera el máximo en y:
+        // if(this.targetCamara.posicion.y < maxPosCamaraY || this.targetCamara.posicion.y > maxPosCamaraY) return;
+        
+        //Calcular la posición del target con respecto a la pantalla:
+        let posTargetX = - this.targetCamara.posicion.x * this.zoom + this.width / 2;
+        let posTargetY = - this.targetCamara.posicion.y  * this.zoom + this.height / 2;
+
+        //Se iguala a la del container principal:
+        const x = (posTargetX - this.containerPrincipal.x) * 0.1;
+        const y = (posTargetY - this.containerPrincipal.y) * 0.1;
+        
+        //Y se los pasa como parámetros para que se ejecuten dentro del código:
+        this.moverContainerPrincipalA(
+            this.containerPrincipal.x + x,
+            this.containerPrincipal.y + y
+        );
+    }
 
 
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
@@ -986,6 +1060,7 @@ class Juego {
             this.actualizarVisibilidadDePoderActual();
             this.asignarJugadorComoTargetDeCamara();
             this.hacerQueLaCamaraSigaAlTarget();
+            // this.hacerQueLaCamaraSigaAlTargetConZOOM();
         }
     }
 }
