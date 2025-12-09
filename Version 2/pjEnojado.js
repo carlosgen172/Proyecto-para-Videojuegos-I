@@ -26,9 +26,9 @@ class PjEnojado extends Estado {
         // dueño.ultimoGolpe = performance.now();
     }
 
-
     evaluarCambioDeEstado() {
         const dueño = this.dueño;
+        dueño.tengoAlgunEnemigoAdelante = false;
         //este for busca el enemigo más cercano y lo asigna como target (si es que existe):
         for (const objetoDeLista of dueño.obtenerLista()) {
             dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
@@ -51,7 +51,6 @@ class PjEnojado extends Estado {
             dueño.fsm.setear("Jugador_Marchante");
             return;
         }
-
     }
 
     update() { //actualiza el estado del pj

@@ -18,7 +18,8 @@ class Juego {
     balas = [];
     puedeJugar = false;
     juegoPerdido = false;
-    cantEnemigosMinimaEnPantalla = 10;
+    cantEnemigosMinimaEnPantalla = 100;
+    cantAliadosMinimaPorGeneracion = 2;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
@@ -238,7 +239,7 @@ class Juego {
             MUY IMPORTANTE:
             ¿Cómo saber si tengo que añadir la instancia al stage o al containerPrincipal?:
 
-            Simple, cuando uno requiere que un objeto sea estático, osease, que este mismo 
+            Simple, cuando uno requiere que un objeto fijo en pantalla, osease, que este mismo 
             se quede fijo en pantalla sin sufrir movimiento por la cámara, entonces ahí el 
             mismo será añaddido al stage (elementos del HUD irán acá seguramente); En cambio, 
             cuando uno quiera que el objeto se vea influenciado por el movimiento de la cámara, 
@@ -638,9 +639,9 @@ class Juego {
     }
 
     async generarTropas() {
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < this.cantAliadosMinimaPorGeneracion; i++) {
             const visionRandom = Math.floor(Math.random() * 100 + 150)
-            const posX = -10
+            const posX = this.jugador.posicion.x - this.width / 2;
             // const posX = this.containerPrincipal.x - (10 + (this.width / 2));
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const aliadoNuevo = new Aliado(
@@ -674,7 +675,7 @@ class Juego {
         for (let i = 0; i < 1; i++) {
             //se suma +100  
             const visionRandom = Math.floor(Math.random() * 100 + 150)
-            const posX = this.width - 10
+            const posX = this.jugador.posicion.x + this.width / 2;
             //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const enemigoNuevo = new Enemigo(
@@ -939,19 +940,26 @@ class Juego {
             lugar el else if de abajo con el de arriba de esta nota.
         */
         else if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
+            //puede cambiar la pantalla pasando el mouse por encima
+            this.menu.puedeCambiarPasandoMousePorArriba = true;
+            
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
-            this.matarATodosLosAliadosYEnemigos();
+            this.matarATodos();
             this.resetearPuntaje();
             this.textos.moverAtras();
             this.textos.acomodarPosicionYTamañoDeTextoEnemigosAbatidos();
         }
         else if (this.menu.pantallaActual.texture == this.pantallas[1]) {
+
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[0].container.x = this.width - 515;
             this.botones[2].container.x = this.width - 515;
             this.botones[2].container.y = this.height - 90;
         }
         else if (this.menu.pantallaActual.texture == this.pantallas[4]) { //si la pantalla es el menu de PAUSA
+            //para que no se cambie al pasar el mouse por encima
+            this.menu.puedeCambiarPasandoMousePorArriba = false;
+
             //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[1].ocultarBoton();
@@ -966,6 +974,9 @@ class Juego {
             }
         }
         else if (this.menu.pantallaActual.texture == this.pantallas[5]) { //si la pantalla es GAME OVER
+            //para que no se cambie al pasar el mouse por encima
+            this.menu.puedeCambiarPasandoMousePorArriba = false;
+
             //se configuran los botones a aparecer
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[0].ocultarBoton();
@@ -984,12 +995,15 @@ class Juego {
                 enemigo.llevarAlFondo();
             }
         }
-        else { //sino, aparecer todos los botones en las demas pantallas del menu
+        else {
+            //sino, puede cambiar la pantalla pasando el mouse por encima
+            this.menu.puedeCambiarPasandoMousePorArriba = true;
+            //aparecer todos los botones en las demas pantallas del menu
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
         }
     }
 
-    matarATodosLosAliadosYEnemigos() {
+    matarATodos() {
         for (const aliado of this.aliados) {
             aliado.morir();
         }
@@ -997,6 +1011,9 @@ class Juego {
         for (const enemigo of this.enemigos) {
             enemigo.morir();
         }
+
+        if (this.jugador == null) return;
+        this.jugador.morir();
     }
 
     resetearPuntaje() {

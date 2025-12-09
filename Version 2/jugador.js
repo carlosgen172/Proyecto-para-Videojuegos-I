@@ -45,8 +45,6 @@ class Jugador extends ObjetoDinamico {
         }
     }
 
-    
-
     //SISTEMA DE SEPARACIÓN:
     separacion() {
         /*

@@ -1,6 +1,6 @@
 class BalaMejorada extends GameObject {
     radioColision;
-    delayMuerte = 3000; //tiempo que se calcula para la desaparición automática de la bala. :J
+    delayMuerte = 2000; //tiempo que se calcula para la desaparición automática de la bala. :J
     constructor(x, y, juego, width, height, velocidad, scaleX, personaQueEfectuoDisparo) {
         super(x, y, juego);
         this.posicion = { x: x, y: y };
@@ -10,7 +10,7 @@ class BalaMejorada extends GameObject {
         this.estoyMuerto = false;
 
         //Radio de colision para el sistema de colisiones y de daño:
-        this.radioColision = this.height * 2;
+        this.radioColision = 32;
 
         //Velocidad y aceleración:
         this.velocidad = { x: velocidad, y: velocidad }; // Velocidad en píxeles/frame
@@ -325,7 +325,8 @@ class BalaMejorada extends GameObject {
     //cada tick se efectua en la clase juego en el método realizarTickPorCadaBala()
     // llamado desde el tick principal del objeto.
     tick() {
-        this.verificarSiMori();
+        //this.verificarSiMori();
+        if(this.estoyMuerto) return;
         this.salirPropulsado();
         this.haColisionadoConAlguien();
         this.render();

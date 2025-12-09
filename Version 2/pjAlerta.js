@@ -1,4 +1,4 @@
-class PjAlerta extends Estado {
+class PjAlerta extends Estado { 
     enter() { //setea la animación de ataque y resetea el cooldown
         if (!this.dueño) return;
         if (this.dueño.estoyMuerto) return;
@@ -24,6 +24,7 @@ class PjAlerta extends Estado {
 
     evaluarCambioDeEstado() {
         const dueño = this.dueño;
+        dueño.tengoAlgunEnemigoAdelante = false;
         //este for busca el enemigo más cercano y lo asigna como target (si es que existe):
         for (const objetoDeLista of dueño.obtenerLista()) {
             dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)
@@ -56,6 +57,8 @@ class PjAlerta extends Estado {
         if (this.dueño.estoyMuerto) return;
 
         this.evaluarCambioDeEstado();
+
+        //dueño.aceleracion.x = dueño.direccionDeAvance();
 
         //le agrego un boost de velocidad al enemigo actual
         let boostVelocidad = 0;

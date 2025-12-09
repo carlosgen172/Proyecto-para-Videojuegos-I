@@ -10,7 +10,7 @@ class ObjetoDinamico extends GameObject {
     fuerza;
     tengoAlgunEnemigoAdelante;
     enemigoMasCerca;
-    
+
 
     //CONSTRUCTOR/INICIADOR:
 
@@ -281,7 +281,7 @@ class ObjetoDinamico extends GameObject {
             this.cambiarAnimacion("morir", false);
             eliminarElElemento_DeLaLista_(this, this.juego.enemigos);
 
-            //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
+            //después de 1 segundos, remover el contenedor y destruirlo para liberar memoria
             setTimeout(() => {
                 this.container.visible = false;
                 this.container.parent.removeChild(this.container);
@@ -291,13 +291,13 @@ class ObjetoDinamico extends GameObject {
                     baseTexture: false
                 });
                 this.container = null;
-            }, 2000);
+            }, 1000);
         }
         else if (this.constructor.name == "Aliado") {
             this.cambiarAnimacion("morir", false);
             eliminarElElemento_DeLaLista_(this, this.juego.aliados);
 
-            //después de 2 segundos, remover el contenedor y destruirlo para liberar memoria
+            //después de 1 segundos, remover el contenedor y destruirlo para liberar memoria
             setTimeout(() => {
                 this.container.visible = false;
                 this.container.parent.removeChild(this.container);
@@ -307,10 +307,22 @@ class ObjetoDinamico extends GameObject {
                     baseTexture: false
                 });
                 this.container = null;
-            }, 2000);
+            }, 1000);
         }
         else if (this.constructor.name == "Jugador") {
             this.cambiarAnimacion("morir", false);
+
+            //después de 1 segundos, remover el contenedor y destruirlo para liberar memoria
+            setTimeout(() => {
+                this.container.visible = false;
+                this.container.parent.removeChild(this.container);
+                //console.log("se ha removido el contenedor", this.container);
+                this.container.destroy({
+                    texture: false,
+                    baseTexture: false
+                });
+                this.container = null;
+            }, 1000);
         }
 
         else if (this.constructor.name == "Avion") {
@@ -422,10 +434,10 @@ class ObjetoDinamico extends GameObject {
     //LIMITES DE PANTALLA
     verificacionDeLimites() {
         if (this.estoyMuerto) return;
-    
+
         let puedeSepararse = false;
 
-        if(esEntre(this.posicion.y, this.limiteSuperior, this.limiteInferior)) {
+        if (esEntre(this.posicion.y, this.limiteSuperior, this.limiteInferior)) {
             puedeSepararse = true;
         }
         else {

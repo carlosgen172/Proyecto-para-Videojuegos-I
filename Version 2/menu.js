@@ -6,6 +6,7 @@ class Menu extends GameObject {
     height;
     sprite;
     pantallaActual;
+    puedeCambiarPasandoMousePorArriba = true;
 
     presentacionTextual = [
         'LIBERTY',

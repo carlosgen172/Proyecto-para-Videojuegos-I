@@ -22,7 +22,7 @@ class PjMarchante extends Estado {
 
     evaluarCambioDeEstado() {
         const dueño = this.dueño;
-
+        dueño.tengoAlgunEnemigoAdelante = false;
         //este for busca el enemigo más cercano y lo asigna como target (si es que existe):
         for (const objetoDeLista of dueño.obtenerLista()) {
             dueño.distanciaDeEnemigoEnX = calcularDistanciaEnX(dueño.posicion, objetoDeLista.posicion)

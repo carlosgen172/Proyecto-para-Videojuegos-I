@@ -125,7 +125,6 @@ class BotonMenu extends Boton {
                 this.juego.menu.ocultarPantalla();
                 this.ocultarTodosLosBotones(this.juego.botones)
                 this.juego.puedeJugar = true;
-                this.juego.start();
             }, 250)
         }
         else if (this.juego.menu.pantallaActual.texture == this.juego.pantallas[5] && this.pantallaDestino == 3) {
@@ -143,7 +142,13 @@ class BotonMenu extends Boton {
         this.sprite.tint = 0xBBBBBB;
         // this.style.cursor = 'pointer';
         //cambiar solo a la pantalla asignada a este boton (CAMBIO DE MENSAJE)
-        if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[5]) {
+        // if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[4]) {
+        //     this.juego.menu.cambiarPantalla(this.pantallaDestino);
+        // }
+        // else if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[5]) {
+        //     this.juego.menu.cambiarPantalla(this.pantallaDestino);
+        // }
+        if (this.juego.menu.puedeCambiarPasandoMousePorArriba) {
             this.juego.menu.cambiarPantalla(this.pantallaDestino);
         }
     }
