@@ -36,9 +36,6 @@ class BotonMenu extends Boton {
 
         //se guarda el tinte/opacidad original para luego modificarlo
         this.tintOriginal = this.sprite.tint;
-
-        //variable bandera
-        //this.cambioRealizado = false;
     }
 
     async generarSpriteDe(unSprite) {
@@ -59,9 +56,6 @@ class BotonMenu extends Boton {
         this.sprite.zIndex = 1100;
         this.container.addChild(this.sprite);
         this.juego.pixiApp.stage.addChild(this.container);
-        //este console log sirve para ver cuántos hijos hay en el stage antes y después de agregar el sprite
-        //console.log("Stage children después:", this.juego.pixiApp.stage.children.length);
-
     }
 
     //IMPORTANTE: leer para entender el funcionamiento de los botones
@@ -140,14 +134,6 @@ class BotonMenu extends Boton {
 
     onHover() {
         this.sprite.tint = 0xBBBBBB;
-        // this.style.cursor = 'pointer';
-        //cambiar solo a la pantalla asignada a este boton (CAMBIO DE MENSAJE)
-        // if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[4]) {
-        //     this.juego.menu.cambiarPantalla(this.pantallaDestino);
-        // }
-        // else if (this.juego.menu.pantallaActual.texture !== this.juego.pantallas[5]) {
-        //     this.juego.menu.cambiarPantalla(this.pantallaDestino);
-        // }
         if (this.juego.menu.puedeCambiarPasandoMousePorArriba) {
             this.juego.menu.cambiarPantalla(this.pantallaDestino);
         }
@@ -155,7 +141,6 @@ class BotonMenu extends Boton {
 
     onOut() {
         this.sprite.tint = this.tintOriginal;
-        // this.style.cursor = 'auto';
     }
 
     cambiarDeEsteBotonA(unBoton) {

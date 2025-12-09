@@ -17,23 +17,28 @@ class ObjetoDinamico extends GameObject {
     constructor(x, y, juegoPrincipal, width, height) {
         super(x, y, juegoPrincipal);
         this.posicion = { x: x, y: y };
+
         this.width = width;
         this.height = height;
+
         this.vida = 100;
-        //this.fuerza = 10;
-        // this.delayAtaque = 100;
-        this.delayAtaque = 1000;
+
+
+
         this.nivelesDeIra = [1, 2, 3, 4, 5]
         this.nivelDeIraReal = seleccionarElementoAleatorioDe_(this.nivelesDeIra)
+
         this.estoyMuerto = false;
-        // this.ultimoGolpe = 0;
+
+        this.delayAtaque = 1000;
         this.ultimoDisparo = 0;
+
         this.tengoAlgunEnemigoAdelante = false;
         this.enemigoMasCerca = null;
 
         this.container = new PIXI.Container();
         this.container.name = this.constructor.name;
-        // this.juego.pixiApp.stage.addChild(this.container);
+
         this.juego.containerPrincipal.addChild(this.container);
     }
 
@@ -95,16 +100,6 @@ class ObjetoDinamico extends GameObject {
         return sheet;
     }
 
-    /*
-    generarSpriteDe(unSprite) {
-        //Aún no se genera un sprite
-    }
-    */
-
-    // generarAreaDeColision() {
-    //     //Aun no se genera nada.
-    // }
-
     separacion() {
         //Aún no se genera ninguna lógica.
     }
@@ -117,7 +112,6 @@ class ObjetoDinamico extends GameObject {
 
     pegar(unEnemigo) {
         if (!this.puedeGolpear()) return;
-        // this.cambiarAnimacion("atacar", true);
         unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
         this.ultimoGolpe = performance.now();
     }
@@ -127,13 +121,8 @@ class ObjetoDinamico extends GameObject {
     }
 
     recibirDañoDe(unEnemigo) {
-        // if (!this.verificarSiEstoyMuerto()) {
-        //if (!this.estoyMuerto()) {
         if (this.estoyMuerto) return;
-        // this.vida -= unEnemigo.verCuantaFuerzaTengo()
-        //this.vida = (this.vida - unEnemigo.verCuantaFuerzaTengo()).max(0)
         this.vida = Math.max(this.vida - unEnemigo.verCuantaFuerzaTengo(), 0)
-        //}
     }
 
     recibirDaño() {
@@ -145,15 +134,10 @@ class ObjetoDinamico extends GameObject {
         return (performance.now() > this.delayAtaque + this.ultimoDisparo);
     }
 
-    // dispararA(unEnemigo) {
     dispararAEnemigo() {
         if (!this.puedoDisparar()) return;
-        // this.cambiarAnimacion("atacar",  true);
 
         this.juego.realizarDisparo(this);
-        // if (this.balaActual.haColisionadoConAlguien()) {
-        //     unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
-        // }
         this.ultimoDisparo = performance.now();
     }
 
@@ -161,67 +145,12 @@ class ObjetoDinamico extends GameObject {
         console.log("Hay que poner esto dentro de las subclases.");
     }
 
-    // realizarDisparo() {
-    //     let balaActual = new BalaMejorada(
-    //         (this.posicion.x /2), //posición en x
-    //         (this.posicion.y /2) - (this.width/2), //posición en y
-    //         this.juego, //juego.
-    //         8, //ancho.
-    //         8, //alto.
-    //         0.7, //velocidad.
-    //         1, //escala en x.
-    //         this //persona que efectuo el disparo.
-    //     );
-    //     // this.balas.push(this.balaActual);
-    //     this.balas.push(balaActual);
-    // }
-
-    // realizarTickPorCadaBala() {
-    //     for (let bala of this.balas) {
-    //         bala.tick();
-    //     }
-    // }
-
     direccionDeAvance() {
         console.log("Debe poner la dirección de avance en la subclase.");
     }
 
     obtenerLista() {
         throw new Error("Poner una lista a usar en el método obtenerLista() de la subclase.");
-    }
-
-    //esta funcion elige si avanzar o atacar segun si hay un enemigo cerca
-    decidirAtacarOAvanzar() {
-        //este for busca el enemigo más cercano y lo asigna como target
-        for (const objetoDeLista of this.obtenerLista()) {
-            const distanciaDeEnemigoEnX = calcularDistanciaEnX(this.posicion, objetoDeLista.posicion)
-            const distanciaDeEnemigoEnY = calcularDistanciaEnY(this.posicion, objetoDeLista.posicion)
-            if (distanciaDeEnemigoEnX < this.radioVision && distanciaDeEnemigoEnY < 50) {
-                this.tengoAlgunEnemigoAdelante = true;
-                this.enemigoMasCerca = objetoDeLista;
-                break;
-            }
-        }
-
-        //este condicional sirve para decidir si avanzar o atacar
-        if (!this.tengoAlgunEnemigoAdelante && !this.estoyMuerto) {
-            this.aceleracion.x = this.direccionDeAvance();
-        }
-        else if (this.tengoAlgunEnemigoAdelante && !this.estoyMuerto) {
-            //if(enemigoMasCerca.verificarSiMori()) return;
-            //this.cambiarAnimacion("atacar") //ataca, pero se queda colgado con un error en la visibilidad del sprite.
-
-            this.aceleracion.x = 0;
-            this.pegar(this.enemigoMasCerca);
-            this.dispararA(this.enemigoMasCerca);
-
-            this.cambiarAnimacion("atacar", false)
-            this.cambiarAnimacion("correr", true);
-
-            //la entidad golpea hasta que el enemigo muere, luego vuelve a avanzar
-            this.tengoAlgunEnemigoAdelante = false;
-            this.enemigoMasCerca = null;
-        }
     }
 
     //ACTUALIZACION DE LA POSICION:
@@ -269,7 +198,6 @@ class ObjetoDinamico extends GameObject {
             //aca no pasan dos segundos porque sino hay un error en la animacion de la bateria
             this.container.visible = false;
             this.container.parent.removeChild(this.container);
-            //console.log("se ha removido el contenedor", this.container);
             this.container.destroy({
                 texture: false,
                 baseTexture: false
@@ -285,7 +213,6 @@ class ObjetoDinamico extends GameObject {
             setTimeout(() => {
                 this.container.visible = false;
                 this.container.parent.removeChild(this.container);
-                //console.log("se ha removido el contenedor", this.container);
                 this.container.destroy({
                     texture: false,
                     baseTexture: false
@@ -301,7 +228,6 @@ class ObjetoDinamico extends GameObject {
             setTimeout(() => {
                 this.container.visible = false;
                 this.container.parent.removeChild(this.container);
-                //console.log("se ha removido el contenedor", this.container);
                 this.container.destroy({
                     texture: false,
                     baseTexture: false
@@ -316,7 +242,6 @@ class ObjetoDinamico extends GameObject {
             setTimeout(() => {
                 this.container.visible = false;
                 this.container.parent.removeChild(this.container);
-                //console.log("se ha removido el contenedor", this.container);
                 this.container.destroy({
                     texture: false,
                     baseTexture: false

@@ -54,7 +54,7 @@ class Aliado extends ObjetoDinamico {
         this.fsm.setear('Jugador_Marchante');
 
         //(Extra) Se genera un nombre aleatorio para el pj:
-        this.generarNombreAleatorio();
+        //this.generarNombreAleatorio();
     }
 
     listaDeSpritessheetsDisponibles() {

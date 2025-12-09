@@ -1,10 +1,13 @@
 class Juego {
+    //Caracteristicas del juego
     pixiApp;
     width;
     height;
     fondo;
     hud;
     jugador;
+
+    //Listas
     aliados = [];
     enemigos = [];
     enemigosMuertos = [];
@@ -16,15 +19,18 @@ class Juego {
     pantallas = [];
     botones = [];
     balas = [];
+
+    //Booleanos
     puedeJugar = false;
     juegoPerdido = false;
-    cantEnemigosMinimaEnPantalla = 100;
+
+    //Controladores de la generacion de personajes
+    keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
+    cantEnemigosMinimaEnPantalla = 20;
     cantAliadosMinimaPorGeneracion = 2;
     poderActual;
-    keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
-    //poderes = [1, 2, 3];
-    nombres = ["Angel", "Arturo", "Ariel", "Elian", "Federico", "Juan", "Jose", "Joseías", "Marcos", "Mauricio", "Lionel", "Omar"]
-    apellidos = ["Aguiar", "Bautista", "Jose", "Potter", "Rodriguez", "Villalva", "Zapata"]
+
+    //Configuraciones del mapa
     anchoFondo = 5000;
     altoFondo = 2000;
 
@@ -57,34 +63,28 @@ class Juego {
         globalThis.__PIXI_APP__ = this.pixiApp; //para extension de navegador
         await this.pixiApp.init(preconfiguraciones);
 
+        //Centrado del canvas en la pagina
         document.body.style.display = "flex";
         document.body.style.justifyContent = "center";
         document.body.style.alignItems = "center";
         document.body.style.height = "100vh";
         document.body.style.margin = "0";
-
         this.pixiApp.renderer.canvas.style.position = "absolute";
 
         document.body.appendChild(this.pixiApp.canvas);
 
-        this.pixiApp.stage.eventMode = "static";
-
+        //this.pixiApp.stage.eventMode = "static";
 
         //Generación de container:
         this.containerPrincipal = new PIXI.Container();
         this.containerPrincipal.name = this.constructor.name;
         this.pixiApp.stage.addChild(this.containerPrincipal);
 
+        //Carga de elementos
         await this.cargarBackground();
-        await this.crearGenerador();
-        //await this.generarMouse();
-
         await this.cargarSprites();
 
-
-
-        //this.poderes = [];
-        //await this.generarAvion();
+        //Generacion de elementos
         await this.generarBotonesDelHUD();
         await this.generarFondoHUD();
         await this.generarMenu();
@@ -99,40 +99,29 @@ class Juego {
         this.poderActual = this.poderes[0];
 
         this.agregarInteractividadDelMouse();
+
+        //Agregado del gameLoop principal
         this.pixiApp.ticker.add(this.gameLoop.bind(this));
 
+        //Agregado de interaccion con el teclado
         window.addEventListener("keydown", this.keysDown.bind(this));
         window.addEventListener("keyup", this.keysUp.bind(this));
     }
 
+    //Funcion para generar al jugador sin problemas
     async start() {
         await this.generarJugador();
-        // this.asignarJugadorComoTargetDeCamara();
         if (this.jugador !== null) {
             await this.jugador.start();
-            // this.asignarJugadorComoTargetDeCamara();
             this.personas.push(this.jugador);
         }
-
-    }
-
-    //GENERADOR (AÚN EXPERIMENTAL):
-    async crearGenerador() {
-        this.generadorPrincipal = new Generador(
-            0,
-            0,
-            this.pixiApp,
-            this
-        )
     }
 
     //FUNCIONES DEL MOUSE:
 
     async generarMouse() {
         //aquí se genera el mouse.
-        //this.mouse = new Mouse { ancho, alto, x, y, color}
         const texture = await PIXI.Assets.load("imagenes/posible_puntero.png");
-        //this.textureMouse2 = await PIX.Assets.load("imagenes/posible_puntero_2.png")
         this.mouse = new Mouse(
             32,
             32,
@@ -156,7 +145,6 @@ class Juego {
         this.pixiApp.canvas.onmouseup = (event) => {
             this.mouse.up = this.convertirCoordenadaDelMouse(event.x, event.y);
             this.mouse.apretado = false;
-            //this.menu.realizarPresentacion()
         }
 
         // Event listener para la rueda del mouse (SISTEMA DE ZOOM):
@@ -194,8 +182,6 @@ class Juego {
         // Convertir coordenadas del mouse del viewport a coordenadas del mundo
         // teniendo en cuenta la posición y escala del containerPrincipal
         return {
-            //x: (mouseX - this.juego.canvas.data.global.x) / this.zoom,
-            //y: (mouseY - this.juego.canvas.data.global.y) / this.zoom,
             x: (mouseX - this.containerPrincipal.x) / this.zoom,
             y: (mouseY - this.containerPrincipal.y) / this.zoom,
         };
@@ -221,19 +207,10 @@ class Juego {
         //Ajuste de punto central
         this.fondo.anchor.set(0.5);
 
-        //Ajuste de ubicacion
-        // this.fondo.x = this.width / 2
-        // this.fondo.y = this.height / 2
-
         //Ajuste de tamaño
-        // this.fondo.width = this.width;
-        // this.fondo.height = this.height;
         this.fondo.width = this.anchoFondo;
         this.fondo.height = this.altoFondo;
         this.fondo.tileScale.set(1);
-
-        // Añade el Sprite al escenario para que se muestre en pantalla
-        // this.pixiApp.stage.addChild(this.fondo);
 
         /*
             MUY IMPORTANTE:
@@ -254,12 +231,8 @@ class Juego {
 
     }
 
+    //Generacion del menu con sus botones
     async generarMenu() {
-        //TEXTURAS
-        //Pantallas
-
-        //Botones
-
         this.menu = new Menu(
             this.width / 2,
             this.height / 2,
@@ -311,6 +284,18 @@ class Juego {
         )
         await this.botonVolver.init();
 
+        this.botonMasInfo = new BotonMenu(
+            this.width - 608, //x
+            this.height - 422, //y
+            this,
+            180,
+            64,
+            this.secuenciaBotonMasInfo,
+            5
+        )
+
+        await this.botonMasInfo.init();
+
         const listaBotonesMenu = [
             this.botonSeguir,
             this.botonNueva,
@@ -322,37 +307,11 @@ class Juego {
 
 
 
-    async generarFondoHUD() {
-        // Carga la imagen usando Assets.load()
-        // Esto devuelve una Promise que resuelve la Textura de la imagen
-        const texture = await PIXI.Assets.load('imagenes/hud_1.png'); // Reemplaza con la ruta de tu imagen
-
-        // Crea un Sprite a partir de la Textura cargada
-        this.hud = new PIXI.Sprite(texture);
-
-        //Ajuste de punto central
-        this.hud.anchor.set(0.5);
-
-
-        //Ajuste de ubicacion
-        this.hud.x = this.width / 2
-        this.hud.y = 25
-
-        //Ajuste de tamaño
-        this.hud.width = 700;
-        this.hud.height = 50;
-
-        this.hud.zIndex = 1;
-
-        // Añade el Sprite al escenario para que se muestre en pantalla
-        this.pixiApp.stage.addChild(this.hud);
-    }
-
+    //Generadores de poderes
     async generarPoderAliados() {
         const texturaPoderAliados = await PIXI.Assets.load("imagenes/aliados_power_up_hud_corregido.png");
 
         const poderAliados = new Poder(
-            //configPoder
             50,
             50,
             this.width / 2,
@@ -420,6 +379,32 @@ class Juego {
         }
     }
 
+    //Generadores de elementos del HUD
+    async generarFondoHUD() {
+        // Carga la imagen usando Assets.load()
+        // Esto devuelve una Promise que resuelve la Textura de la imagen
+        const texture = await PIXI.Assets.load('imagenes/hud_1.png'); // Reemplaza con la ruta de tu imagen
+
+        // Crea un Sprite a partir de la Textura cargada
+        this.hud = new PIXI.Sprite(texture);
+
+        //Ajuste de punto central
+        this.hud.anchor.set(0.5);
+
+        //Ajuste de ubicacion
+        this.hud.x = this.width / 2
+        this.hud.y = 25
+
+        //Ajuste de tamaño
+        this.hud.width = 700;
+        this.hud.height = 50;
+
+        this.hud.zIndex = 1;
+
+        // Añade el Sprite al escenario para que se muestre en pantalla
+        this.pixiApp.stage.addChild(this.hud);
+    }
+
     async generarBotonesDelHUD() {
         const texturaDer = await PIXI.Assets.load("imagenes/hevilla_der_final_real.png");
         const texturaDerPres = await PIXI.Assets.load("imagenes/hevilla_der_pres_final_real.png");
@@ -481,11 +466,19 @@ class Juego {
         await this.textos.crearTextos();
     }
 
+    //Responsividad del HUD
+    actualizarVisibilidadDePoderActual() {
+        this.poderesNoActuales = this.poderes.filter((p) => p != this.poderActual)
+        this.poderesNoActuales.forEach(p => {
+            p.sprite.visible = false
+        });
+        this.poderActual.sprite.visible = true;
+    }
+
     //FUNCIONES RESPECTIVAS A LA CÁMARA:
 
     asignarJugadorComoTargetDeCamara() {
         if (!this.jugador) return;
-        // if (!this.fondo) return;
         this.targetCamara = this.jugador;
     }
 
@@ -503,25 +496,15 @@ class Juego {
 
         //Ajustamos la cámara según la posición de la cámara según la del jugador:
         let posTargetX = -this.targetCamara.posicion.x + this.width / 2; //esto traduce la ubicación del jugador a la misma (en negativo para que inicie que esta misma  siempre se encontrará más atras de la mitad de la posición central) según la posición total de la pantalla más la mitad de la misma, dejándolo justo en el centro de la misma.
-        // let posTargetY = -this.targetCamara.posicion.x + this.width / 2; //lo mismo, pero en el punto y, eso si, ya que la cámara no se podrá mover de arriba a abajo se ve innceserario esta adición.
 
         //Por último, se iguala y pasa la posición recabada del target a la del container principal/cámara:
         const x = (posTargetX - this.containerPrincipal.x) * 0.1;
-        // const y = (posTargetY - this.containerPrincipal.y) * 0.1;
-
 
         //Pasa dichos valores para el container principal, el cual pregunta su valor actual más la suma de este en x, mientras que en y no lo hace (siempre va a ser el mismo).
         this.moverContainerPrincipalA(
             this.containerPrincipal.x + x,
             this.containerPrincipal.y //se pone el mismo valor del container ya que este no va a ser modificado por ningún factor externo (pos del jugador, variable, etc.) excepto por sí mismo (osease, nunca va a cambiar.
         );
-
-        //Función resumida (funciona igual que la de arriba, si se quiere se puede probar para ver cambios/diferencias más detalladas):
-        // this.containerPrincipal.x = -this.targetCamara.posicion.x + this.width / 2;
-        // this.containerPrincipal.y = -this.targetCamara.posicion.y + this.height / 2;
-
-        // console.log(this.containerPrincipal.x);
-        // console.log(this.containerPrincipal.y);
     }
 
     moverContainerPrincipalA(x, y) {
@@ -529,46 +512,9 @@ class Juego {
         this.containerPrincipal.y = y;
     }
 
-    hacerQueLaCamaraSigaAlTargetConZOOM() { //NO SIGUE AL TARGET, PERO SI FUNCIONA EL ZOOM
-        //Revisar condiciones vitales para su correcto funcionamiento:
-        if (!this.targetCamara) return;
-        if (!this.puedeJugar) return;
-
-        //Setear las posiciones máximas para la cámara:
-
-        //Máximas posiciones de la cámara en X:
-        const maxPosCamaraXDer = (this.anchoFondo / 2) - (this.width / 2);
-        const maxPosCamaraXIzq = this.width / 2;
-
-        //Máxima posición de la cámara en Y (sirve tanto para arriba como para abajo:
-        const maxPosCamaraY = this.height / 2;
-
-        //Consultar sus límites y cortar el flujo de dicha función en caso de cumplirlas:
-
-        //Si supera el máximo en x:
-        if (this.targetCamara.posicion.x < maxPosCamaraXIzq || this.targetCamara.posicion.x > maxPosCamaraXDer) return;
-
-        //Si supera el máximo en y:
-        // if(this.targetCamara.posicion.y < maxPosCamaraY || this.targetCamara.posicion.y > maxPosCamaraY) return;
-
-        //Calcular la posición del target con respecto a la pantalla:
-        let posTargetX = - this.targetCamara.posicion.x * this.zoom + this.width / 2;
-        let posTargetY = - this.targetCamara.posicion.y * this.zoom + this.height / 2;
-
-        //Se iguala a la del container principal:
-        const x = (posTargetX - this.containerPrincipal.x) * 0.1;
-        const y = (posTargetY - this.containerPrincipal.y) * 0.1;
-
-        //Y se los pasa como parámetros para que se ejecuten dentro del código:
-        this.moverContainerPrincipalA(
-            this.containerPrincipal.x + x,
-            this.containerPrincipal.y + y
-        );
-    }
-
-
     //FUNCIONES GENERADORAS DE NPCS Y ELEMENTOS RESPONSIVOS:
 
+    //Generacion de sprites
     async cargarSprites() {
         this.spritesheetsAliados = await Promise.all([
             PIXI.Assets.load("imagenes/Aliados/antiTank/json/texture.json"),
@@ -616,36 +562,35 @@ class Juego {
             PIXI.Assets.load("imagenes/menu/boton_volver.png"),
             PIXI.Assets.load("imagenes/menu/boton_volver_pres.png")
         ])
+
+        this.secuenciaBotonMasInfo = await Promise.all([
+            PIXI.Assets.load("imagenes/menu/boton_mas_info.png"),
+            PIXI.Assets.load("imagenes/menu/boton_mas_info_pres.png")
+        ])
     }
 
     async generarJugador() {
         const posX = this.width / 2;
         const posY = this.height / 2;
         this.jugador = new Jugador(
-            //posXRandom, //posición x
             posX, //posición x
             posY, //posición y
             this, //juego
             32, //ancho
             32, //alto
             15, //radio de colisión
-            20, //radio de visión
             0.5, //velocidad
             0.1, //aceleración
-            2, //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
+            2 //escala en x (puede eliminarse si se quiere, no cambia ni agrega mucho)
         )
-        this.jugador.container.zIndex = 1;
-        console.log("el jugador es visible ", this.jugador.container.visible, "tiene su zIndex en ", this.jugador.container.zIndex)
     }
 
     async generarTropas() {
         for (let i = 0; i < this.cantAliadosMinimaPorGeneracion; i++) {
             const visionRandom = Math.floor(Math.random() * 100 + 150)
             const posX = this.jugador.posicion.x - this.width / 2;
-            // const posX = this.containerPrincipal.x - (10 + (this.width / 2));
             const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
             const aliadoNuevo = new Aliado(
-                //posXRandom, //posición x
                 posX, //posición x
                 posYRandom, //posición y
                 this, //juego
@@ -695,7 +640,6 @@ class Juego {
         }
     }
 
-
     async eliminarEnemigosEnPantallaOGenerarMas() {
         if (this.poderActual.estado == "enemigos") {
             //Planteo las 2 posibles opciones a ejecutarse
@@ -711,7 +655,6 @@ class Juego {
                 this.generarTropasEnemigas();
             }
         }
-
     }
 
     async eliminarATodosLosEnemigosEnPantalla() {
@@ -733,13 +676,9 @@ class Juego {
 
     async generarAvion() {
         const texturaAvion = await PIXI.Assets.load("imagenes/avion_bombardero.png");
-
-        //for(let i = 0; i < 1; i++){
-        //const posXRandom = Math.floor(Math.random() * this.width)
         const posX = -10
         const posYRandom = Math.floor(Math.random() * this.height)
         const avionNuevo = new Avion(
-            //posXRandom, //posición x
             posX, //posición x
             posYRandom, //posición y
             this, //juego Principal
@@ -756,34 +695,18 @@ class Juego {
         )
         this.ultimoAvion = avionNuevo
         this.aviones.push(avionNuevo)
-
-        //}
-
     }
 
     async generarAvionSiCorresponde() {
-
-        //if (!this.aviones || ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()))) {
-        //if (!this.aviones || ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()))) {
         if ((this.aviones.length >= 1) && (this.ultimoAvion.terminoViaje()) && (this.poderActual.estado == "bombas")) {
             this.generarAvion();
         }
         else {
             console.log("aún no se puede generar ningun avión, esto puede ser debido a que el último avión aún no terminó su recorrido, o porque no seleccionó el poder correspondiente, favor de cambiar al poder correspondiente usando la q y la e para recorrer los poderes disponibles.")
         }
-
-        /*
-        if (!this.aviones) {
-            if (this.ultimoAvion.terminoViaje()) {
-                this.generarAvion()
-            }
-        }
-        */
-        //if (!this.ultimoAvion.terminoViaje()) return;
-        //this.generarAvion()
     }
 
-    //RESPONSIVIDAD DE GENERADORES:
+    //RESPONSIVIDAD DEL TECLADO:
 
     keysDown(letra) {
         const key = letra.key.toLowerCase();
@@ -837,7 +760,6 @@ class Juego {
             }
         }
         if (unaTecla == "f" && this.poderActual.estado == "enemigos") {
-            // this.generarEnemigosSiCorresponde()
             this.eliminarEnemigosEnPantallaOGenerarMas();
         }
     }
@@ -854,7 +776,6 @@ class Juego {
     }
 
     //BALAS
-    //-------------------------------
     realizarDisparo(unTirador) { //se pone this al momento de usarlo en una determinada clase
         let balaActual = new BalaMejorada(
             (unTirador.posicion.x / 2), //posición en x
@@ -867,15 +788,7 @@ class Juego {
             unTirador //persona que efectuo el disparo.
         );
         unTirador.juego.balas.push(balaActual);
-        // this.juego.balas.push(balaActual);
     }
-
-    realizarTickPorCadaBala() {
-        for (let bala of this.balas) {
-            bala.tick();
-        }
-    }
-    //-------------------------------
 
     aparicionDeEnemigo() {
         setTimeout(() => {
@@ -885,15 +798,13 @@ class Juego {
         }, 2000);
     }
 
-    /*
-    realizarClick() {
-        this.menu.on('pointerdown', () => {
-            this.menu.realizarPresentacion()
-        })
-    }
-    */
-
     //SISTEMA DE TICK PARA LISTAS DE OBJETOS:
+
+    realizarTickPorCadaBala() {
+        for (let bala of this.balas) {
+            bala.tick();
+        }
+    }
 
     realizarTickPorCadaAvion() {
         for (let unAvion of this.aviones) {
@@ -924,14 +835,13 @@ class Juego {
     }
 
 
-
-
     //VISIBILIDAD SEGUN PANTALLA ACTUAL
     //------------------------------------------------------------
     //se cambia la visibilidad o se eliminan los elementos necesarios segun la pantalla que se muestre al jugador
     visibilidadDeElementosSegunPantalla() {
         if (!this.menu.pantallaActual.visible) {  //si el menu no es visible, ocultar
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
+            this.botonMasInfo.ocultarBoton();
         }
         /*  NOTA IMPORTANTE: la jerarquia de los else if importa mucho
             porque si no se verifica que la pantalla es visible
@@ -942,14 +852,15 @@ class Juego {
         else if (this.menu.pantallaActual.texture == this.pantallas[0]) { //si la pantalla actual es el 1er menu, ocultar
             //puede cambiar la pantalla pasando el mouse por encima
             this.menu.puedeCambiarPasandoMousePorArriba = true;
-            
+
             this.botonSeguir.ocultarTodosLosBotones(this.botones);
+            this.botonMasInfo.ocultarBoton();
             this.matarATodos();
             this.resetearPuntaje();
             this.textos.moverAtras();
             this.textos.acomodarPosicionYTamañoDeTextoEnemigosAbatidos();
         }
-        else if (this.menu.pantallaActual.texture == this.pantallas[1]) {
+        else if (this.menu.pantallaActual.texture == this.pantallas[1]) { //si la pantalla es la de opciones
 
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[0].container.x = this.width - 515;
@@ -961,6 +872,9 @@ class Juego {
             this.menu.puedeCambiarPasandoMousePorArriba = false;
 
             //se configuran los botones a aparecer y sus posiciones tanto en el eje x, y como su zIndex
+            this.botonMasInfo.aparecerBoton();
+            this.botonMasInfo.moverBotonAdelante();
+
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
             this.botones[1].ocultarBoton();
             this.botonSeguir.moverAdelanteTodosLosBotones(this.botones);
@@ -1000,6 +914,8 @@ class Juego {
             this.menu.puedeCambiarPasandoMousePorArriba = true;
             //aparecer todos los botones en las demas pantallas del menu
             this.botonSeguir.aparecerTodosLosBotones(this.botones);
+            //ocultar boton de mas info, para que solo aparezca en el menu de pausa
+            this.botonMasInfo.ocultarBoton();
         }
     }
 
@@ -1047,16 +963,10 @@ class Juego {
     }
     //------------------------------------------------------
 
-    actualizarVisibilidadDePoderActual() {
-        this.poderesNoActuales = this.poderes.filter((p) => p != this.poderActual)
-        this.poderesNoActuales.forEach(p => {
-            p.sprite.visible = false
-        });
-        this.poderActual.sprite.visible = true;
-    }
+
+
 
     gameLoop() {
-        //this.mouse.tick()
         this.menu.tick()
         this.visibilidadDeElementosSegunPantalla()
 
@@ -1085,7 +995,6 @@ class Juego {
             this.actualizarVisibilidadDePoderActual();
             this.asignarJugadorComoTargetDeCamara();
             this.hacerQueLaCamaraSigaAlTarget();
-            // this.hacerQueLaCamaraSigaAlTargetConZOOM();
         }
     }
 }
