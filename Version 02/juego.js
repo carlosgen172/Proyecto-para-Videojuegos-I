@@ -15,9 +15,10 @@ class Juego {
     spritesheetsEnemigos = [];
     pantallas = [];
     botones = [];
+    balas = [];
     puedeJugar = false;
     juegoPerdido = false;
-    cantEnemigosMinimaEnPantalla = 20;
+    cantEnemigosMinimaEnPantalla = 10;
     poderActual;
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
     //poderes = [1, 2, 3];
@@ -33,10 +34,10 @@ class Juego {
         this.mouse = { posicion: { x: 0, y: 0 } };
 
         // Variables para el zoom in-game:
-	    this.zoom = 1; //zoom base
-	    this.minZoom = 0.1; //valor mínimo de zoom
-	    this.maxZoom = 1; //valor máximo de zoom
-	    this.zoomStep = 0.01; //cambio de zoom progresivo
+        this.zoom = 1; //zoom base
+        this.minZoom = 0.1; //valor mínimo de zoom
+        this.maxZoom = 1; //valor máximo de zoom
+        this.zoomStep = 0.01; //cambio de zoom progresivo
 
         this.initPIXI();
     }
@@ -159,31 +160,31 @@ class Juego {
 
         // Event listener para la rueda del mouse (SISTEMA DE ZOOM):
         this.pixiApp.canvas.addEventListener("wheel", (event) => {
-      		event.preventDefault(); // Prevenir el scroll de la página (esto es una función predefinida, como el keysdown o el gameloop).
+            event.preventDefault(); // Prevenir el scroll de la página (esto es una función predefinida, como el keysdown o el gameloop).
 
-      		const zoomDelta = event.deltaY > 0 ? -this.zoomStep : this.zoomStep; //si el delta en Y es mayor a 0, entonces los pasos de zoom negativos son los que ya han sido seteados.
+            const zoomDelta = event.deltaY > 0 ? -this.zoomStep : this.zoomStep; //si el delta en Y es mayor a 0, entonces los pasos de zoom negativos son los que ya han sido seteados.
             const nuevoZoom = Math.max(
                 this.minZoom,
                 Math.min(this.maxZoom, this.zoom + zoomDelta)
-      		); //el nuevo zoom devuelve el valor máximo entre el valor más pequeño al que puede llegar el zoom y el mínimo entre el valor más alto del zoom y el zoom actual sumado al zoom delta.
+            ); //el nuevo zoom devuelve el valor máximo entre el valor más pequeño al que puede llegar el zoom y el mínimo entre el valor más alto del zoom y el zoom actual sumado al zoom delta.
 
-                if (nuevoZoom !== this.zoom) { 
+            if (nuevoZoom !== this.zoom) {
                 // Si este nuevo zoom no devuelve el mismo valor, entonces:
-        		// Obtienes la posición del mouse antes del zoom
+                // Obtienes la posición del mouse antes del zoom
                 const mouseX = event.x;
                 const mouseY = event.y;
 
-        		// Se calcula el punto en coordenadas del mundo antes del zoom:
+                // Se calcula el punto en coordenadas del mundo antes del zoom:
                 const worldPosX = (mouseX - this.containerPrincipal.x) / this.zoom;
                 const worldPosY = (mouseY - this.containerPrincipal.y) / this.zoom;
 
-        		// Se aplica el nuevo zoom:
+                // Se aplica el nuevo zoom:
                 this.zoom = nuevoZoom;
                 this.containerPrincipal.scale.set(this.zoom);
 
-        		// Y se ajustar la posición del contenedor para mantener el mouse en el mismo punto del mundo.
-        		this.containerPrincipal.x = mouseX - worldPosX * this.zoom;
-        		this.containerPrincipal.y = mouseY - worldPosY * this.zoom;
+                // Y se ajustar la posición del contenedor para mantener el mouse en el mismo punto del mundo.
+                this.containerPrincipal.x = mouseX - worldPosX * this.zoom;
+                this.containerPrincipal.y = mouseY - worldPosY * this.zoom;
             }
         });
     }
@@ -200,9 +201,9 @@ class Juego {
     }
 
     cambiarZoom(zoom) {
-	    //El zoom se modifica según el valor que se le pase por parámetro:
+        //El zoom se modifica según el valor que se le pase por parámetro:
         this.zoom = zoom;
-	    //Y este cambio se pasa a la escala general del mapa:
+        //Y este cambio se pasa a la escala general del mapa:
         this.containerPrincipal.scale.set(this.zoom);
     }
 
@@ -533,30 +534,30 @@ class Juego {
         if (!this.puedeJugar) return;
 
         //Setear las posiciones máximas para la cámara:
-        
+
         //Máximas posiciones de la cámara en X:
-        const maxPosCamaraXDer = (this.anchoFondo/2) - (this.width/2); 
+        const maxPosCamaraXDer = (this.anchoFondo / 2) - (this.width / 2);
         const maxPosCamaraXIzq = this.width / 2;
-        
+
         //Máxima posición de la cámara en Y (sirve tanto para arriba como para abajo:
         const maxPosCamaraY = this.height / 2;
 
         //Consultar sus límites y cortar el flujo de dicha función en caso de cumplirlas:
-        
+
         //Si supera el máximo en x:
-        if(this.targetCamara.posicion.x < maxPosCamaraXIzq || this.targetCamara.posicion.x > maxPosCamaraXDer) return;
-        
+        if (this.targetCamara.posicion.x < maxPosCamaraXIzq || this.targetCamara.posicion.x > maxPosCamaraXDer) return;
+
         //Si supera el máximo en y:
         // if(this.targetCamara.posicion.y < maxPosCamaraY || this.targetCamara.posicion.y > maxPosCamaraY) return;
-        
+
         //Calcular la posición del target con respecto a la pantalla:
         let posTargetX = - this.targetCamara.posicion.x * this.zoom + this.width / 2;
-        let posTargetY = - this.targetCamara.posicion.y  * this.zoom + this.height / 2;
+        let posTargetY = - this.targetCamara.posicion.y * this.zoom + this.height / 2;
 
         //Se iguala a la del container principal:
         const x = (posTargetX - this.containerPrincipal.x) * 0.1;
         const y = (posTargetY - this.containerPrincipal.y) * 0.1;
-        
+
         //Y se los pasa como parámetros para que se ejecuten dentro del código:
         this.moverContainerPrincipalA(
             this.containerPrincipal.x + x,
@@ -637,7 +638,7 @@ class Juego {
     }
 
     async generarTropas() {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 2; i++) {
             const visionRandom = Math.floor(Math.random() * 100 + 150)
             const posX = -10
             // const posX = this.containerPrincipal.x - (10 + (this.width / 2));
@@ -851,23 +852,28 @@ class Juego {
         }
     }
 
+    //BALAS
+    //-------------------------------
+    realizarDisparo(unTirador) { //se pone this al momento de usarlo en una determinada clase
+        let balaActual = new BalaMejorada(
+            (unTirador.posicion.x / 2), //posición en x
+            (unTirador.posicion.y / 2) - (unTirador.width / 2), //posición en y
+            unTirador.juego, //juego.
+            8, //ancho.
+            8, //alto.
+            0.7, //velocidad.
+            1, //escala en x.
+            unTirador //persona que efectuo el disparo.
+        );
+        unTirador.juego.balas.push(balaActual);
+    }
 
-    // generarMenuDePausa(unaTecla, estaPresionada) {
-    //     this.keys[unaTecla] = estaPresionada;
-
-    //     if(estaPresionada) {
-    //         if(unaTecla === "escape" && this.puedeJugar) {
-    //             this.menu.mostrarPantalla();
-    //             this.menu.cambiarPantalla(4);
-    //             this.menu.pantallaActual.zIndex = 5000;
-    //             this.puedeJugar = false;
-    //         }
-    //         else if(unaTecla === "escape" && !this.puedeJugar) {
-    //             this.menu.ocultarPantalla();
-    //             this.puedeJugar = true;
-    //         }
-    //     }
-    // }
+    realizarTickPorCadaBala() {
+        for (let bala of this.balas) {
+            bala.tick();
+        }
+    }
+    //-------------------------------
 
     aparicionDeEnemigo() {
         setTimeout(() => {

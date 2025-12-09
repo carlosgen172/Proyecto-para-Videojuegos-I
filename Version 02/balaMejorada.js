@@ -1,37 +1,22 @@
 class BalaMejorada extends GameObject {
     radioColision;
-    radioVision;
-    velocidadMaxima = 0.9;
-    aceleracionMaxima = 0.2;
-    constructor (x, y, juego, width, height, velocidad, aceleracion, scaleX, personaQueEfectuoDisparo) {
-        super(x, y, juego, width, height);
-        
-        //Idea para reposicionamiento descartada:
-        // this.x = x;
-        // this.y = y;
-        // this.reposicionarElementoSegunDisparador();
-        // this.posicion = {x: this.x, y: this.y};
-        
-        // console.log("Posición en X de la bala:", this.x);
-        // console.log("Posición en Y de la bala:", this.y)
-        this.posicion = {x: x, y: y};
-        // console.log("Posición general", this.posicion);
-
+    constructor(x, y, juego, width, height, velocidad, scaleX, personaQueEfectuoDisparo) {
+        super(x, y, juego);
+        this.posicion = { x: x, y: y };
         this.width = width;
         this.height = height;
         this.vida = 1;
         this.estoyMuerto = false;
 
         //Radio de colision para el sistema de colisiones y de daño:
-        this.radioColision = this.width / 2;
+        this.radioColision = 150;
 
         //Velocidad y aceleración:
-        this.velocidad = { x: velocidad, y: velocidad}; // Velocidad en píxeles/frame
-        this.aceleracion = { x: aceleracion, y: aceleracion}; // Aceleración en píxeles/frame²
+        this.velocidad = { x: velocidad, y: velocidad }; // Velocidad en píxeles/frame
 
         //sistema de escala:
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
-        
+
         //Valores que se les pasa a la bala para saber que persona efectuó el disparo:
         this.personaQueEfectuoDisparo = personaQueEfectuoDisparo;
         this.dañoAInflingir = this.personaQueEfectuoDisparo.verCuantaFuerzaTengo();
@@ -40,24 +25,21 @@ class BalaMejorada extends GameObject {
         this.container = new PIXI.Container();
         this.container.name = this.constructor.name;
 
+        //Y agregado del container al escenario:
+        this.juego.containerPrincipal.addChild(this.container);
+
         //Nombre del disparador y condicionales en base a la misma:
-        this.nombreDelDisparador = this.personaQueEfectuoDisparo.constructor.name
         this.seleccionarColorSegunEquipo();
 
         //Generación del sprite:
         this.generarSprite();
-        // this.juego.pixiApp.stage.addChild(this.container);
-        // this.juego.containerPrincipal.addChild(this.container);
-        // console.log(this.container);
-
-        //Y agregado del container al escenario:
-        this.juego.containerPrincipal.addChild(this.container);
 
         //Selección de dirección de propulsión:
         this.salirPropulsado();
-    } 
+    }
 
     seleccionarColorSegunEquipo() {
+        this.nombreDelDisparador = this.personaQueEfectuoDisparo.constructor.name
         if (this.nombreDelDisparador == "Aliado") {
             this.color = "green";
         } else if (this.nombreDelDisparador == "Jugador") {
@@ -84,129 +66,96 @@ class BalaMejorada extends GameObject {
     // }
 
     // seleccionarDireccionDeAvance() {
-        // if(nombreDelDisparador == "Aliado" || "Jugador") {
-        //     this.direccionDeAvance = 1;
-        // }
-        // else {
-        //     this.direccionDeAvance = -1;
-        // }
+    // if(nombreDelDisparador == "Aliado" || "Jugador") {
+    //     this.direccionDeAvance = 1;
     // }
-
-    // generarAreaDeColision() { DESCARTADO (E INNECESARIO):
-    //     //se le asigna el radio de colisión según el ancho indicado 
-    //     //debugger;
-    //     this.radioColision = this.width / 2;
-
-    //     //se crea un area invisible:
-    //     this.areaColision = new PIXI.Graphics();
-
-    //     //linea de color negro
-    //     this.areaColision.lineStyle(1, 0x000000);
-
-    //     // color rojo transparente
-    //     this.areaColision.beginFill(0xFF0000, 0.0);
-
-    //     // Dibujar un círculo en la posición (100, 100) con un radio de 50
-    //     this.areaColision.drawCircle(this.x, this.y, this.radioColision);
-
-    //     // Finalizar el relleno
-    //     this.areaColision.endFill();
-
-    //     //Y lo añade al container:
-    //     //this.juegoPrincipal.pixiApp.stage.addChild(this.areaColision);
-    //     this.container.addChild(this.areaColision);
-    //     this.areaColision.visible = false;
+    // else {
+    //     this.direccionDeAvance = -1;
+    // }
     // }
 
     haColisionadoConAlguien() {
         if (this.estoyMuerto) return;
 
-        // this.tengoAlgunEnemigoAdelante = false;
-        
         const listaObjetivos = this.personaQueEfectuoDisparo.obtenerLista();
-        // console.log("la bala pertenece a: ", this.personaQueEfectuoDisparo)
-        // console.log("y la misma tiene a estos posibles objetivos", this.personaQueEfectuoDisparo.obtenerLista());
-        // console.log("posicion actual en x", this.x);
         //debugger;
         for (let posibleObjetivo of listaObjetivos) {
-            const distanciaDeEnemigoEnX = calcularDistanciaEnX(this.posicion, posibleObjetivo.posicion)
-            const distanciaDeEnemigoEnY = calcularDistanciaEnY(this.posicion, posibleObjetivo.posicion)
-            if (distanciaDeEnemigoEnX < this.radioColision && distanciaDeEnemigoEnY < this.radioColision) {
-                this.tengoAlgunEnemigoAdelante = true;
-                this.objetivoColisionado = posibleObjetivo;
+            const distanciaDeEnemigo = calcularDistancia(this.posicion, posibleObjetivo.posicion)
+            if (distanciaDeEnemigo < this.radioColision) {
+                posibleObjetivo.recibirDaño();
+                this.morir();
+                // this.objetivoColisionado = posibleObjetivo;
+                // this.pegarAlObjetivoColisionado();
                 break;
             }
         }
-        return this.tengoAlgunEnemigoAdelante;
     }
 
     pegarAlObjetivoColisionado() {
-        if(this.estoyMuerto) return;
-        // if(!this.objetivoColisionado) return;
-        if(this.haColisionadoConAlguien()) {
-            this.objetivoColisionado.vida = Math.max(this.objetivoColisionado.vida - this.dañoAInflingir, 0);
-        }
+        this.objetivoColisionado.vida = Math.max(this.objetivoColisionado.vida - this.dañoAInflingir, 0);
+        this.morir();
     }
 
     seFueDePantalla() { //condición para que se vea también de eliminar el objeto al llegarse a salir de pantalla.
-        return( ( (this.posicion.x >= (this.juego.width + 5) ) && (this.nombreDelDisparador == "Aliado") ) 
-        || 
-        ( (this.posicion.x <= (this.juego.width - (this.juego.width + 5)) ) && (this.nombreDelDisparador == "Enemigo") ) );
+        return (((this.posicion.x >= (this.juego.width + 5)) && (this.nombreDelDisparador == "Aliado"))
+            ||
+            ((this.posicion.x <= (this.juego.width - (this.juego.width + 5))) && (this.nombreDelDisparador == "Enemigo")));
     }
 
     salirPropulsado() {
-        // if (!this.estoyMuerto) {
-        if (this.estoyMuerto) return ;
+        if (this.estoyMuerto) return;
+        this.velocidad.y = 0;
         // this.aceleracion.x = this.personaQueEfectuoDisparo.direccionDeAvance();
         if (this.nombreDelDisparador == "Aliado" || this.nombreDelDisparador == "Jugador") {
-            this.aceleracion.x = 1
-            // this.container.x += 1
-            // this.posicion.x += 1
+            this.velocidad.x = 1;
+
         } else {
-            this.aceleracion.x = -1
-            // this.container.x -= 1
-            // this.posicion.x -= 1
+            this.velocidad.x = -1;
         }
-        // console.log("la aceleracion del objeto", this.aceleracion.x);
-        // }
+        this.posicion.x += this.velocidad.x;
+    }
+
+    generarAreaDeColision() {
+        //se crea un area invisible:
+        this.areaColision = new PIXI.Graphics();
+
+        //linea de color negro:
+        this.areaColision.lineStyle(1.5, 0x000000);
+
+        //color sólido según equipo:
+        this.areaColision.beginFill(this.color, 0.3);
+
+        // Dibujar un círculo con punto central en la posición x e y de nuestro pj, 
+        // con un radio general según el radio de colisión:
+        this.areaColision.drawCircle(0, 0, this.radioColision);
+
+        this.areaColision.x = this.posicion.x;
+        this.areaColision.y = this.posicion.y;
+
+        // Finalizar el relleno
+        this.areaColision.endFill();
+
+        //Y lo añade al container:
+        //this.juegoPrincipal.pixiApp.stage.addChild(this.areaColision);
+        this.container.addChild(this.areaColision);
     }
 
     generarSprite() {
-        // this.sprite = new PIXI.Graphics();
-
-        // this.sprite.beginFill(this.color);
-        // this.sprite.drawRect(0, 0, this.width, this.height);
-        // this.sprite.endFill();
-        
-        // // centramos el sprite en (x,y)
-        // this.sprite.pivot.set(this.width / 2, this.height / 2);
-        
-        // //ajustes de ubicación
-        // this.sprite.x = this.x;
-        // this.sprite.y = this.y;
-        // this.sprite.zIndex = this.personaQueEfectuoDisparo.zIndex;
-        // console.log(this.sprite)
-
-        // // this.pixiApp.stage.addChild(this.sprite);
-        
-        // // this.container.addChild(this.sprite);
-
-        // //añade el sprite dentro del contenedor y no directamente al stage del juego
-        // //ya que el contenedor se encarga de manejar la posición del sprite
-        // this.container.addChild(this.sprite);
-
         //se crea un area invisible:
         this.sprite = new PIXI.Graphics();
 
         //linea de color negro:
-        this.sprite.lineStyle(2, 0x000000);
+        this.sprite.lineStyle(1.5, 0x000000);
 
         //color sólido según equipo:
         this.sprite.beginFill(this.color, 1.0);
 
         // Dibujar un círculo con punto central en la posición x e y de nuestro pj, 
         // con un radio general según el radio de colisión:
-        this.sprite.drawCircle(this.posicion.x, this.posicion.y, this.radioColision);
+        this.sprite.drawCircle(0, 0, this.width / 2);
+
+        this.sprite.x = this.posicion.x;
+        this.sprite.y = this.posicion.y;
 
         // Finalizar el relleno
         this.sprite.endFill();
@@ -217,7 +166,8 @@ class BalaMejorada extends GameObject {
     }
 
     //se actualiza la posición del contenedor según la posición del objeto (se usa en el render)
-    actualizarPosDelContainerSegunPosDelObjeto(){
+    actualizarPosDelContainerSegunPosDelObjeto() {
+        if (this.estoyMuerto) return;
         this.container.x = this.posicion.x;
         this.container.y = this.posicion.y;
     }
@@ -229,15 +179,9 @@ class BalaMejorada extends GameObject {
     //SISTEMA DE MUERTE:
 
     verificarSiMori() {
-        // if (this.vida <= 0 || this.seFueDePantalla() || this.personaQueEfectuoDisparo.puedeDisparar() || this.haColisionadoConAlguien()) {
-        // if (this.vida <= 0 || this.seFueDePantalla() || this.haColisionadoConAlguien()) {
-        // if (this.haColisionadoConAlguien()) {
-        //     console.log("he impactado con alguien");
-        // }
-        // if (this.vida <= 0 || this.seFueDePantalla() || this.haColisionadoConAlguien()) {
-        if(this.estoyMuerto) return;
+        if (this.estoyMuerto) return;
 
-        if (this.seFueDePantalla() || this.haColisionadoConAlguien()) {
+        if (this.seFueDePantalla()) {
             this.morir();
         }
     }
@@ -248,16 +192,16 @@ class BalaMejorada extends GameObject {
 
     morir() {
         //PARA ELIMINAR CORRECTAMENTE UN ELEMENTO EN PANTALLA:
-        
+
         //Haces la vida igual a 0;
         // this.vida = 0;
 
         //0. Le haces daño al objetivo colisionado (en caso de existir):
-        this.pegarAlObjetivoColisionado();
-        
+        //this.pegarAlObjetivoColisionado();
+
         //1. hacer invisible el sprite:
         this.sprite.visible = false;
-        
+
         //2. remover el sprite del contenedor:
         this.sprite.parent.removeChild(this.sprite);
 
@@ -273,8 +217,6 @@ class BalaMejorada extends GameObject {
 
         //5. Cambia su estado a "muerto", para que ya no responda a ninguna acción del ticker:
         this.estoyMuerto = true;
-
-        // console.log("la bala ha dejado de existir.")
     }
 
     //SISTEMA DE FÍSICA:
@@ -361,14 +303,13 @@ class BalaMejorada extends GameObject {
         this.velocidad.x *= friccionAplicada;
         this.velocidad.y *= friccionAplicada;
     }
-    
 
     //cada tick se efectua en la clase juego en el método realizarTickPorCadaBala()
     // llamado desde el tick principal del objeto.
     tick() {
         this.verificarSiMori();
         this.salirPropulsado();
-        this.aplicarFisica();
+        this.haColisionadoConAlguien();
         this.render();
     }
 }

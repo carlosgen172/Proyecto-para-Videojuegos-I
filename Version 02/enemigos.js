@@ -1,6 +1,5 @@
 class Enemigo extends ObjetoDinamico {
     sprite;
-    enemigoDeBandoContrario;
     distanciaParaLlegar = 300;
     yaContado;
     // tengoAlgunEnemigoAdelante;
@@ -157,9 +156,9 @@ class Enemigo extends ObjetoDinamico {
         return this.juego.aliados;
     }
 
-    obtenerPosicionXParaBala() {
-        return this.x - 20;
-    }
+    // obtenerPosicionXParaBala() {
+    //     return this.x - 20;
+    // }
 
     llevarAlFondo() {
         this.container.zIndex = 1;
@@ -178,7 +177,6 @@ class Enemigo extends ObjetoDinamico {
         if (this.verificacionDeLimites()) {
             this.separacion();
         }
-        this.realizarTickPorCadaBala();
         this.update();
         this.aplicarFisica();
         this.render();

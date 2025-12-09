@@ -194,9 +194,9 @@ class Aliado extends ObjetoDinamico {
         return this.juego.enemigos;
     }
 
-    obtenerPosicionXParaBala() {
-        return this.x + 10;
-    }
+    // obtenerPosicionXParaBala() {
+    //     return this.x + 10;
+    // }
 
     render() {
         this.actualizarPosDelContainerSegunPosDelObjeto()
@@ -212,7 +212,6 @@ class Aliado extends ObjetoDinamico {
             this.separacion();
         }
         this.seguirAlLider();
-        this.realizarTickPorCadaBala();
         this.update();
         this.aplicarFisica();
         this.render();

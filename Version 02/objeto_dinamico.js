@@ -9,7 +9,7 @@ class ObjetoDinamico extends GameObject {
     fuerza;
     tengoAlgunEnemigoAdelante;
     enemigoMasCerca;
-    balas = [];
+    
 
     //CONSTRUCTOR/INICIADOR:
 
@@ -135,6 +135,11 @@ class ObjetoDinamico extends GameObject {
         //}
     }
 
+    recibirDaño() {
+        if (this.estoyMuerto) return;
+        this.vida -= 25;
+    }
+
     puedoDisparar() {
         return (performance.now() > this.delayAtaque + this.ultimoDisparo);
     }
@@ -144,7 +149,7 @@ class ObjetoDinamico extends GameObject {
         if (!this.puedoDisparar()) return;
         // this.cambiarAnimacion("atacar",  true);
 
-        this.realizarDisparo();
+        this.juego.realizarDisparo(this);
         // if (this.balaActual.haColisionadoConAlguien()) {
         //     unEnemigo.vida = Math.max(unEnemigo.vida - this.verCuantaFuerzaTengo(), 0);
         // }
@@ -155,28 +160,26 @@ class ObjetoDinamico extends GameObject {
         console.log("Hay que poner esto dentro de las subclases.");
     }
 
-    realizarDisparo() {
-        // this.balaActual = new BalaMejorada(
-        let balaActual = new BalaMejorada(
-            (this.posicion.x /2), //posición en x
-            (this.posicion.y /2) - (this.width/2), //posición en y
-            this.juego, //juego.
-            8, //ancho.
-            8, //alto.
-            0.7, //velocidad.
-            0.2, //aceleración.
-            1, //escala en x.
-            this //persona que efectuo el disparo.
-        );
-        // this.balas.push(this.balaActual);
-        this.balas.push(balaActual);
-    }
+    // realizarDisparo() {
+    //     let balaActual = new BalaMejorada(
+    //         (this.posicion.x /2), //posición en x
+    //         (this.posicion.y /2) - (this.width/2), //posición en y
+    //         this.juego, //juego.
+    //         8, //ancho.
+    //         8, //alto.
+    //         0.7, //velocidad.
+    //         1, //escala en x.
+    //         this //persona que efectuo el disparo.
+    //     );
+    //     // this.balas.push(this.balaActual);
+    //     this.balas.push(balaActual);
+    // }
 
-    realizarTickPorCadaBala() {
-        for (let bala of this.balas) {
-            bala.tick();
-        }
-    }
+    // realizarTickPorCadaBala() {
+    //     for (let bala of this.balas) {
+    //         bala.tick();
+    //     }
+    // }
 
     direccionDeAvance() {
         console.log("Debe poner la dirección de avance en la subclase.");
@@ -323,21 +326,6 @@ class ObjetoDinamico extends GameObject {
             //eliminar la referencia al sprite
             this.sprite = null;
             this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aviones);
-        }
-        else if (this.constructor.name == "Bala") {
-            this.sprite.visible = false;
-            //remover el sprite del contenedor
-            this.sprite.parent.removeChild(this.sprite);
-
-            //destruir el sprite para liberar memoria
-            this.sprite.destroy({
-                texture: false,
-                baseTexture: false
-            });
-
-            //eliminar la referencia al sprite
-            this.sprite = null;
-            //this.juego.eliminarElElemento_DeLaLista_(this, this.juego.aliados);
         }
         else {
             console.log("no se pudo cargar el sprite/spritesheet, favor de verificar que el mismo se haya vinculado bien.")
