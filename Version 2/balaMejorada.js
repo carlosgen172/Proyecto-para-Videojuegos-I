@@ -1,5 +1,6 @@
 class BalaMejorada extends GameObject {
     radioColision;
+    delayMuerte = 3000; //tiempo que se calcula para la desaparición automática de la bala. :J
     constructor(x, y, juego, width, height, velocidad, scaleX, personaQueEfectuoDisparo) {
         super(x, y, juego);
         this.posicion = { x: x, y: y };
@@ -9,7 +10,7 @@ class BalaMejorada extends GameObject {
         this.estoyMuerto = false;
 
         //Radio de colision para el sistema de colisiones y de daño:
-        this.radioColision = 150;
+        this.radioColision = this.height * 2;
 
         //Velocidad y aceleración:
         this.velocidad = { x: velocidad, y: velocidad }; // Velocidad en píxeles/frame
@@ -19,14 +20,16 @@ class BalaMejorada extends GameObject {
 
         //Valores que se les pasa a la bala para saber que persona efectuó el disparo:
         this.personaQueEfectuoDisparo = personaQueEfectuoDisparo;
+        this.x = this.personaQueEfectuoDisparo.posicion.x
+        this.y = this.personaQueEfectuoDisparo.posicion.y
+
+        this.posicion = { x: this.x, y: this.y };
+
         this.dañoAInflingir = this.personaQueEfectuoDisparo.verCuantaFuerzaTengo();
 
         //se crea el contenedor del sprite:
         this.container = new PIXI.Container();
         this.container.name = this.constructor.name;
-
-        //Y agregado del container al escenario:
-        this.juego.containerPrincipal.addChild(this.container);
 
         //Nombre del disparador y condicionales en base a la misma:
         this.seleccionarColorSegunEquipo();
@@ -34,8 +37,12 @@ class BalaMejorada extends GameObject {
         //Generación del sprite:
         this.generarSprite();
 
-        //Selección de dirección de propulsión:
-        this.salirPropulsado();
+        //Y agregado del container al escenario:
+        this.juego.containerPrincipal.addChild(this.container);
+
+        // //Selección de dirección de propulsión:
+        // this.salirPropulsado();
+        this.morirPorTiempo();
     }
 
     seleccionarColorSegunEquipo() {
@@ -47,6 +54,10 @@ class BalaMejorada extends GameObject {
         } else {
             this.color = "red";
         }
+    }
+
+    morirPorTiempo() {
+        setTimeout(() => {this.morir()}, this.delayMuerte);
     }
 
     // reposicionarElementoSegunDisparador() {
@@ -107,10 +118,10 @@ class BalaMejorada extends GameObject {
         this.velocidad.y = 0;
         // this.aceleracion.x = this.personaQueEfectuoDisparo.direccionDeAvance();
         if (this.nombreDelDisparador == "Aliado" || this.nombreDelDisparador == "Jugador") {
-            this.velocidad.x = 1;
+            this.velocidad.x = 2;
 
         } else {
-            this.velocidad.x = -1;
+            this.velocidad.x = -2;
         }
         this.posicion.x += this.velocidad.x;
     }
@@ -163,6 +174,9 @@ class BalaMejorada extends GameObject {
         //Y lo añade al container:
         //this.juegoPrincipal.pixiApp.stage.addChild(this.areaColision);
         this.container.addChild(this.sprite);
+        this.container.pivot.set(this.sprite.x, this.sprite.y);
+        this.container.x = this.container.pivot.x
+        this.container.y = this.container.pivot.y
     }
 
     //se actualiza la posición del contenedor según la posición del objeto (se usa en el render)
@@ -195,7 +209,11 @@ class BalaMejorada extends GameObject {
 
         //Haces la vida igual a 0;
         // this.vida = 0;
+        //debugger;
+        //if (this == undefined) return;
 
+        if (this.estoyMuerto) return;
+        
         //0. Le haces daño al objetivo colisionado (en caso de existir):
         //this.pegarAlObjetivoColisionado();
 
