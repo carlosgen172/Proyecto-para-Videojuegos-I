@@ -1,15 +1,40 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="imagenes/liberty_favicon.ico" type="image/x-icon">
     <title>Liberty</title>
+
+    <style>
+        body {
+            background-image: url("imagenes/menu/fondo_de_ventana.png");
+            background-size: cover; /* la imagen cubre toda la pantalla */
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh; /* la imagen ocupa toda la altura de la ventana */
+            overflow: hidden; /* Evita barras de desplazamiento/ scrollbar */
+        }
+
+        canvas {
+            aspect-ratio: 1;
+            width: auto;
+            height: 100%;
+            display: block;
+            margin: auto;
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.13.2/pixi.min.js"></script>
-    
+
     <!-- Archivos varios importantes: -->
     <script src="funciones_utiles.js"></script>
     <script src="calculos_matematicos.js"></script>
@@ -44,18 +69,7 @@
     <!-- El juego -->
     <script src="juego.js"></script>
 
-    <style>
-        canvas {
-            aspect-ratio: 1;
-            width: auto;
-            height: 100%;
-        }
 
-        * {
-            padding: 0;
-            margin: 0;
-        }
-    </style>
 </body>
 <footer></footer>
 

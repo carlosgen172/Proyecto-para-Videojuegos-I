@@ -26,8 +26,8 @@ class Juego {
 
     //Controladores de la generacion de personajes
     keys = {}; //para generar las tropas (aliadas o enemigas) y para generar las bombas
-    cantEnemigosMinimaEnPantalla = 20;
-    cantAliadosMinimaPorGeneracion = 2;
+    cantEnemigosMinimaEnPantalla = 30;
+    cantAliadosMinimaPorGeneracion = 5;
     poderActual;
 
     //Configuraciones del mapa
@@ -589,10 +589,10 @@ class Juego {
         for (let i = 0; i < this.cantAliadosMinimaPorGeneracion; i++) {
             const visionRandom = Math.floor(Math.random() * 100 + 150)
             const posX = this.jugador.posicion.x - this.width / 2;
-            const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
+            const posY = this.posicionRandomEnY();
             const aliadoNuevo = new Aliado(
                 posX, //posición x
-                posYRandom, //posición y
+                posY, //posición y
                 this, //juego
                 32, //ancho
                 32, //alto
@@ -616,16 +616,30 @@ class Juego {
         }
     }
 
+
+    //funcion de prueba que servira para un tipo de jugabilidad
+    posicionRandomEnY() {
+        const posiciones = [
+            150,
+            200,
+            250,
+            300,
+            350
+        ];
+
+        return seleccionarElementoAleatorioDe_(posiciones);
+    }
+
     async generarTropasEnemigas() {
         for (let i = 0; i < 1; i++) {
             //se suma +100  
             const visionRandom = Math.floor(Math.random() * 100 + 150)
             const posX = this.jugador.posicion.x + this.width / 2;
             //la posicion en Y es un random entre 0 y el alto del juego + 100 para que no se superpongan con el HUD
-            const posYRandom = Math.floor(Math.random() * (this.height - 230)) + 150
+            const posY = this.posicionRandomEnY();
             const enemigoNuevo = new Enemigo(
                 posX, //posición x
-                posYRandom, //posición y
+                posY, //posición y
                 this, //juego Principal
                 32, //ancho
                 32, //alto
