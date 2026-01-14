@@ -137,8 +137,23 @@ class ObjetoDinamico extends GameObject {
     dispararAEnemigo() {
         if (!this.puedoDisparar()) return;
 
-        this.juego.realizarDisparo(this);
+        this.realizarDisparo(this);
         this.ultimoDisparo = performance.now();
+    }
+
+    //BALAS
+    realizarDisparo(unTirador) { //se pone this al momento de usarlo en una determinada clase
+        let balaActual = new BalaMejorada(
+            (unTirador.posicion.x / 2), //posición en x
+            (unTirador.posicion.y / 2) - (unTirador.width / 2), //posición en y
+            unTirador.juego, //juego.
+            8, //ancho.
+            8, //alto.
+            2.5, //velocidad.
+            1, //escala en x.
+            unTirador //persona que efectuo el disparo.
+        );
+        unTirador.juego.balas.push(balaActual);
     }
 
     obtenerPosicionXParaBala() {

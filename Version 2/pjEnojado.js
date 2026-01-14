@@ -64,7 +64,7 @@ class PjEnojado extends Estado {
         dueño.aceleracion.x = 0;
 
         //Aumenta su nivel de ira constantemente:
-        dueño.nivelDeIraReal + 1
+        //dueño.nivelDeIraReal + 1
 
         //Y efectúa un ataque a su enemigo:
         //dueño.pegar(dueño.enemigoMasCerca);

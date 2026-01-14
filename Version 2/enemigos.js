@@ -52,9 +52,6 @@ class Enemigo extends ObjetoDinamico {
         
         //(Extra) Se genera un nombre aleatorio para el pj:
         //this.generarNombreAleatorio();
-
-        // console.log(this.nombreCompleto, "se ha generado.")
-        //console.log(this.nombreCompleto, "se ha generado, siendo un ", this.constructor.name, " con un nivel de ira de", this.nivelDeIraReal, ".")
     }
 
     listaDeSpritessheetsDisponibles() {

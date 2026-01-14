@@ -83,6 +83,7 @@ class Juego {
         //Carga de elementos
         await this.cargarBackground();
         await this.cargarSprites();
+        await this.cargarSonidos();
 
         //Generacion de elementos
         await this.generarBotonesDelHUD();
@@ -115,6 +116,14 @@ class Juego {
             await this.jugador.start();
             this.personas.push(this.jugador);
         }
+    }
+
+    async cargarSonidos() {
+        this.disparos = PIXI.sound.Sound.from({
+            url: "sonidos/efecto_disparo.mp3",
+            preload: true,
+            volume: 0.05,
+        });
     }
 
     //FUNCIONES DEL MOUSE:
@@ -737,6 +746,7 @@ class Juego {
         if (this.puedeJugar) {
             this.presionarHebillaCon_(key, false);
             this.generarPoderesCon(key)
+            this.jugador.dispararCon(key);
         }
     }
 
@@ -789,20 +799,7 @@ class Juego {
         }
     }
 
-    //BALAS
-    realizarDisparo(unTirador) { //se pone this al momento de usarlo en una determinada clase
-        let balaActual = new BalaMejorada(
-            (unTirador.posicion.x / 2), //posición en x
-            (unTirador.posicion.y / 2) - (unTirador.width / 2), //posición en y
-            unTirador.juego, //juego.
-            8, //ancho.
-            8, //alto.
-            2.5, //velocidad.
-            1, //escala en x.
-            unTirador //persona que efectuo el disparo.
-        );
-        unTirador.juego.balas.push(balaActual);
-    }
+
 
     aparicionDeEnemigo() {
         setTimeout(() => {

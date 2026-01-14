@@ -1,7 +1,7 @@
 class Jugador extends ObjetoDinamico {
     velocidadMaxima = 1.5;
     aceleracionMaxima = 0.5;
-    
+
     constructor(x, y, juegoPrincipal, width, height, radioColision, velocidad, aceleracion, scaleX) {
         super(x, y, juegoPrincipal, width, height);
 
@@ -13,8 +13,8 @@ class Jugador extends ObjetoDinamico {
         this.aceleracion = { x: aceleracion, y: aceleracion }; // Aceleración en píxeles/frame²
 
         this.scaleX = scaleX || 1; //para hacer más ancho al pj
-        
-        this.fuerza = 1.5;
+
+        this.fuerza = 2;
     }
 
     async start() {
@@ -26,19 +26,31 @@ class Jugador extends ObjetoDinamico {
     //MOVIMIENTO
     movimiento() {
         if (this.juego.keys["w"]) {
-            this.aceleracion.y --;
+            this.aceleracion.y--;
         }
         if (this.juego.keys["a"]) {
-            this.aceleracion.x --;
-            this.spritesheetsActuales.scale.x = -this.scaleX 
+            this.aceleracion.x--;
+            this.spritesheetsActuales.scale.x = -this.scaleX
         }
         if (this.juego.keys["s"]) {
-            this.aceleracion.y ++;
+            this.aceleracion.y++;
         }
         if (this.juego.keys["d"]) {
-            this.aceleracion.x ++;
+            this.aceleracion.x++;
             this.spritesheetsActuales.scale.x = this.scaleX;
         }
+    }
+
+    //FUNCIONES PARA PODER DISPARAR
+    dispararCon(key) {
+        if (key == "l") {
+            this.realizarDisparo(this);
+            this.juego.disparos.play();
+        }
+    }
+
+    obtenerLista() {
+        return this.juego.enemigos;
     }
 
     //SISTEMA DE SEPARACIÓN:
@@ -65,20 +77,20 @@ class Jugador extends ObjetoDinamico {
             8. Y de ahí, se aplica a la aceleración de nuestro personaje para afectar su movilidad de forma momentánea
             (corrigiendo su posición con respecto a las otras entidades).
         */
-        
+
         let cont = 0; //Contador de personas que se encuentran demasiado cerca.
         let vectorPromedioDePosiciones = { x: 0, y: 0 }; //Se inicializa un vector el cual nos servirá para indicar a la entidad en que sentido evitar a su/s allegado/s.
 
         // Detectar TODOS los agentes cercanos (sin importar equipo)
         for (const persona of this.juego.personas) {
             if (persona !== this) {
-            const distanciaEntrePersona = calcularDistancia(this.posicion, persona.posicion); //Se calcula la distancia de la instancia contra la allegada, para ver si es necesario repelerla.
-            // Zona crítica de separación
-            if (distanciaEntrePersona < this.radioColision * 1.5) {
-                cont++; //Suma 1 al contador de gente cercana.
-                vectorPromedioDePosiciones.x += persona.posicion.x; //Hace que dicho vector sume la posición de la persona
-                vectorPromedioDePosiciones.y += persona.posicion.y; //Lo mismo, pero en este caso para el eje y.
-            }
+                const distanciaEntrePersona = calcularDistancia(this.posicion, persona.posicion); //Se calcula la distancia de la instancia contra la allegada, para ver si es necesario repelerla.
+                // Zona crítica de separación
+                if (distanciaEntrePersona < this.radioColision * 1.5) {
+                    cont++; //Suma 1 al contador de gente cercana.
+                    vectorPromedioDePosiciones.x += persona.posicion.x; //Hace que dicho vector sume la posición de la persona
+                    vectorPromedioDePosiciones.y += persona.posicion.y; //Lo mismo, pero en este caso para el eje y.
+                }
             }
         }
         if (cont == 0) return; // No hay agentes demasiado cerca, entonces corta el código.
@@ -97,7 +109,7 @@ class Jugador extends ObjetoDinamico {
         vectorRepulsivo = limitarVector(vectorRepulsivo, 1);
         this.aceleracion.x += this.factorSeparacion * vectorRepulsivo.x;
         this.aceleracion.y += this.factorSeparacion * vectorRepulsivo.y;
-        
+
     }
 
     listaDeSpritessheetsDisponibles() {
